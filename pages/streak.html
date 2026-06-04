@@ -1,0 +1,1116 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mi Racha — QuizForge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --bg: #f0f6ff;
+        --surface: #ffffff;
+        --surface2: #f7faff;
+        --border: #d0e3fa;
+        --border2: #b8d4f7;
+        --accent: #2563eb;
+        --accent-light: #dbeafe;
+        --accent-mid: #60a5fa;
+        --accent-dark: #1d4ed8;
+        --text: #0f172a;
+        --muted: #64748b;
+        --muted2: #94a3b8;
+        --fire: #f97316;
+        --fire-light: #fff7ed;
+        --fire-bdr: #fed7aa;
+        --gold: #f59e0b;
+        --gold-light: #fffbeb;
+        --correct: #16a34a;
+        --correct-bg: #f0fdf4;
+        --radius: 16px;
+        --radius-sm: 10px;
+        --shadow:
+          0 1px 4px rgba(37, 99, 235, 0.07), 0 4px 18px rgba(37, 99, 235, 0.06);
+        --shadow-md: 0 6px 28px rgba(37, 99, 235, 0.12);
+        --font: "Inter", Arial, sans-serif;
+      }
+      html {
+        font-size: 16px;
+        scroll-behavior: smooth;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--font);
+        min-height: 100vh;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* ── NAV ── */
+      nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 3rem;
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(18px);
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .logo {
+        font-family: var(--font);
+        font-weight: 800;
+        font-size: 1.2rem;
+        letter-spacing: -0.03em;
+        color: var(--accent);
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        text-decoration: none;
+      }
+      .logo-icon {
+        width: 32px;
+        height: 32px;
+        background: var(--accent);
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .logo-icon svg {
+        width: 16px;
+        height: 16px;
+      }
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .btn-ghost {
+        background: none;
+        border: 1.5px solid var(--border2);
+        color: var(--muted);
+        padding: 0.48rem 1.1rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.18s;
+        text-decoration: none;
+      }
+      .btn-ghost:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: var(--accent-light);
+      }
+      .btn-primary {
+        background: var(--accent);
+        border: none;
+        color: #fff;
+        padding: 0.52rem 1.3rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-weight: 600;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.18s;
+        text-decoration: none;
+      }
+      .btn-primary:hover {
+        background: var(--accent-dark);
+        transform: translateY(-1px);
+      }
+
+      /* ── PAGE ── */
+      .page {
+        max-width: 780px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem 6rem;
+      }
+
+      /* ── HERO RACHA ── */
+      .streak-hero {
+        background: linear-gradient(
+          135deg,
+          #1e3a8a 0%,
+          #2563eb 50%,
+          #3b82f6 100%
+        );
+        border-radius: var(--radius);
+        padding: 3rem 2rem;
+        text-align: center;
+        margin-bottom: 1.5rem;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(37, 99, 235, 0.3);
+      }
+      .streak-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          circle at 70% 50%,
+          rgba(255, 255, 255, 0.08) 0%,
+          transparent 60%
+        );
+      }
+      .streak-fire-icon {
+        font-size: 4.5rem;
+        line-height: 1;
+        margin-bottom: 0.75rem;
+        display: block;
+        filter: drop-shadow(0 4px 12px rgba(249, 115, 22, 0.6));
+        animation: fireFloat 2.5s ease-in-out infinite;
+      }
+      @keyframes fireFloat {
+        0%,
+        100% {
+          transform: translateY(0) scale(1);
+        }
+        50% {
+          transform: translateY(-6px) scale(1.05);
+        }
+      }
+      .streak-number {
+        font-family: var(--font);
+        font-weight: 900;
+        font-size: clamp(4rem, 10vw, 6rem);
+        color: #fff;
+        line-height: 1;
+        letter-spacing: -0.05em;
+        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      }
+      .streak-label {
+        font-size: 1.1rem;
+        color: rgba(255, 255, 255, 0.8);
+        font-weight: 500;
+        margin-top: 0.35rem;
+        margin-bottom: 1.5rem;
+      }
+      .streak-msg {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 999px;
+        padding: 0.45rem 1.25rem;
+        font-size: 0.875rem;
+        color: #fff;
+        font-weight: 500;
+        backdrop-filter: blur(8px);
+      }
+
+      /* ── STATS GRID ── */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      .stat-card {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.4rem 1.25rem;
+        text-align: center;
+        box-shadow: var(--shadow);
+        transition: transform 0.2s;
+      }
+      .stat-card:hover {
+        transform: translateY(-2px);
+      }
+      .stat-icon {
+        font-size: 1.6rem;
+        margin-bottom: 0.5rem;
+      }
+      .stat-num {
+        font-family: var(--font);
+        font-weight: 800;
+        font-size: 1.8rem;
+        line-height: 1;
+        letter-spacing: -0.03em;
+        margin-bottom: 0.3rem;
+      }
+      .stat-label {
+        font-size: 0.8rem;
+        color: var(--muted);
+        font-weight: 400;
+      }
+      .stat-fire {
+        color: var(--fire);
+      }
+      .stat-gold {
+        color: var(--gold);
+      }
+      .stat-blue {
+        color: var(--accent);
+      }
+
+      /* ── NIVEL / XP ── */
+      .level-card {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.75rem;
+        margin-bottom: 1.5rem;
+        box-shadow: var(--shadow);
+      }
+      .level-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.25rem;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+      }
+      .level-left {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .level-badge {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: linear-gradient(
+          135deg,
+          var(--accent-light),
+          var(--accent-mid)
+        );
+        border: 2.5px solid var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.2);
+        flex-shrink: 0;
+      }
+      .level-name {
+        font-family: var(--font);
+        font-weight: 800;
+        font-size: 1.15rem;
+        color: var(--text);
+        margin-bottom: 2px;
+      }
+      .level-sub {
+        font-size: 0.82rem;
+        color: var(--muted);
+      }
+      .xp-badge {
+        background: var(--gold-light);
+        border: 1.5px solid #fcd34d;
+        color: var(--gold);
+        font-size: 0.82rem;
+        font-weight: 700;
+        padding: 0.35rem 0.9rem;
+        border-radius: 999px;
+      }
+      .xp-bar-wrap {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        height: 10px;
+        overflow: hidden;
+      }
+      .xp-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent-mid), var(--accent));
+        border-radius: 999px;
+        transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        width: 0%;
+      }
+      .xp-labels {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.75rem;
+        color: var(--muted2);
+        margin-top: 0.4rem;
+      }
+
+      /* ── HISTORIAL 7 DÍAS ── */
+      .week-card {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.75rem;
+        margin-bottom: 1.5rem;
+        box-shadow: var(--shadow);
+      }
+      .card-title {
+        font-family: var(--font);
+        font-weight: 700;
+        font-size: 1rem;
+        color: var(--text);
+        margin-bottom: 1.4rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .card-title span {
+        font-size: 1.1rem;
+      }
+      .week-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 0.5rem;
+      }
+      .day-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 7px;
+      }
+      .day-label {
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: var(--muted2);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .day-circle {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        border: 2px solid var(--border);
+        background: var(--surface2);
+        transition: all 0.3s;
+        position: relative;
+      }
+      .day-circle.done {
+        background: linear-gradient(135deg, #2563eb, #3b82f6);
+        border-color: var(--accent);
+        box-shadow: 0 3px 12px rgba(37, 99, 235, 0.35);
+      }
+      .day-circle.done::after {
+        content: "✓";
+        color: #fff;
+        font-size: 0.85rem;
+        font-weight: 800;
+      }
+      .day-circle.today-empty {
+        border-color: var(--accent-mid);
+        border-style: dashed;
+        background: var(--accent-light);
+      }
+
+      /* ── LOGROS ── */
+      .logros-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 1rem;
+      }
+      .logro-card {
+        background: var(--surface2);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 1.25rem 1rem;
+        text-align: center;
+        transition: all 0.2s;
+        opacity: 0.45;
+        position: relative;
+        overflow: hidden;
+      }
+      .logro-card.unlocked {
+        opacity: 1;
+        border-color: var(--accent-mid);
+        background: var(--accent-light);
+        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.12);
+      }
+      .logro-card.unlocked::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--accent-mid), var(--accent));
+      }
+      .logro-icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        display: block;
+      }
+      .logro-name {
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 0.2rem;
+      }
+      .logro-desc {
+        font-size: 0.72rem;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+      .logro-locked-icon {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        font-size: 0.75rem;
+        color: var(--muted2);
+      }
+
+      /* ── FREEZE ── */
+      .freeze-card {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.5rem 1.75rem;
+        margin-bottom: 1.5rem;
+        box-shadow: var(--shadow);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      .freeze-left {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .freeze-icon-wrap {
+        width: 48px;
+        height: 48px;
+        background: #e0f2fe;
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+        flex-shrink: 0;
+      }
+      .freeze-title {
+        font-weight: 700;
+        font-size: 0.975rem;
+        color: var(--text);
+        margin-bottom: 2px;
+      }
+      .freeze-desc {
+        font-size: 0.8rem;
+        color: var(--muted);
+      }
+      .freeze-count {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-family: var(--font);
+        font-weight: 800;
+        font-size: 1.5rem;
+        color: #0284c7;
+      }
+      .freeze-count span {
+        font-size: 0.8rem;
+        color: var(--muted);
+        font-weight: 400;
+      }
+
+      /* ── ANIMACIÓN DE COMPLETAR LECCIÓN ── */
+      .celebration-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 500;
+        pointer-events: none;
+      }
+      .celebration-overlay.show {
+        display: block;
+      }
+
+      .celebration-modal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.8);
+        background: var(--surface);
+        border: 2px solid var(--accent-mid);
+        border-radius: 20px;
+        padding: 2.5rem 2rem;
+        text-align: center;
+        width: min(400px, 90vw);
+        box-shadow: 0 20px 60px rgba(37, 99, 235, 0.25);
+        z-index: 501;
+        pointer-events: all;
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      .celebration-modal.show {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+      .celebration-emoji {
+        font-size: 4rem;
+        display: block;
+        margin-bottom: 0.75rem;
+        animation: bounceIn 0.6s 0.3s both;
+      }
+      @keyframes bounceIn {
+        0% {
+          transform: scale(0) rotate(-10deg);
+        }
+        60% {
+          transform: scale(1.2) rotate(5deg);
+        }
+        100% {
+          transform: scale(1) rotate(0);
+        }
+      }
+      .celebration-title {
+        font-family: var(--font);
+        font-weight: 900;
+        font-size: 1.6rem;
+        color: var(--text);
+        letter-spacing: -0.03em;
+        margin-bottom: 0.4rem;
+      }
+      .celebration-sub {
+        font-size: 0.9rem;
+        color: var(--muted);
+        margin-bottom: 1.5rem;
+        line-height: 1.65;
+      }
+      .celebration-xp {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--gold-light);
+        border: 1.5px solid #fcd34d;
+        color: var(--gold);
+        font-weight: 800;
+        font-size: 1.1rem;
+        padding: 0.5rem 1.25rem;
+        border-radius: 999px;
+        margin-bottom: 1.5rem;
+        animation: popIn 0.4s 0.5s both;
+      }
+      @keyframes popIn {
+        from {
+          transform: scale(0);
+        }
+        to {
+          transform: scale(1);
+        }
+      }
+      .celebration-streak {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 0.9rem;
+        color: var(--fire);
+        font-weight: 600;
+        margin-bottom: 1.75rem;
+      }
+      .btn-celebration {
+        background: var(--accent);
+        border: none;
+        color: #fff;
+        padding: 0.75rem 2rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-weight: 600;
+        font-size: 0.975rem;
+        cursor: pointer;
+        transition: all 0.18s;
+        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+      }
+      .btn-celebration:hover {
+        background: var(--accent-dark);
+        transform: translateY(-2px);
+      }
+
+      /* Confetti */
+      .confetti-piece {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        border-radius: 2px;
+        pointer-events: none;
+        z-index: 502;
+        animation: confettiFall linear forwards;
+      }
+      @keyframes confettiFall {
+        0% {
+          transform: translateY(-20px) rotate(0deg);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(100vh) rotate(720deg);
+          opacity: 0;
+        }
+      }
+
+      /* ── DEMO BUTTON ── */
+      .demo-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--accent);
+        border: none;
+        color: #fff;
+        padding: 0.75rem 1.75rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-weight: 600;
+        font-size: 0.975rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.28);
+        margin: 0 auto;
+        display: flex;
+      }
+      .demo-btn:hover {
+        background: var(--accent-dark);
+        transform: translateY(-2px);
+      }
+
+      @media (max-width: 600px) {
+        nav {
+          padding: 1rem 1.25rem;
+        }
+        .stats-grid {
+          grid-template-columns: repeat(3, 1fr);
+          gap: 0.6rem;
+        }
+        .week-grid {
+          gap: 0.3rem;
+        }
+        .day-circle {
+          width: 36px;
+          height: 36px;
+          font-size: 0.9rem;
+        }
+        .logros-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- NAV -->
+    <nav>
+      <a href="../index.html" class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+          </svg>
+        </div>
+        QuizForge
+      </a>
+      <div class="nav-links">
+        <a href="../index.html" class="btn-ghost">Inicio</a>
+        <a href="dashboard.html" class="btn-ghost">Mi historial</a>
+        <a href="settings.html" class="btn-ghost">⚙️</a>
+      </div>
+    </nav>
+
+    <div class="page">
+      <!-- HERO RACHA -->
+      <div class="streak-hero" id="streak-hero">
+        <span class="streak-fire-icon">🔥</span>
+        <div class="streak-number" id="streak-number">0</div>
+        <div class="streak-label">días de racha</div>
+        <div class="streak-msg" id="streak-msg">¡Empieza tu racha hoy!</div>
+      </div>
+
+      <!-- STATS -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">🏆</div>
+          <div class="stat-num stat-gold" id="stat-best">0</div>
+          <div class="stat-label">Mejor racha</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📅</div>
+          <div class="stat-num stat-blue" id="stat-total">0</div>
+          <div class="stat-label">Días totales</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">⚡</div>
+          <div class="stat-num stat-fire" id="stat-xp">0</div>
+          <div class="stat-label">XP total</div>
+        </div>
+      </div>
+
+      <!-- NIVEL -->
+      <div class="level-card">
+        <div class="level-header">
+          <div class="level-left">
+            <div class="level-badge" id="level-badge">🌱</div>
+            <div>
+              <div class="level-name" id="level-name">Principiante</div>
+              <div class="level-sub">Nivel <span id="level-num">1</span></div>
+            </div>
+          </div>
+          <div class="xp-badge">⚡ <span id="xp-display">0</span> XP</div>
+        </div>
+        <div class="xp-bar-wrap">
+          <div class="xp-bar-fill" id="xp-bar-fill"></div>
+        </div>
+        <div class="xp-labels">
+          <span id="xp-from">0 XP</span>
+          <span id="xp-to">50 XP para siguiente nivel</span>
+        </div>
+      </div>
+
+      <!-- HISTORIAL 7 DÍAS -->
+      <div class="week-card">
+        <p class="card-title"><span>📆</span> Esta semana</p>
+        <div class="week-grid" id="week-grid"></div>
+      </div>
+
+      <!-- FREEZE / ESCUDO -->
+      <div class="freeze-card">
+        <div class="freeze-left">
+          <div class="freeze-icon-wrap">🛡️</div>
+          <div>
+            <p class="freeze-title">Escudos de protección</p>
+            <p class="freeze-desc">
+              Protegen tu racha si un día no puedes estudiar
+            </p>
+          </div>
+        </div>
+        <div class="freeze-count">
+          <span id="freeze-count">1</span>
+          <span>escudos</span>
+        </div>
+      </div>
+
+      <!-- LOGROS -->
+      <div class="week-card">
+        <p class="card-title"><span>🏅</span> Logros de racha</p>
+        <div class="logros-grid" id="logros-grid"></div>
+      </div>
+
+      <!-- BOTÓN DEMO (simular completar lección) -->
+      <div style="text-align: center; margin-top: 2.5rem">
+        <p
+          style="font-size: 0.875rem; color: var(--muted); margin-bottom: 1rem"
+        >
+          Completa un quiz para registrar tu actividad del día
+        </p>
+        <button class="demo-btn" onclick="simulateLesson()">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            width="18"
+            height="18"
+          >
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+          </svg>
+          Simular lección completada
+        </button>
+      </div>
+    </div>
+
+    <!-- ANIMACIÓN DE CELEBRACIÓN -->
+    <div class="celebration-overlay" id="celebration-overlay"></div>
+    <div class="celebration-modal" id="celebration-modal">
+      <span class="celebration-emoji" id="cel-emoji">🎉</span>
+      <h2 class="celebration-title" id="cel-title">¡Racha completada!</h2>
+      <p class="celebration-sub" id="cel-sub">Sigue así, ¡vas increíble!</p>
+      <div class="celebration-xp">
+        ⚡ +<span id="cel-xp">12</span> XP ganados
+      </div>
+      <div class="celebration-streak">
+        🔥 <span id="cel-streak">1</span> día de racha
+      </div>
+      <button class="btn-celebration" onclick="closeCelebration()">
+        ¡Seguir estudiando!
+      </button>
+    </div>
+
+    <script src="../js/streak.js"></script>
+    <script>
+      const DAYS_ES = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+
+      const LOGROS = [
+        {
+          id: "day1",
+          icon: "🌟",
+          name: "Primer día",
+          desc: "Completa tu primera lección",
+          req: (d) => d.totalDays >= 1,
+        },
+        {
+          id: "streak3",
+          icon: "🔥",
+          name: "Racha de 3",
+          desc: "Mantén 3 días seguidos",
+          req: (d) => d.current >= 3,
+        },
+        {
+          id: "streak7",
+          icon: "⚡",
+          name: "Una semana",
+          desc: "7 días de racha consecutivos",
+          req: (d) => d.current >= 7,
+        },
+        {
+          id: "streak14",
+          icon: "💪",
+          name: "Dos semanas",
+          desc: "14 días de racha",
+          req: (d) => d.current >= 14,
+        },
+        {
+          id: "streak30",
+          icon: "👑",
+          name: "Un mes",
+          desc: "30 días de racha",
+          req: (d) => d.current >= 30,
+        },
+        {
+          id: "best10",
+          icon: "🏆",
+          name: "Top 10",
+          desc: "Alcanza 10 días de mejor racha",
+          req: (d) => d.best >= 10,
+        },
+        {
+          id: "xp100",
+          icon: "💎",
+          name: "100 XP",
+          desc: "Acumula 100 puntos de experiencia",
+          req: (d) => d.xp >= 100,
+        },
+        {
+          id: "xp500",
+          icon: "🚀",
+          name: "500 XP",
+          desc: "Acumula 500 puntos de experiencia",
+          req: (d) => d.xp >= 500,
+        },
+      ];
+
+      /* ── RENDER COMPLETO ── */
+      function render() {
+        const data = Streak.getData();
+        const lvl = Streak.getLevel(data.xp);
+        const xpP = Streak.getXpProgress(data.xp);
+
+        /* Hero */
+        document.getElementById("streak-number").textContent = data.current;
+        document.getElementById("streak-msg").textContent = getStreakMsg(
+          data.current,
+        );
+
+        /* Gradiente del hero según racha */
+        const hero = document.getElementById("streak-hero");
+        if (data.current >= 7)
+          hero.style.background = "linear-gradient(135deg,#7c3aed,#c026d3)";
+        else if (data.current >= 3)
+          hero.style.background = "linear-gradient(135deg,#b45309,#f97316)";
+        else
+          hero.style.background =
+            "linear-gradient(135deg,#1e3a8a,#2563eb,#3b82f6)";
+
+        /* Stats */
+        animateNum("stat-best", data.best);
+        animateNum("stat-total", data.totalDays);
+        animateNum("stat-xp", data.xp);
+
+        /* Nivel */
+        document.getElementById("level-badge").textContent = lvl.icon;
+        document.getElementById("level-name").textContent = lvl.name;
+        document.getElementById("level-num").textContent = lvl.level;
+        document.getElementById("xp-display").textContent = data.xp;
+        document.getElementById("xp-from").textContent = xpP.prev + " XP";
+        document.getElementById("xp-to").textContent = lvl.next
+          ? xpP.next + " XP para siguiente nivel"
+          : "¡Nivel máximo!";
+        setTimeout(() => {
+          document.getElementById("xp-bar-fill").style.width = xpP.pct + "%";
+        }, 300);
+
+        /* Freeze */
+        document.getElementById("freeze-count").textContent = data.freezes;
+
+        /* Semana */
+        renderWeek(data);
+
+        /* Logros */
+        renderLogros(data);
+      }
+
+      /* ── MENSAJE RACHA ── */
+      function getStreakMsg(n) {
+        if (n === 0) return "¡Empieza tu racha hoy!";
+        if (n === 1) return "¡Buen comienzo! 🌱";
+        if (n < 3) return "¡Vas muy bien! Sigue así";
+        if (n < 7) return "¡Estás en racha! 🔥";
+        if (n < 14) return "¡Una semana increíble! ⚡";
+        if (n < 30) return "¡Imparable! ¿Llegas al mes? 💎";
+        return "¡LEYENDA! 👑";
+      }
+
+      /* ── SEMANA ── */
+      function renderWeek(data) {
+        const grid = document.getElementById("week-grid");
+        const today = new Date().toISOString().split("T")[0];
+        const hist = data.history?.length
+          ? data.history
+          : Streak.buildHistory(data);
+        grid.innerHTML = "";
+
+        hist.forEach((day) => {
+          const d = new Date(day.date + "T12:00:00");
+          const name = DAYS_ES[d.getDay()];
+          const isToday = day.date === today;
+          const isDone = day.done;
+          const isPast = day.date < today && !isDone;
+
+          let circleClass = "day-circle";
+          let content = "";
+
+          if (isDone) {
+            circleClass += " done";
+          } else if (isToday) {
+            circleClass += " today-empty";
+            content = "?";
+          } else if (isPast) {
+            content = "·";
+          }
+
+          grid.innerHTML += `
+          <div class="day-item">
+            <span class="day-label">${name}</span>
+            <div class="${circleClass}">${content}</div>
+          </div>`;
+        });
+      }
+
+      /* ── LOGROS ── */
+      function renderLogros(data) {
+        const grid = document.getElementById("logros-grid");
+        grid.innerHTML = LOGROS.map((l) => {
+          const unlocked = l.req(data);
+          return `
+          <div class="logro-card ${unlocked ? "unlocked" : ""}">
+            ${!unlocked ? '<span class="logro-locked-icon">🔒</span>' : ""}
+            <span class="logro-icon">${unlocked ? l.icon : "❓"}</span>
+            <p class="logro-name">${l.name}</p>
+            <p class="logro-desc">${l.desc}</p>
+          </div>`;
+        }).join("");
+      }
+
+      /* ── ANIMACIÓN NÚMEROS ── */
+      function animateNum(id, target) {
+        const el = document.getElementById(id);
+        let n = 0;
+        const step = Math.max(1, Math.ceil(target / 40));
+        const iv = setInterval(() => {
+          n = Math.min(n + step, target);
+          el.textContent = n;
+          if (n >= target) clearInterval(iv);
+        }, 25);
+      }
+
+      /* ── CELEBRACIÓN ── */
+      function showCelebration(data, xpGained) {
+        const modal = document.getElementById("celebration-modal");
+        const overlay = document.getElementById("celebration-overlay");
+        const lvl = Streak.getLevel(data.xp);
+
+        /* Elegir emoji según racha */
+        const emojis = { 1: "🎯", 3: "🔥", 7: "⚡", 14: "💎", 30: "👑" };
+        const emoji =
+          Object.entries(emojis)
+            .reverse()
+            .find(([k]) => data.current >= +k)?.[1] || "🎉";
+
+        document.getElementById("cel-emoji").textContent = emoji;
+        document.getElementById("cel-title").textContent =
+          data.current === 1
+            ? "¡Racha iniciada!"
+            : data.current % 7 === 0
+              ? "¡Semana completa!"
+              : "¡Racha completada!";
+        document.getElementById("cel-sub").textContent =
+          `Llevas ${data.current} ${data.current === 1 ? "día" : "días"} seguidos. ¡Eres ${lvl.name}!`;
+        document.getElementById("cel-xp").textContent = xpGained;
+        document.getElementById("cel-streak").textContent = data.current;
+
+        overlay.classList.add("show");
+        setTimeout(() => modal.classList.add("show"), 50);
+
+        /* Lanzar confetti */
+        launchConfetti();
+      }
+
+      function closeCelebration() {
+        document.getElementById("celebration-modal").classList.remove("show");
+        setTimeout(() => {
+          document
+            .getElementById("celebration-overlay")
+            .classList.remove("show");
+        }, 300);
+      }
+
+      /* ── CONFETTI ── */
+      function launchConfetti() {
+        const colors = [
+          "#2563eb",
+          "#60a5fa",
+          "#f59e0b",
+          "#34d399",
+          "#f97316",
+          "#a855f7",
+          "#ec4899",
+        ];
+        const total = 80;
+
+        for (let i = 0; i < total; i++) {
+          setTimeout(() => {
+            const el = document.createElement("div");
+            el.className = "confetti-piece";
+            el.style.left = Math.random() * 100 + "vw";
+            el.style.top = "-20px";
+            el.style.background =
+              colors[Math.floor(Math.random() * colors.length)];
+            el.style.width = Math.random() * 8 + 6 + "px";
+            el.style.height = Math.random() * 8 + 6 + "px";
+            el.style.borderRadius = Math.random() > 0.5 ? "50%" : "2px";
+            el.style.animationDuration = Math.random() * 2 + 1.5 + "s";
+            el.style.animationDelay = Math.random() * 0.5 + "s";
+            document.body.appendChild(el);
+            el.addEventListener("animationend", () => el.remove());
+          }, i * 20);
+        }
+      }
+
+      /* ── SIMULAR LECCIÓN (demo) ── */
+      function simulateLesson() {
+        const before = Streak.getData();
+        const xpBefore = before.xp;
+        const data = Streak.recordActivity();
+        const xpGained = data.xp - xpBefore;
+
+        render();
+        showCelebration(data, xpGained);
+      }
+
+      /* ── INIT ── */
+      render();
+    </script>
+  </body>
+</html>
