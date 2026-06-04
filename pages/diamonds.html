@@ -1,0 +1,1018 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Diamonds — QuizForge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --bg: #f0f6ff;
+        --surface: #ffffff;
+        --surface2: #f7faff;
+        --border: #d0e3fa;
+        --border2: #b8d4f7;
+        --accent: #2563eb;
+        --accent-light: #dbeafe;
+        --accent-mid: #60a5fa;
+        --accent-dark: #1d4ed8;
+        --text: #0f172a;
+        --muted: #64748b;
+        --muted2: #94a3b8;
+        --diamond: #06b6d4;
+        --diamond-light: #ecfeff;
+        --diamond-dark: #0891b2;
+        --gold: #f59e0b;
+        --gold-light: #fffbeb;
+        --correct: #16a34a;
+        --correct-bg: #f0fdf4;
+        --danger: #dc2626;
+        --danger-bg: #fef2f2;
+        --radius: 16px;
+        --radius-sm: 10px;
+        --shadow:
+          0 1px 4px rgba(37, 99, 235, 0.07), 0 4px 18px rgba(37, 99, 235, 0.06);
+        --shadow-md: 0 6px 28px rgba(37, 99, 235, 0.12);
+        --font: "Inter", Arial, sans-serif;
+      }
+      html {
+        font-size: 16px;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--font);
+        min-height: 100vh;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* ── NAV ── */
+      nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 3rem;
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(18px);
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .logo {
+        font-weight: 800;
+        font-size: 1.2rem;
+        letter-spacing: -0.03em;
+        color: var(--accent);
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        text-decoration: none;
+      }
+      .logo-icon {
+        width: 32px;
+        height: 32px;
+        background: var(--accent);
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .logo-icon svg {
+        width: 16px;
+        height: 16px;
+      }
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .btn-ghost {
+        background: none;
+        border: 1.5px solid var(--border2);
+        color: var(--muted);
+        padding: 0.48rem 1.1rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.18s;
+        text-decoration: none;
+      }
+      .btn-ghost:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: var(--accent-light);
+      }
+      .btn-primary {
+        background: var(--accent);
+        border: none;
+        color: #fff;
+        padding: 0.52rem 1.3rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-weight: 600;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.18s;
+        text-decoration: none;
+      }
+      .btn-primary:hover {
+        background: var(--accent-dark);
+        transform: translateY(-1px);
+      }
+
+      /* ── PAGE ── */
+      .page {
+        max-width: 820px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem 6rem;
+      }
+
+      /* ── BALANCE HERO ── */
+      .balance-hero {
+        background: linear-gradient(
+          135deg,
+          #0891b2 0%,
+          #06b6d4 50%,
+          #22d3ee 100%
+        );
+        border-radius: var(--radius);
+        padding: 3rem 2rem;
+        text-align: center;
+        margin-bottom: 1.5rem;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(6, 182, 212, 0.35);
+      }
+      .balance-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          circle at 30% 50%,
+          rgba(255, 255, 255, 0.12) 0%,
+          transparent 60%
+        );
+      }
+      .balance-hero::after {
+        content: "💎";
+        position: absolute;
+        font-size: 120px;
+        right: -20px;
+        bottom: -20px;
+        opacity: 0.12;
+        line-height: 1;
+      }
+      .balance-label {
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.8);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 0.5rem;
+      }
+      .balance-amount {
+        font-weight: 900;
+        font-size: clamp(3rem, 8vw, 5rem);
+        color: #fff;
+        line-height: 1;
+        letter-spacing: -0.04em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-bottom: 0.4rem;
+      }
+      .balance-amount span {
+        font-size: clamp(2rem, 5vw, 3.2rem);
+      }
+      .balance-sub {
+        font-size: 0.875rem;
+        color: rgba(255, 255, 255, 0.75);
+        margin-bottom: 1.75rem;
+      }
+      .btn-claim {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        background: #fff;
+        color: var(--diamond-dark);
+        border: none;
+        padding: 0.85rem 2rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+      }
+      .btn-claim:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      }
+      .btn-claim:disabled {
+        background: rgba(255, 255, 255, 0.3);
+        color: rgba(255, 255, 255, 0.7);
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+      .btn-claim svg {
+        width: 20px;
+        height: 20px;
+      }
+      .claim-timer {
+        font-size: 0.82rem;
+        color: rgba(255, 255, 255, 0.7);
+        margin-top: 0.75rem;
+        font-weight: 500;
+      }
+
+      /* ── STATS GRID ── */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      .stat-card {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.4rem 1.25rem;
+        text-align: center;
+        box-shadow: var(--shadow);
+        transition: transform 0.2s;
+      }
+      .stat-card:hover {
+        transform: translateY(-2px);
+      }
+      .stat-icon {
+        font-size: 1.6rem;
+        margin-bottom: 0.5rem;
+      }
+      .stat-num {
+        font-weight: 800;
+        font-size: 1.75rem;
+        line-height: 1;
+        letter-spacing: -0.03em;
+        margin-bottom: 0.3rem;
+      }
+      .stat-label {
+        font-size: 0.8rem;
+        color: var(--muted);
+      }
+      .c-diamond {
+        color: var(--diamond);
+      }
+      .c-gold {
+        color: var(--gold);
+      }
+      .c-green {
+        color: var(--correct);
+      }
+
+      /* ── EARN CARDS ── */
+      .section-title {
+        font-weight: 700;
+        font-size: 1rem;
+        color: var(--text);
+        margin-bottom: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .section-title span {
+        font-size: 1.1rem;
+      }
+
+      .earn-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      .earn-card {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.4rem 1.25rem;
+        box-shadow: var(--shadow);
+        transition: all 0.2s;
+        text-align: center;
+      }
+      .earn-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+      }
+      .earn-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 0.9rem;
+        font-size: 1.5rem;
+      }
+      .earn-icon.blue {
+        background: var(--accent-light);
+      }
+      .earn-icon.cyan {
+        background: var(--diamond-light);
+      }
+      .earn-icon.gold {
+        background: var(--gold-light);
+      }
+      .earn-icon.green {
+        background: var(--correct-bg);
+      }
+      .earn-amount {
+        font-weight: 800;
+        font-size: 1.3rem;
+        color: var(--diamond);
+        letter-spacing: -0.02em;
+        margin-bottom: 0.2rem;
+      }
+      .earn-name {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 0.3rem;
+      }
+      .earn-desc {
+        font-size: 0.78rem;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      /* ── HISTORY ── */
+      .history-card {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+      }
+      .history-header {
+        padding: 1.25rem 1.75rem;
+        border-bottom: 1.5px solid var(--border);
+        background: var(--surface2);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .history-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 1.75rem;
+        border-bottom: 1px solid var(--border);
+        transition: background 0.15s;
+        gap: 1rem;
+      }
+      .history-row:last-child {
+        border-bottom: none;
+      }
+      .history-row:hover {
+        background: var(--surface2);
+      }
+      .history-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .history-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+      }
+      .hi-welcome {
+        background: #fef3c7;
+      }
+      .hi-daily {
+        background: var(--diamond-light);
+      }
+      .hi-quiz {
+        background: var(--accent-light);
+      }
+      .hi-streak {
+        background: #fff7ed;
+      }
+      .hi-perfect {
+        background: var(--gold-light);
+      }
+      .hi-spend {
+        background: var(--danger-bg);
+      }
+      .history-label {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--text);
+      }
+      .history-date {
+        font-size: 0.75rem;
+        color: var(--muted2);
+        margin-top: 1px;
+      }
+      .history-amount {
+        font-weight: 700;
+        font-size: 1rem;
+        white-space: nowrap;
+      }
+      .amount-pos {
+        color: var(--diamond);
+      }
+      .amount-neg {
+        color: var(--danger);
+      }
+
+      .empty-history {
+        padding: 3rem;
+        text-align: center;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      /* ── DAILY COUNTDOWN ── */
+      .countdown-bar {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.25rem 1.75rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: var(--shadow);
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      .countdown-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .countdown-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: var(--radius-sm);
+        background: var(--diamond-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        flex-shrink: 0;
+      }
+      .countdown-title {
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: var(--text);
+      }
+      .countdown-sub {
+        font-size: 0.8rem;
+        color: var(--muted);
+        margin-top: 1px;
+      }
+      .countdown-time {
+        font-weight: 800;
+        font-size: 1.35rem;
+        color: var(--diamond);
+        letter-spacing: -0.02em;
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* ── CLAIM ANIMATION ── */
+      .claim-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(6, 182, 212, 0.08);
+        backdrop-filter: blur(4px);
+        z-index: 200;
+        align-items: center;
+        justify-content: center;
+      }
+      .claim-overlay.show {
+        display: flex;
+      }
+      .claim-modal {
+        background: var(--surface);
+        border: 2px solid #06b6d4;
+        border-radius: 20px;
+        padding: 2.5rem 2rem;
+        text-align: center;
+        width: min(380px, 92vw);
+        box-shadow: 0 20px 60px rgba(6, 182, 212, 0.3);
+        animation: claimPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      @keyframes claimPop {
+        from {
+          transform: scale(0.7);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      .claim-modal-icon {
+        font-size: 4.5rem;
+        display: block;
+        margin-bottom: 0.75rem;
+        animation: spin1 0.6s ease;
+      }
+      @keyframes spin1 {
+        from {
+          transform: rotateY(0);
+        }
+        to {
+          transform: rotateY(360deg);
+        }
+      }
+      .claim-modal-title {
+        font-weight: 900;
+        font-size: 1.75rem;
+        color: var(--text);
+        letter-spacing: -0.03em;
+        margin-bottom: 0.4rem;
+      }
+      .claim-modal-amount {
+        font-weight: 900;
+        font-size: 2.5rem;
+        color: var(--diamond);
+        letter-spacing: -0.04em;
+        margin-bottom: 0.5rem;
+      }
+      .claim-modal-sub {
+        font-size: 0.9rem;
+        color: var(--muted);
+        margin-bottom: 1.75rem;
+      }
+      .btn-claim-close {
+        background: var(--diamond);
+        border: none;
+        color: #fff;
+        padding: 0.75rem 2rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-weight: 600;
+        font-size: 0.975rem;
+        cursor: pointer;
+        transition: all 0.18s;
+      }
+      .btn-claim-close:hover {
+        background: var(--diamond-dark);
+        transform: translateY(-1px);
+      }
+
+      /* Floating diamonds */
+      .float-diamond {
+        position: fixed;
+        font-size: 1.5rem;
+        pointer-events: none;
+        z-index: 201;
+        animation: floatUp 1.5s ease forwards;
+      }
+      @keyframes floatUp {
+        0% {
+          transform: translateY(0) scale(1) rotate(0deg);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-180px) scale(1.4) rotate(360deg);
+          opacity: 0;
+        }
+      }
+
+      /* ── TOAST ── */
+      .toast {
+        position: fixed;
+        bottom: 1.75rem;
+        right: 1.75rem;
+        background: var(--surface);
+        border: 1.5px solid var(--border2);
+        color: var(--text);
+        padding: 0.85rem 1.4rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.9rem;
+        font-weight: 500;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.25s;
+        z-index: 999;
+        pointer-events: none;
+        box-shadow: var(--shadow-md);
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .toast.success {
+        border-color: rgba(6, 182, 212, 0.5);
+        color: var(--diamond);
+      }
+      .toast.error {
+        border-color: rgba(220, 38, 38, 0.4);
+        color: var(--danger);
+      }
+
+      @media (max-width: 600px) {
+        nav {
+          padding: 1rem 1.25rem;
+        }
+        .page {
+          padding: 2rem 1rem 5rem;
+        }
+        .stats-grid {
+          grid-template-columns: repeat(3, 1fr);
+          gap: 0.6rem;
+        }
+        .earn-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- NAV -->
+    <nav>
+      <a href="../index.html" class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+          </svg>
+        </div>
+        QuizForge
+      </a>
+      <div class="nav-links">
+        <a href="../index.html" class="btn-ghost">Home</a>
+        <a href="dashboard.html" class="btn-ghost">My history</a>
+        <a href="streak.html" class="btn-ghost">🔥 Streak</a>
+        <a href="settings.html" class="btn-ghost">⚙️</a>
+      </div>
+    </nav>
+
+    <div class="page">
+      <!-- BALANCE HERO -->
+      <div class="balance-hero">
+        <p class="balance-label">Your diamond balance</p>
+        <div class="balance-amount">💎 <span id="balance-num">0</span></div>
+        <p class="balance-sub" id="balance-earned">Total earned: 0 💎</p>
+        <button class="btn-claim" id="claim-btn" onclick="claimDaily()">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <polygon
+              points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+            />
+          </svg>
+          Claim 1,000 daily diamonds
+        </button>
+        <p class="claim-timer" id="claim-timer"></p>
+      </div>
+
+      <!-- STATS -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">💎</div>
+          <div class="stat-num c-diamond" id="stat-balance">0</div>
+          <div class="stat-label">Current balance</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📅</div>
+          <div class="stat-num c-gold" id="stat-streak">0</div>
+          <div class="stat-label">Days claimed</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🏆</div>
+          <div class="stat-num c-green" id="stat-total">0</div>
+          <div class="stat-label">Total earned</div>
+        </div>
+      </div>
+
+      <!-- COUNTDOWN -->
+      <div class="countdown-bar" id="countdown-bar" style="display: none">
+        <div class="countdown-left">
+          <div class="countdown-icon">⏰</div>
+          <div>
+            <p class="countdown-title">Next daily bonus available in</p>
+            <p class="countdown-sub">
+              Come back tomorrow to claim your free diamonds
+            </p>
+          </div>
+        </div>
+        <div class="countdown-time" id="countdown-time">00h 00m</div>
+      </div>
+
+      <!-- HOW TO EARN -->
+      <p class="section-title"><span>💡</span> Ways to earn diamonds</p>
+      <div class="earn-grid">
+        <div class="earn-card">
+          <div class="earn-icon cyan">💎</div>
+          <p class="earn-amount">+1,000</p>
+          <p class="earn-name">Daily login</p>
+          <p class="earn-desc">Claim your free daily bonus every 24 hours</p>
+        </div>
+        <div class="earn-card">
+          <div class="earn-icon blue">⚡</div>
+          <p class="earn-amount">+50</p>
+          <p class="earn-name">Complete a quiz</p>
+          <p class="earn-desc">Earn diamonds every time you finish a quiz</p>
+        </div>
+        <div class="earn-card">
+          <div class="earn-icon gold">🏆</div>
+          <p class="earn-amount">+200</p>
+          <p class="earn-name">Perfect score</p>
+          <p class="earn-desc">Get 100% on any quiz to earn this bonus</p>
+        </div>
+        <div class="earn-card">
+          <div class="earn-icon green">🔥</div>
+          <p class="earn-amount">+150</p>
+          <p class="earn-name">Streak bonus</p>
+          <p class="earn-desc">Maintain a 7-day streak to get extra diamonds</p>
+        </div>
+        <div class="earn-card">
+          <div class="earn-icon cyan">🎁</div>
+          <p class="earn-amount">+3,000</p>
+          <p class="earn-name">Welcome bonus</p>
+          <p class="earn-desc">One-time gift for every new registered user</p>
+        </div>
+      </div>
+
+      <!-- HISTORY -->
+      <p class="section-title"><span>📋</span> Transaction history</p>
+      <div class="history-card">
+        <div class="history-header">
+          <p style="font-weight: 600; font-size: 0.9rem; color: var(--text)">
+            Recent transactions
+          </p>
+          <p
+            style="font-size: 0.78rem; color: var(--muted2)"
+            id="history-count"
+          >
+            0 transactions
+          </p>
+        </div>
+        <div id="history-list">
+          <div class="empty-history">
+            💎 No transactions yet.<br />Claim your daily bonus to get started!
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLAIM MODAL -->
+    <div class="claim-overlay" id="claim-overlay" onclick="closeClaim()">
+      <div class="claim-modal" onclick="event.stopPropagation()">
+        <span class="claim-modal-icon">💎</span>
+        <h2 class="claim-modal-title">Daily Bonus!</h2>
+        <div class="claim-modal-amount" id="claim-amount">+1,000</div>
+        <p class="claim-modal-sub" id="claim-sub">
+          Diamonds added to your balance
+        </p>
+        <button class="btn-claim-close" onclick="closeClaim()">
+          Awesome! 🎉
+        </button>
+      </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <script src="../js/diamonds.js"></script>
+    <script>
+      /* ════════════════════════
+       INIT
+    ════════════════════════ */
+      function init() {
+        let data = Diamonds.getData();
+
+        /* First time visitor — show welcome modal after init */
+        if (!data) {
+          data = Diamonds.initNewUser();
+          setTimeout(
+            () =>
+              showClaimModal(
+                Diamonds.WELCOME_BONUS,
+                "Welcome bonus! 🎁",
+                "Welcome to QuizForge!",
+              ),
+            600,
+          );
+        }
+
+        render(data);
+        startCountdown();
+      }
+
+      /* ════════════════════════
+       RENDER
+    ════════════════════════ */
+      function render(data) {
+        if (!data) return;
+
+        /* Balance hero */
+        animateNum("balance-num", data.balance);
+        document.getElementById("balance-earned").textContent =
+          `Total earned: ${Diamonds.format(data.totalEarned)} 💎`;
+
+        /* Stats */
+        animateNum("stat-balance", data.balance);
+        animateNum("stat-total", data.totalEarned);
+        const daysClaimed = data.history.filter(
+          (h) => h.type === "daily",
+        ).length;
+        animateNum("stat-streak", daysClaimed);
+
+        /* Claim button */
+        const canClaim = Diamonds.canClaimDaily();
+        const btn = document.getElementById("claim-btn");
+        btn.disabled = !canClaim;
+        btn.textContent = canClaim
+          ? "⭐ Claim 1,000 daily diamonds"
+          : "✓ Already claimed today";
+
+        /* Timer */
+        const timerEl = document.getElementById("claim-timer");
+        const countdownBar = document.getElementById("countdown-bar");
+        if (!canClaim) {
+          timerEl.textContent = `Next bonus in: ${Diamonds.timeUntilNextDaily()}`;
+          countdownBar.style.display = "flex";
+          document.getElementById("countdown-time").textContent =
+            Diamonds.timeUntilNextDaily();
+        } else {
+          timerEl.textContent = "";
+          countdownBar.style.display = "none";
+        }
+
+        /* History */
+        renderHistory(data.history);
+      }
+
+      /* ════════════════════════
+       HISTORY
+    ════════════════════════ */
+      const TYPE_MAP = {
+        welcome: { icon: "🎁", cls: "hi-welcome" },
+        daily: { icon: "💎", cls: "hi-daily" },
+        quiz: { icon: "⚡", cls: "hi-quiz" },
+        streak: { icon: "🔥", cls: "hi-streak" },
+        perfect: { icon: "🏆", cls: "hi-perfect" },
+        spend: { icon: "🛒", cls: "hi-spend" },
+        reward: { icon: "⭐", cls: "hi-quiz" },
+      };
+
+      function renderHistory(history) {
+        const list = document.getElementById("history-list");
+        document.getElementById("history-count").textContent =
+          history.length + " transaction" + (history.length !== 1 ? "s" : "");
+
+        if (!history.length) {
+          list.innerHTML =
+            '<div class="empty-history">💎 No transactions yet.</div>';
+          return;
+        }
+
+        list.innerHTML = history
+          .map((tx) => {
+            const t = TYPE_MAP[tx.type] || TYPE_MAP.reward;
+            const isPos = tx.amount > 0;
+            const date = new Date(tx.date + "T12:00:00").toLocaleDateString(
+              "en",
+              { day: "2-digit", month: "short", year: "numeric" },
+            );
+            return `
+          <div class="history-row">
+            <div class="history-left">
+              <div class="history-icon ${t.cls}">${t.icon}</div>
+              <div>
+                <p class="history-label">${tx.label}</p>
+                <p class="history-date">${date}</p>
+              </div>
+            </div>
+            <span class="history-amount ${isPos ? "amount-pos" : "amount-neg"}">
+              ${isPos ? "+" : ""}${Diamonds.format(tx.amount)} 💎
+            </span>
+          </div>`;
+          })
+          .join("");
+      }
+
+      /* ════════════════════════
+       CLAIM DAILY
+    ════════════════════════ */
+      function claimDaily() {
+        const result = Diamonds.claimDaily();
+        if (!result.success) {
+          showToast("Already claimed today! Come back tomorrow 💎", "error");
+          return;
+        }
+        render(result.data);
+        showClaimModal(
+          result.amount,
+          `+${Diamonds.format(result.amount)} 💎`,
+          "Added to your balance!",
+        );
+        launchFloatingDiamonds();
+      }
+
+      /* ════════════════════════
+       CLAIM MODAL
+    ════════════════════════ */
+      function showClaimModal(amount, amountText, subText) {
+        document.getElementById("claim-amount").textContent = amountText;
+        document.getElementById("claim-sub").textContent = subText;
+        document.getElementById("claim-overlay").classList.add("show");
+      }
+
+      function closeClaim() {
+        document.getElementById("claim-overlay").classList.remove("show");
+      }
+
+      /* ════════════════════════
+       FLOATING DIAMONDS
+    ════════════════════════ */
+      function launchFloatingDiamonds() {
+        for (let i = 0; i < 18; i++) {
+          setTimeout(() => {
+            const el = document.createElement("div");
+            el.className = "float-diamond";
+            el.textContent = "💎";
+            el.style.left = 20 + Math.random() * 60 + "vw";
+            el.style.bottom = 20 + Math.random() * 30 + "vh";
+            el.style.animationDuration = 1 + Math.random() * 0.8 + "s";
+            el.style.animationDelay = Math.random() * 0.4 + "s";
+            document.body.appendChild(el);
+            el.addEventListener("animationend", () => el.remove());
+          }, i * 60);
+        }
+      }
+
+      /* ════════════════════════
+       COUNTDOWN TIMER
+    ════════════════════════ */
+      function startCountdown() {
+        setInterval(() => {
+          const el = document.getElementById("countdown-time");
+          if (el) el.textContent = Diamonds.timeUntilNextDaily();
+          const timerEl = document.getElementById("claim-timer");
+          if (timerEl && timerEl.textContent)
+            timerEl.textContent = `Next bonus in: ${Diamonds.timeUntilNextDaily()}`;
+        }, 60000);
+      }
+
+      /* ════════════════════════
+       ANIMATE NUMBERS
+    ════════════════════════ */
+      function animateNum(id, target) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        let n = 0;
+        const step = Math.max(1, Math.ceil(target / 60));
+        const iv = setInterval(() => {
+          n = Math.min(n + step, target);
+          el.textContent = n.toLocaleString();
+          if (n >= target) clearInterval(iv);
+        }, 18);
+      }
+
+      /* ════════════════════════
+       TOAST
+    ════════════════════════ */
+      function showToast(msg, type = "") {
+        const t = document.getElementById("toast");
+        t.textContent = msg;
+        t.className = "toast show " + type;
+        setTimeout(() => {
+          t.className = "toast";
+        }, 3000);
+      }
+
+      init();
+    </script>
+  </body>
+</html>
