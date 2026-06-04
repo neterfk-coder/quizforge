@@ -1,0 +1,1975 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Configuración — QuizForge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      /* ── TEMA CLARO (default) ── */
+      :root {
+        --bg: #f0f6ff;
+        --surface: #ffffff;
+        --surface2: #f7faff;
+        --border: #d0e3fa;
+        --border2: #b8d4f7;
+        --accent: #2563eb;
+        --accent-light: #dbeafe;
+        --accent-mid: #60a5fa;
+        --accent-dark: #1d4ed8;
+        --text: #0f172a;
+        --muted: #64748b;
+        --muted2: #94a3b8;
+        --danger: #dc2626;
+        --danger-bg: #fef2f2;
+        --danger-bdr: #fca5a5;
+        --correct: #16a34a;
+        --correct-bg: #f0fdf4;
+        --correct-bdr: #86efac;
+        --warn: #d97706;
+        --warn-bg: #fffbeb;
+        --warn-bdr: #fcd34d;
+        --radius: 14px;
+        --radius-sm: 9px;
+        --shadow:
+          0 1px 4px rgba(37, 99, 235, 0.07), 0 4px 18px rgba(37, 99, 235, 0.06);
+        --shadow-md: 0 6px 28px rgba(37, 99, 235, 0.11);
+        --font: "Inter", Arial, sans-serif;
+      }
+
+      /* ── TEMA OSCURO ── */
+      body.dark {
+        --bg: #0a0f1a;
+        --surface: #111827;
+        --surface2: #1a2235;
+        --border: #1e2d45;
+        --border2: #243652;
+        --accent: #3b82f6;
+        --accent-light: #1e3a5f;
+        --accent-mid: #60a5fa;
+        --accent-dark: #2563eb;
+        --text: #f1f5f9;
+        --muted: #94a3b8;
+        --muted2: #64748b;
+        --danger: #f87171;
+        --danger-bg: #2d1515;
+        --danger-bdr: #7f1d1d;
+        --correct: #34d399;
+        --correct-bg: #052e16;
+        --correct-bdr: #064e3b;
+        --warn: #fbbf24;
+        --warn-bg: #1c1400;
+        --warn-bdr: #78350f;
+        --shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 4px 18px rgba(0, 0, 0, 0.2);
+        --shadow-md: 0 6px 28px rgba(0, 0, 0, 0.4);
+      }
+
+      html {
+        font-size: 16px;
+        scroll-behavior: smooth;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--font);
+        font-weight: 400;
+        min-height: 100vh;
+        line-height: 1.7;
+        -webkit-font-smoothing: antialiased;
+        transition:
+          background 0.3s,
+          color 0.3s;
+      }
+
+      /* ── NAV ── */
+      nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.1rem 3rem;
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(18px);
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        transition:
+          background 0.3s,
+          border-color 0.3s;
+      }
+      body.dark nav {
+        background: rgba(17, 24, 39, 0.92);
+      }
+
+      .logo {
+        font-family: var(--font);
+        font-weight: 800;
+        font-size: 1.2rem;
+        letter-spacing: -0.03em;
+        color: var(--accent);
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        text-decoration: none;
+      }
+      .logo-icon {
+        width: 32px;
+        height: 32px;
+        background: var(--accent);
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .logo-icon svg {
+        width: 16px;
+        height: 16px;
+      }
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .btn-ghost {
+        background: none;
+        border: 1.5px solid var(--border2);
+        color: var(--muted);
+        padding: 0.48rem 1.1rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.18s;
+        text-decoration: none;
+        display: inline-block;
+      }
+      .btn-ghost:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: var(--accent-light);
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        border: none;
+        color: #fff;
+        padding: 0.52rem 1.3rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-weight: 600;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.18s;
+        text-decoration: none;
+        display: inline-block;
+      }
+      .btn-primary:hover {
+        background: var(--accent-dark);
+        transform: translateY(-1px);
+      }
+
+      /* ── PAGE ── */
+      .page {
+        max-width: 780px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem 6rem;
+      }
+
+      .page-header {
+        margin-bottom: 2.5rem;
+      }
+      .page-title {
+        font-family: var(--font);
+        font-weight: 800;
+        font-size: 1.75rem;
+        color: var(--text);
+        letter-spacing: -0.03em;
+        margin-bottom: 0.4rem;
+      }
+      .page-sub {
+        font-size: 0.95rem;
+        color: var(--muted);
+      }
+
+      /* ── SECCIÓN ── */
+      .settings-section {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        margin-bottom: 1.5rem;
+        transition:
+          background 0.3s,
+          border-color 0.3s;
+      }
+
+      .section-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 1.25rem 1.75rem;
+        border-bottom: 1.5px solid var(--border);
+        background: var(--surface2);
+        transition:
+          background 0.3s,
+          border-color 0.3s;
+      }
+      .section-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: var(--radius-sm);
+        background: var(--accent-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--accent);
+        flex-shrink: 0;
+      }
+      .section-icon svg {
+        width: 18px;
+        height: 18px;
+      }
+      .section-title-text {
+        font-family: var(--font);
+        font-weight: 700;
+        font-size: 0.975rem;
+        color: var(--text);
+      }
+      .section-desc {
+        font-size: 0.8rem;
+        color: var(--muted);
+        margin-top: 1px;
+      }
+
+      /* ── SETTING ROWS ── */
+      .setting-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.2rem 1.75rem;
+        border-bottom: 1px solid var(--border);
+        gap: 1rem;
+        flex-wrap: wrap;
+        transition: background 0.15s;
+      }
+      .setting-row:last-child {
+        border-bottom: none;
+      }
+      .setting-row:hover {
+        background: var(--surface2);
+      }
+
+      .setting-info {
+        flex: 1;
+        min-width: 180px;
+      }
+      .setting-label {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--text);
+        margin-bottom: 2px;
+      }
+      .setting-hint {
+        font-size: 0.8rem;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      /* ── TOGGLE SWITCH ── */
+      .toggle-wrap {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .toggle {
+        position: relative;
+        width: 48px;
+        height: 26px;
+        flex-shrink: 0;
+      }
+      .toggle input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      .toggle-slider {
+        position: absolute;
+        inset: 0;
+        background: var(--border2);
+        border-radius: 999px;
+        cursor: pointer;
+        transition: background 0.25s;
+      }
+      .toggle-slider::before {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        left: 3px;
+        bottom: 3px;
+        background: white;
+        border-radius: 50%;
+        transition: transform 0.25s;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+      }
+      .toggle input:checked + .toggle-slider {
+        background: var(--accent);
+      }
+      .toggle input:checked + .toggle-slider::before {
+        transform: translateX(22px);
+      }
+      .toggle-label {
+        font-size: 0.82rem;
+        color: var(--muted);
+        font-weight: 500;
+      }
+
+      /* ── BOTONES ── */
+      .btn-setting {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: var(--surface);
+        border: 1.5px solid var(--border2);
+        color: var(--muted);
+        padding: 0.55rem 1.2rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.18s;
+        white-space: nowrap;
+      }
+      .btn-setting svg {
+        width: 15px;
+        height: 15px;
+      }
+      .btn-setting:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: var(--accent-light);
+      }
+
+      .btn-danger {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: var(--danger-bg);
+        border: 1.5px solid var(--danger-bdr);
+        color: var(--danger);
+        padding: 0.55rem 1.2rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.18s;
+      }
+      .btn-danger svg {
+        width: 15px;
+        height: 15px;
+      }
+      .btn-danger:hover {
+        background: var(--danger);
+        color: #fff;
+        border-color: var(--danger);
+      }
+
+      .btn-warn {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: var(--warn-bg);
+        border: 1.5px solid var(--warn-bdr);
+        color: var(--warn);
+        padding: 0.55rem 1.2rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.18s;
+      }
+      .btn-warn:hover {
+        background: var(--warn);
+        color: #fff;
+        border-color: var(--warn);
+      }
+
+      /* ── TEMA SELECTOR ── */
+      .theme-options {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+      .theme-option {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+      }
+      .theme-preview {
+        width: 64px;
+        height: 44px;
+        border-radius: var(--radius-sm);
+        border: 2px solid var(--border);
+        overflow: hidden;
+        transition: border-color 0.18s;
+        position: relative;
+      }
+      .theme-option.active .theme-preview {
+        border-color: var(--accent);
+      }
+      .theme-option.active .theme-preview::after {
+        content: "✓";
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(37, 99, 235, 0.18);
+        color: var(--accent);
+        font-weight: 700;
+        font-size: 0.9rem;
+      }
+      .theme-name {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--muted);
+      }
+      .theme-option.active .theme-name {
+        color: var(--accent);
+      }
+
+      /* Previews */
+      .preview-light {
+        background: linear-gradient(135deg, #f0f6ff 50%, #fff 50%);
+      }
+      .preview-dark {
+        background: linear-gradient(135deg, #0a0f1a 50%, #111827 50%);
+      }
+
+      /* ── MODAL ── */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.5);
+        z-index: 200;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+      }
+      .modal-overlay.open {
+        display: flex;
+      }
+      .modal {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        padding: 2rem;
+        width: 100%;
+        max-width: 460px;
+        box-shadow: var(--shadow-md);
+        animation: modalIn 0.22s ease;
+      }
+      @keyframes modalIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px) scale(0.97);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+
+      .modal-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 1.5rem;
+      }
+      .modal-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .modal-icon.danger {
+        background: var(--danger-bg);
+        color: var(--danger);
+      }
+      .modal-icon.accent {
+        background: var(--accent-light);
+        color: var(--accent);
+      }
+      .modal-icon.warn {
+        background: var(--warn-bg);
+        color: var(--warn);
+      }
+      .modal-icon svg {
+        width: 20px;
+        height: 20px;
+      }
+      .modal-title {
+        font-family: var(--font);
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: var(--text);
+      }
+      .modal-sub {
+        font-size: 0.85rem;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+
+      .modal-body {
+        margin-bottom: 1.5rem;
+      }
+      .modal-body p {
+        font-size: 0.9rem;
+        color: var(--muted);
+        line-height: 1.75;
+        margin-bottom: 0.75rem;
+      }
+      .modal-body strong {
+        color: var(--text);
+      }
+
+      .form-group {
+        margin-bottom: 1.1rem;
+      }
+      .form-label {
+        display: block;
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--muted);
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        margin-bottom: 0.5rem;
+      }
+      .form-input {
+        width: 100%;
+        background: var(--surface2);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        color: var(--text);
+        font-family: var(--font);
+        font-size: 0.9rem;
+        padding: 0.7rem 1rem;
+        outline: none;
+        transition:
+          border-color 0.18s,
+          box-shadow 0.18s;
+      }
+      .form-input:focus {
+        border-color: var(--accent-mid);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        background: var(--surface);
+      }
+      .form-input::placeholder {
+        color: var(--muted2);
+      }
+      .form-hint {
+        font-size: 0.78rem;
+        color: var(--muted2);
+        margin-top: 0.4rem;
+      }
+
+      .pwd-strength {
+        height: 4px;
+        border-radius: 999px;
+        background: var(--border);
+        margin-top: 0.5rem;
+        overflow: hidden;
+      }
+      .pwd-strength-fill {
+        height: 100%;
+        border-radius: 999px;
+        transition:
+          width 0.3s,
+          background 0.3s;
+        width: 0%;
+      }
+
+      .confirm-input-wrap {
+        position: relative;
+      }
+      .alert-box {
+        padding: 0.75rem 1rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: 1rem;
+      }
+      .alert-danger {
+        background: var(--danger-bg);
+        border: 1px solid var(--danger-bdr);
+        color: var(--danger);
+      }
+      .alert-warn {
+        background: var(--warn-bg);
+        border: 1px solid var(--warn-bdr);
+        color: var(--warn);
+      }
+
+      .modal-footer {
+        display: flex;
+        gap: 0.75rem;
+        justify-content: flex-end;
+        padding-top: 1.35rem;
+        border-top: 1.5px solid var(--border);
+      }
+      .btn-cancel {
+        background: var(--surface);
+        border: 1.5px solid var(--border2);
+        color: var(--muted);
+        padding: 0.6rem 1.35rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.18s;
+      }
+      .btn-cancel:hover {
+        border-color: var(--danger);
+        color: var(--danger);
+      }
+      .btn-confirm-danger {
+        background: var(--danger);
+        border: none;
+        color: #fff;
+        padding: 0.6rem 1.5rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.18s;
+      }
+      .btn-confirm-danger:hover {
+        background: #b91c1c;
+        transform: translateY(-1px);
+      }
+      .btn-confirm-primary {
+        background: var(--accent);
+        border: none;
+        color: #fff;
+        padding: 0.6rem 1.5rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.18s;
+      }
+      .btn-confirm-primary:hover {
+        background: var(--accent-dark);
+        transform: translateY(-1px);
+      }
+      .btn-confirm-primary:disabled {
+        background: var(--border2);
+        color: var(--muted2);
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      /* ── SUPPORT LINKS ── */
+      .support-links {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+      .support-link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.1rem 1.75rem;
+        border-bottom: 1px solid var(--border);
+        text-decoration: none;
+        color: var(--text);
+        transition: background 0.15s;
+        cursor: pointer;
+      }
+      .support-link:last-child {
+        border-bottom: none;
+      }
+      .support-link:hover {
+        background: var(--surface2);
+      }
+      .support-link-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .support-link-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: var(--radius-sm);
+        background: var(--accent-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--accent);
+        flex-shrink: 0;
+      }
+      .support-link-icon svg {
+        width: 17px;
+        height: 17px;
+      }
+      .support-link-label {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--text);
+      }
+      .support-link-desc {
+        font-size: 0.78rem;
+        color: var(--muted);
+      }
+      .support-link-arrow {
+        color: var(--muted2);
+      }
+      .support-link-arrow svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      /* ── TOAST ── */
+      .toast {
+        position: fixed;
+        bottom: 1.75rem;
+        right: 1.75rem;
+        background: var(--surface);
+        border: 1.5px solid var(--border2);
+        color: var(--text);
+        padding: 0.85rem 1.4rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.9rem;
+        font-weight: 500;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.25s;
+        z-index: 999;
+        pointer-events: none;
+        box-shadow: var(--shadow-md);
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .toast.success {
+        border-color: rgba(37, 99, 235, 0.4);
+        color: var(--accent);
+      }
+      .toast.error {
+        border-color: rgba(220, 38, 38, 0.4);
+        color: var(--danger);
+      }
+      .toast.warn {
+        border-color: rgba(217, 119, 6, 0.4);
+        color: var(--warn);
+      }
+
+      @media (max-width: 640px) {
+        nav {
+          padding: 1rem 1.25rem;
+        }
+        .page {
+          padding: 2rem 1rem 5rem;
+        }
+        .setting-row {
+          padding: 1rem 1.25rem;
+        }
+        .section-header {
+          padding: 1rem 1.25rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- NAV -->
+    <nav>
+      <a href="../index.html" class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+          </svg>
+        </div>
+        QuizForge
+      </a>
+      <div class="nav-links">
+        <a href="profile.html" class="btn-ghost">Mi perfil</a>
+        <a href="dashboard.html" class="btn-ghost">Mi historial</a>
+        <button class="btn-primary" onclick="handleLogout()">
+          Cerrar sesión
+        </button>
+      </div>
+    </nav>
+
+    <div class="page">
+      <div class="page-header">
+        <h1 class="page-title">⚙️ Configuración</h1>
+        <p class="page-sub">
+          Personaliza tu cuenta y experiencia en QuizForge.
+        </p>
+      </div>
+
+      <!-- ══════════════════════
+         1. APARIENCIA
+    ══════════════════════ -->
+      <div class="settings-section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="3" />
+              <path
+                d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"
+              />
+            </svg>
+          </div>
+          <div>
+            <p class="section-title-text">Apariencia</p>
+            <p class="section-desc">Personaliza el aspecto visual de la app</p>
+          </div>
+        </div>
+
+        <!-- Tema -->
+        <div class="setting-row">
+          <div class="setting-info">
+            <p class="setting-label">Tema de color</p>
+            <p class="setting-hint">Elige entre modo claro y modo oscuro</p>
+          </div>
+          <div class="theme-options">
+            <div
+              class="theme-option active"
+              id="theme-light"
+              onclick="setTheme('light')"
+            >
+              <div class="theme-preview preview-light"></div>
+              <span class="theme-name">☀️ Claro</span>
+            </div>
+            <div
+              class="theme-option"
+              id="theme-dark"
+              onclick="setTheme('dark')"
+            >
+              <div class="theme-preview preview-dark"></div>
+              <span class="theme-name">🌙 Oscuro</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Idioma -->
+        <div class="setting-row">
+          <div class="setting-info">
+            <p class="setting-label">Idioma de la interfaz</p>
+            <p class="setting-hint">
+              Cambia el idioma de toda la aplicación en tiempo real
+            </p>
+          </div>
+          <div style="display: flex; gap: 0.6rem">
+            <button
+              class="btn-setting"
+              id="btn-lang-es"
+              onclick="setLangSetting('es')"
+            >
+              🇵🇪 Español
+            </button>
+            <button
+              class="btn-setting"
+              id="btn-lang-en"
+              onclick="setLangSetting('en')"
+            >
+              🇺🇸 English
+            </button>
+          </div>
+        </div>
+
+        <!-- Animaciones -->
+        <div class="setting-row">
+          <div class="setting-info">
+            <p class="setting-label">Animaciones</p>
+            <p class="setting-hint">
+              Activa o desactiva las animaciones de la interfaz
+            </p>
+          </div>
+          <label class="toggle">
+            <input
+              type="checkbox"
+              id="toggle-animations"
+              checked
+              onchange="toggleAnimations(this)"
+            />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- ══════════════════════
+         2. CUENTA
+    ══════════════════════ -->
+      <div class="settings-section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </div>
+          <div>
+            <p class="section-title-text">Cuenta</p>
+            <p class="section-desc">Gestiona tu información y seguridad</p>
+          </div>
+        </div>
+
+        <!-- Info de cuenta -->
+        <div class="setting-row">
+          <div class="setting-info">
+            <p class="setting-label">Correo electrónico</p>
+            <p class="setting-hint" id="account-email">Cargando...</p>
+          </div>
+          <span
+            style="
+              font-size: 0.78rem;
+              background: var(--correct-bg);
+              color: var(--correct);
+              border: 1px solid var(--correct-bdr);
+              padding: 0.25rem 0.75rem;
+              border-radius: 999px;
+              font-weight: 600;
+            "
+            >✓ Verificado</span
+          >
+        </div>
+
+        <!-- Cambiar contraseña -->
+        <div class="setting-row">
+          <div class="setting-info">
+            <p class="setting-label">Contraseña</p>
+            <p class="setting-hint">Actualiza tu contraseña de acceso</p>
+          </div>
+          <button class="btn-setting" onclick="openModal('modal-password')">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="3" y="11" width="18" height="11" rx="2" />
+              <path d="M7 11V7a5 5 0 0110 0v4" />
+            </svg>
+            Cambiar contraseña
+          </button>
+        </div>
+
+        <!-- Sesiones -->
+        <div class="setting-row">
+          <div class="setting-info">
+            <p class="setting-label">Cerrar todas las sesiones</p>
+            <p class="setting-hint">
+              Cierra sesión en todos los dispositivos donde estés conectado
+            </p>
+          </div>
+          <button class="btn-warn" onclick="openModal('modal-sessions')">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+            Cerrar sesiones
+          </button>
+        </div>
+
+        <!-- Eliminar cuenta -->
+        <div class="setting-row">
+          <div class="setting-info">
+            <p class="setting-label">Eliminar cuenta</p>
+            <p class="setting-hint">
+              Esta acción es permanente e irreversible. Se borrarán todos tus
+              datos.
+            </p>
+          </div>
+          <button class="btn-danger" onclick="openModal('modal-delete')">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="3 6 5 6 21 6" />
+              <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
+              <path d="M10 11v6" />
+              <path d="M14 11v6" />
+              <path d="M9 6V4h6v2" />
+            </svg>
+            Eliminar cuenta
+          </button>
+        </div>
+      </div>
+
+      <!-- ══════════════════════
+         3. NOTIFICACIONES
+    ══════════════════════ -->
+      <div class="settings-section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" />
+              <path d="M13.73 21a2 2 0 01-3.46 0" />
+            </svg>
+          </div>
+          <div>
+            <p class="section-title-text">Notificaciones</p>
+            <p class="section-desc">Controla qué notificaciones recibes</p>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-info">
+            <p class="setting-label">Recordatorios de estudio</p>
+            <p class="setting-hint">
+              Recibe recordatorios para mantener tu racha de estudio
+            </p>
+          </div>
+          <label class="toggle">
+            <input
+              type="checkbox"
+              id="toggle-reminders"
+              checked
+              onchange="savePref('reminders', this.checked)"
+            />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-info">
+            <p class="setting-label">Novedades y actualizaciones</p>
+            <p class="setting-hint">
+              Entérate de las nuevas funciones de QuizForge
+            </p>
+          </div>
+          <label class="toggle">
+            <input
+              type="checkbox"
+              id="toggle-updates"
+              checked
+              onchange="savePref('updates', this.checked)"
+            />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- ══════════════════════
+         4. SOPORTE TÉCNICO
+    ══════════════════════ -->
+      <div class="settings-section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+          </div>
+          <div>
+            <p class="section-title-text">Soporte técnico</p>
+            <p class="section-desc">Obtén ayuda cuando la necesites</p>
+          </div>
+        </div>
+
+        <div class="support-links">
+          <div class="support-link" onclick="openModal('modal-support')">
+            <div class="support-link-left">
+              <div class="support-link-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+                  />
+                  <polyline points="22,6 12,13 2,6" />
+                </svg>
+              </div>
+              <div>
+                <p class="support-link-label">Contactar soporte</p>
+                <p class="support-link-desc">
+                  Envía un mensaje a nuestro equipo
+                </p>
+              </div>
+            </div>
+            <div class="support-link-arrow">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </div>
+          </div>
+
+          <div class="support-link" onclick="openModal('modal-report')">
+            <div class="support-link-left">
+              <div class="support-link-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+                  />
+                  <line x1="12" y1="9" x2="12" y2="13" />
+                  <line x1="12" y1="17" x2="12.01" y2="17" />
+                </svg>
+              </div>
+              <div>
+                <p class="support-link-label">Reportar un problema</p>
+                <p class="support-link-desc">
+                  Cuéntanos si algo no funciona bien
+                </p>
+              </div>
+            </div>
+            <div class="support-link-arrow">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </div>
+          </div>
+
+          <div
+            class="support-link"
+            onclick="
+              window.open(
+                'https://github.com/neterfk-coder/quizforge',
+                '_blank',
+              )
+            "
+          >
+            <div class="support-link-left">
+              <div class="support-link-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"
+                  />
+                </svg>
+              </div>
+              <div>
+                <p class="support-link-label">Ver en GitHub</p>
+                <p class="support-link-desc">Código fuente y documentación</p>
+              </div>
+            </div>
+            <div class="support-link-arrow">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </div>
+          </div>
+
+          <div class="support-link" onclick="openModal('modal-about')">
+            <div class="support-link-left">
+              <div class="support-link-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="12" />
+                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+              </div>
+              <div>
+                <p class="support-link-label">Acerca de QuizForge</p>
+                <p class="support-link-desc">Versión, créditos e información</p>
+              </div>
+            </div>
+            <div class="support-link-arrow">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════
+       MODALES
+  ══════════════════════ -->
+
+    <!-- Modal: Cambiar contraseña -->
+    <div
+      class="modal-overlay"
+      id="modal-password"
+      onclick="closeModalOutside(event, 'modal-password')"
+    >
+      <div class="modal">
+        <div class="modal-header">
+          <div class="modal-icon accent">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="3" y="11" width="18" height="11" rx="2" />
+              <path d="M7 11V7a5 5 0 0110 0v4" />
+            </svg>
+          </div>
+          <div>
+            <p class="modal-title">Cambiar contraseña</p>
+            <p class="modal-sub">Elige una contraseña segura</p>
+          </div>
+        </div>
+        <div class="modal-body">
+          <div
+            id="pwd-error"
+            class="alert-box alert-danger"
+            style="display: none"
+          ></div>
+          <div class="form-group">
+            <label class="form-label">Nueva contraseña</label>
+            <input
+              type="password"
+              class="form-input"
+              id="new-password"
+              placeholder="Mínimo 8 caracteres"
+              oninput="checkPwdStrength(this)"
+            />
+            <div class="pwd-strength">
+              <div class="pwd-strength-fill" id="pwd-fill"></div>
+            </div>
+            <p class="form-hint" id="pwd-hint">
+              Usa letras, números y símbolos para mayor seguridad.
+            </p>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirmar contraseña</label>
+            <input
+              type="password"
+              class="form-input"
+              id="confirm-password"
+              placeholder="Repite la nueva contraseña"
+            />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-cancel" onclick="closeModal('modal-password')">
+            Cancelar
+          </button>
+          <button
+            class="btn-confirm-primary"
+            id="btn-save-pwd"
+            onclick="changePassword()"
+          >
+            Guardar contraseña
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Cerrar sesiones -->
+    <div
+      class="modal-overlay"
+      id="modal-sessions"
+      onclick="closeModalOutside(event, 'modal-sessions')"
+    >
+      <div class="modal">
+        <div class="modal-header">
+          <div class="modal-icon warn">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+          </div>
+          <div>
+            <p class="modal-title">Cerrar todas las sesiones</p>
+            <p class="modal-sub">Se cerrará sesión en todos los dispositivos</p>
+          </div>
+        </div>
+        <div class="modal-body">
+          <p>
+            Se cerrará tu sesión en
+            <strong>todos los dispositivos</strong> donde hayas iniciado sesión
+            con esta cuenta, incluyendo este.
+          </p>
+          <p>Tendrás que volver a iniciar sesión para acceder a QuizForge.</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-cancel" onclick="closeModal('modal-sessions')">
+            Cancelar
+          </button>
+          <button class="btn-confirm-primary" onclick="closeAllSessions()">
+            Sí, cerrar sesiones
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Eliminar cuenta -->
+    <div
+      class="modal-overlay"
+      id="modal-delete"
+      onclick="closeModalOutside(event, 'modal-delete')"
+    >
+      <div class="modal">
+        <div class="modal-header">
+          <div class="modal-icon danger">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="3 6 5 6 21 6" />
+              <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
+              <path d="M10 11v6" />
+              <path d="M14 11v6" />
+            </svg>
+          </div>
+          <div>
+            <p class="modal-title">Eliminar cuenta</p>
+            <p class="modal-sub">Esta acción no se puede deshacer</p>
+          </div>
+        </div>
+        <div class="modal-body">
+          <div class="alert-box alert-danger">
+            ⚠️ Se eliminarán permanentemente todos tus quizzes, resultados y
+            datos de perfil.
+          </div>
+          <div class="form-group">
+            <label class="form-label"
+              >Escribe <strong>ELIMINAR</strong> para confirmar</label
+            >
+            <input
+              type="text"
+              class="form-input"
+              id="delete-confirm-input"
+              placeholder="ELIMINAR"
+              oninput="checkDeleteConfirm(this)"
+            />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-cancel" onclick="closeModal('modal-delete')">
+            Cancelar
+          </button>
+          <button
+            class="btn-confirm-danger"
+            id="btn-delete"
+            disabled
+            onclick="deleteAccount()"
+          >
+            Eliminar cuenta
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Soporte -->
+    <div
+      class="modal-overlay"
+      id="modal-support"
+      onclick="closeModalOutside(event, 'modal-support')"
+    >
+      <div class="modal">
+        <div class="modal-header">
+          <div class="modal-icon accent">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+              />
+              <polyline points="22,6 12,13 2,6" />
+            </svg>
+          </div>
+          <div>
+            <p class="modal-title">Contactar soporte</p>
+            <p class="modal-sub">Te responderemos lo antes posible</p>
+          </div>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Asunto</label>
+            <input
+              type="text"
+              class="form-input"
+              id="support-subject"
+              placeholder="¿En qué podemos ayudarte?"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Mensaje</label>
+            <textarea
+              class="form-input"
+              id="support-message"
+              rows="4"
+              placeholder="Describe tu problema o consulta con el mayor detalle posible..."
+              style="resize: vertical; line-height: 1.7"
+            ></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-cancel" onclick="closeModal('modal-support')">
+            Cancelar
+          </button>
+          <button class="btn-confirm-primary" onclick="sendSupport()">
+            Enviar mensaje
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Reportar problema -->
+    <div
+      class="modal-overlay"
+      id="modal-report"
+      onclick="closeModalOutside(event, 'modal-report')"
+    >
+      <div class="modal">
+        <div class="modal-header">
+          <div class="modal-icon warn">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+              />
+              <line x1="12" y1="9" x2="12" y2="13" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+          </div>
+          <div>
+            <p class="modal-title">Reportar un problema</p>
+            <p class="modal-sub">Ayúdanos a mejorar QuizForge</p>
+          </div>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Tipo de problema</label>
+            <select class="form-input" id="report-type">
+              <option value="">Selecciona una categoría</option>
+              <option value="bug">Error / Bug en la app</option>
+              <option value="ui">Problema visual / diseño</option>
+              <option value="ai">La IA no genera bien las preguntas</option>
+              <option value="account">Problema con mi cuenta</option>
+              <option value="other">Otro</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Descripción</label>
+            <textarea
+              class="form-input"
+              id="report-desc"
+              rows="4"
+              placeholder="Describe el problema con detalle. ¿Qué esperabas que pasara? ¿Qué pasó en su lugar?"
+              style="resize: vertical; line-height: 1.7"
+            ></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-cancel" onclick="closeModal('modal-report')">
+            Cancelar
+          </button>
+          <button class="btn-confirm-primary" onclick="sendReport()">
+            Enviar reporte
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Acerca de -->
+    <div
+      class="modal-overlay"
+      id="modal-about"
+      onclick="closeModalOutside(event, 'modal-about')"
+    >
+      <div class="modal">
+        <div class="modal-header">
+          <div class="modal-icon accent">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+            </svg>
+          </div>
+          <div>
+            <p class="modal-title">Acerca de QuizForge</p>
+            <p class="modal-sub">Información de la aplicación</p>
+          </div>
+        </div>
+        <div class="modal-body">
+          <div style="text-align: center; padding: 1rem 0 1.5rem">
+            <div
+              style="
+                width: 64px;
+                height: 64px;
+                background: var(--accent);
+                border-radius: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 1rem;
+              "
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#fff"
+                stroke-width="2.5"
+                width="32"
+                height="32"
+              >
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+              </svg>
+            </div>
+            <p
+              style="
+                font-size: 1.2rem;
+                font-weight: 800;
+                color: var(--text);
+                letter-spacing: -0.02em;
+              "
+            >
+              QuizForge
+            </p>
+            <p
+              style="
+                font-size: 0.82rem;
+                color: var(--muted);
+                margin-top: 0.25rem;
+              "
+            >
+              Versión 1.0.0 — Beyond Tomorrow Summit 2026
+            </p>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 0.6rem">
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                font-size: 0.875rem;
+                padding: 0.6rem 0;
+                border-bottom: 1px solid var(--border);
+              "
+            >
+              <span style="color: var(--muted)">IA</span
+              ><span style="font-weight: 500">Groq — LLaMA 3.3 70B</span>
+            </div>
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                font-size: 0.875rem;
+                padding: 0.6rem 0;
+                border-bottom: 1px solid var(--border);
+              "
+            >
+              <span style="color: var(--muted)">Base de datos</span
+              ><span style="font-weight: 500">Supabase</span>
+            </div>
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                font-size: 0.875rem;
+                padding: 0.6rem 0;
+                border-bottom: 1px solid var(--border);
+              "
+            >
+              <span style="color: var(--muted)">Tipografía</span
+              ><span style="font-weight: 500">Inter</span>
+            </div>
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                font-size: 0.875rem;
+                padding: 0.6rem 0;
+              "
+            >
+              <span style="color: var(--muted)">GitHub</span>
+              <a
+                href="https://github.com/neterfk-coder/quizforge"
+                target="_blank"
+                style="
+                  color: var(--accent);
+                  font-weight: 500;
+                  text-decoration: none;
+                "
+                >neterfk-coder/quizforge ↗</a
+              >
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn-confirm-primary"
+            onclick="closeModal('modal-about')"
+          >
+            Cerrar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <script src="../js/supabase.js" type="module"></script>
+    <script>
+      /* ════════════════════════
+       INICIALIZAR
+    ════════════════════════ */
+      async function init() {
+        try {
+          const user = await window.getCurrentUser();
+          if (!user) {
+            window.location.href = "login.html";
+            return;
+          }
+          document.getElementById("account-email").textContent = user.email;
+          loadPrefs();
+          applyTheme(localStorage.getItem("qf_theme") || "light");
+          applyLangButtons(localStorage.getItem("qf_lang") || "es");
+        } catch {
+          window.location.href = "login.html";
+        }
+      }
+
+      /* ════════════════════════
+       TEMA
+    ════════════════════════ */
+      function setTheme(theme) {
+        localStorage.setItem("qf_theme", theme);
+        applyTheme(theme);
+        showToast(
+          theme === "dark"
+            ? "🌙 Modo oscuro activado"
+            : "☀️ Modo claro activado",
+          "success",
+        );
+      }
+
+      function applyTheme(theme) {
+        document.body.classList.toggle("dark", theme === "dark");
+        document
+          .getElementById("theme-light")
+          .classList.toggle("active", theme === "light");
+        document
+          .getElementById("theme-dark")
+          .classList.toggle("active", theme === "dark");
+      }
+
+      /* ════════════════════════
+       IDIOMA
+    ════════════════════════ */
+      function setLangSetting(lang) {
+        localStorage.setItem("qf_lang", lang);
+        applyLangButtons(lang);
+        showToast(
+          lang === "es" ? "🇵🇪 Idioma: Español" : "🇺🇸 Language: English",
+          "success",
+        );
+      }
+
+      function applyLangButtons(lang) {
+        document.getElementById("btn-lang-es").style.borderColor =
+          lang === "es" ? "var(--accent)" : "";
+        document.getElementById("btn-lang-es").style.color =
+          lang === "es" ? "var(--accent)" : "";
+        document.getElementById("btn-lang-en").style.borderColor =
+          lang === "en" ? "var(--accent)" : "";
+        document.getElementById("btn-lang-en").style.color =
+          lang === "en" ? "var(--accent)" : "";
+      }
+
+      /* ════════════════════════
+       ANIMACIONES
+    ════════════════════════ */
+      function toggleAnimations(el) {
+        localStorage.setItem("qf_animations", el.checked);
+        showToast(
+          el.checked ? "Animaciones activadas" : "Animaciones desactivadas",
+          "success",
+        );
+      }
+
+      /* ════════════════════════
+       PREFERENCIAS
+    ════════════════════════ */
+      function savePref(key, value) {
+        localStorage.setItem("qf_pref_" + key, value);
+        showToast("Preferencia guardada", "success");
+      }
+
+      function loadPrefs() {
+        const anim = localStorage.getItem("qf_animations");
+        if (anim === "false")
+          document.getElementById("toggle-animations").checked = false;
+        const rem = localStorage.getItem("qf_pref_reminders");
+        if (rem === "false")
+          document.getElementById("toggle-reminders").checked = false;
+        const upd = localStorage.getItem("qf_pref_updates");
+        if (upd === "false")
+          document.getElementById("toggle-updates").checked = false;
+      }
+
+      /* ════════════════════════
+       CAMBIAR CONTRASEÑA
+    ════════════════════════ */
+      function checkPwdStrength(input) {
+        const v = input.value;
+        let score = 0;
+        if (v.length >= 8) score++;
+        if (/[A-Z]/.test(v)) score++;
+        if (/[0-9]/.test(v)) score++;
+        if (/[^A-Za-z0-9]/.test(v)) score++;
+        const colors = ["", "#dc2626", "#f59e0b", "#0ea5e9", "#16a34a"];
+        const labels = ["", "Débil", "Regular", "Buena", "Excelente"];
+        const fill = document.getElementById("pwd-fill");
+        fill.style.width = score * 25 + "%";
+        fill.style.background = colors[score] || "";
+        document.getElementById("pwd-hint").textContent = v
+          ? labels[score]
+          : "Usa letras, números y símbolos para mayor seguridad.";
+        document.getElementById("pwd-hint").style.color = colors[score] || "";
+      }
+
+      async function changePassword() {
+        const newPwd = document.getElementById("new-password").value;
+        const confirm = document.getElementById("confirm-password").value;
+        const errBox = document.getElementById("pwd-error");
+        const btn = document.getElementById("btn-save-pwd");
+
+        errBox.style.display = "none";
+
+        if (newPwd.length < 8) {
+          errBox.textContent =
+            "La contraseña debe tener al menos 8 caracteres.";
+          errBox.style.display = "block";
+          return;
+        }
+        if (newPwd !== confirm) {
+          errBox.textContent = "Las contraseñas no coinciden.";
+          errBox.style.display = "block";
+          return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = "Guardando...";
+
+        try {
+          const { error } = await window._supabase.auth.updateUser({
+            password: newPwd,
+          });
+          if (error) throw error;
+          closeModal("modal-password");
+          document.getElementById("new-password").value = "";
+          document.getElementById("confirm-password").value = "";
+          showToast("✓ Contraseña actualizada correctamente", "success");
+        } catch (e) {
+          errBox.textContent =
+            "Error al cambiar la contraseña. Intenta de nuevo.";
+          errBox.style.display = "block";
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "Guardar contraseña";
+        }
+      }
+
+      /* ════════════════════════
+       CERRAR SESIONES
+    ════════════════════════ */
+      async function closeAllSessions() {
+        try {
+          await window.signOut();
+          window.location.href = "../index.html";
+        } catch {
+          showToast("Error al cerrar sesiones", "error");
+        }
+      }
+
+      /* ════════════════════════
+       ELIMINAR CUENTA
+    ════════════════════════ */
+      function checkDeleteConfirm(input) {
+        const btn = document.getElementById("btn-delete");
+        btn.disabled = input.value !== "ELIMINAR";
+      }
+
+      async function deleteAccount() {
+        try {
+          const user = await window.getCurrentUser();
+          /* Eliminar resultados del usuario */
+          await window._supabase
+            .from("results")
+            .delete()
+            .eq("user_id", user.id);
+          /* Eliminar perfil local */
+          localStorage.removeItem("qf_profile_" + user.id);
+          /* Cerrar sesión */
+          await window.signOut();
+          window.location.href = "../index.html";
+        } catch {
+          showToast("Error al eliminar la cuenta. Contacta soporte.", "error");
+        }
+      }
+
+      /* ════════════════════════
+       SOPORTE
+    ════════════════════════ */
+      function sendSupport() {
+        const subject = document.getElementById("support-subject").value.trim();
+        const message = document.getElementById("support-message").value.trim();
+        if (!subject || !message) {
+          showToast("Completa todos los campos", "error");
+          return;
+        }
+        /* Simula envío — conecta con tu email o servicio real */
+        window.location.href = `mailto:contact@beyondtomorrowsummit.com?subject=${encodeURIComponent("[QuizForge Soporte] " + subject)}&body=${encodeURIComponent(message)}`;
+        closeModal("modal-support");
+        showToast("✓ Abriendo tu cliente de correo...", "success");
+      }
+
+      function sendReport() {
+        const type = document.getElementById("report-type").value;
+        const desc = document.getElementById("report-desc").value.trim();
+        if (!type || !desc) {
+          showToast("Completa todos los campos", "error");
+          return;
+        }
+        window.location.href = `mailto:contact@beyondtomorrowsummit.com?subject=${encodeURIComponent("[QuizForge Bug] " + type)}&body=${encodeURIComponent(desc)}`;
+        closeModal("modal-report");
+        showToast("✓ Reporte enviado. ¡Gracias!", "success");
+      }
+
+      /* ════════════════════════
+       MODALES
+    ════════════════════════ */
+      function openModal(id) {
+        document.getElementById(id).classList.add("open");
+      }
+      function closeModal(id) {
+        document.getElementById(id).classList.remove("open");
+      }
+      function closeModalOutside(e, id) {
+        if (e.target.id === id) closeModal(id);
+      }
+
+      /* ════════════════════════
+       LOGOUT
+    ════════════════════════ */
+      async function handleLogout() {
+        await window.signOut();
+        window.location.href = "../index.html";
+      }
+
+      /* ════════════════════════
+       TOAST
+    ════════════════════════ */
+      function showToast(msg, type = "") {
+        const t = document.getElementById("toast");
+        t.textContent = msg;
+        t.className = "toast show " + type;
+        setTimeout(() => {
+          t.className = "toast";
+        }, 3000);
+      }
+
+      init();
+    </script>
+  </body>
+</html>
