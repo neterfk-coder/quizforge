@@ -11,8 +11,14 @@
     />
     <link rel="stylesheet" href="../css/style.css" />
     <link rel="stylesheet" href="../css/auth.css" />
+
+    <!-- ✅ Evitar parpadeo: limpiar guest mode ANTES de renderizar -->
+    <script>
+      localStorage.removeItem("qf_guest_mode");
+      localStorage.removeItem("qf_guest_name");
+    </script>
+
     <style>
-      /* ── DIVIDER ── */
       .divider {
         display: flex;
         align-items: center;
@@ -43,19 +49,23 @@
         color: var(--muted);
         padding: 0.75rem 1.5rem;
         border-radius: var(--radius-sm);
-        font-family: var(--font, "Inter", Arial, sans-serif);
+        font-family: "Inter", Arial, sans-serif;
         font-weight: 500;
         font-size: 0.9rem;
         cursor: pointer;
         transition: all 0.2s;
         margin-bottom: 1rem;
+        position: relative;
       }
       .btn-guest:hover {
         border-color: var(--accent);
         color: var(--accent);
         background: var(--accent-light);
         border-style: solid;
-        transform: translateY(-1px);
+      }
+      .btn-guest:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
       }
       .btn-guest svg {
         width: 18px;
@@ -63,20 +73,36 @@
         flex-shrink: 0;
       }
 
-      /* ── INFO CHIP INVITADO ── */
+      /* ── INFO INVITADO ── */
       .guest-info {
         background: var(--accent-light);
         border: 1.5px solid var(--border2);
         border-radius: var(--radius-sm);
         padding: 0.85rem 1rem;
         margin-bottom: 1.25rem;
-        display: none;
+        overflow: hidden;
+        max-height: 0;
+        opacity: 0;
+        transition:
+          max-height 0.35s ease,
+          opacity 0.3s ease,
+          padding 0.35s ease,
+          margin 0.35s ease;
+        padding-top: 0;
+        padding-bottom: 0;
+        margin-bottom: 0;
+      }
+      .guest-info.visible {
+        max-height: 200px;
+        opacity: 1;
+        padding: 0.85rem 1rem;
+        margin-bottom: 1.25rem;
       }
       .guest-info-title {
         font-size: 0.82rem;
         font-weight: 700;
         color: var(--accent);
-        margin-bottom: 0.4rem;
+        margin-bottom: 0.5rem;
         display: flex;
         align-items: center;
         gap: 6px;
@@ -86,71 +112,45 @@
         padding: 0;
         display: flex;
         flex-direction: column;
-        gap: 0.25rem;
+        gap: 0.3rem;
       }
       .guest-info ul li {
         font-size: 0.8rem;
         color: var(--muted);
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 7px;
       }
-      .guest-info ul li::before {
-        content: "✓";
+      .guest-check {
         color: var(--accent);
         font-weight: 700;
-        font-size: 0.75rem;
+        font-size: 0.78rem;
       }
-      .guest-info ul li.no::before {
-        content: "✕";
+      .guest-cross {
         color: var(--muted2);
+        font-weight: 700;
+        font-size: 0.78rem;
       }
 
-      /* ── LOADING OVERLAY ── */
-      .loading-overlay {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(240, 246, 255, 0.85);
-        backdrop-filter: blur(6px);
-        z-index: 999;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        gap: 1rem;
-      }
-      .loading-overlay.show {
-        display: flex;
-      }
-      .loading-spinner {
-        width: 44px;
-        height: 44px;
-        border: 3px solid var(--border);
+      /* ── SPINNER DENTRO DEL BOTÓN ── */
+      .btn-spinner {
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(37, 99, 235, 0.3);
         border-top-color: var(--accent);
         border-radius: 50%;
-        animation: spin 0.7s linear infinite;
+        animation: btnSpin 0.6s linear infinite;
+        display: none;
       }
-      @keyframes spin {
+      @keyframes btnSpin {
         to {
           transform: rotate(360deg);
         }
       }
-      .loading-overlay p {
-        font-size: 0.95rem;
-        font-weight: 500;
-        color: var(--accent);
-      }
     </style>
   </head>
   <body class="auth-body">
-    <!-- Loading overlay -->
-    <div class="loading-overlay" id="loading-overlay">
-      <div class="loading-spinner"></div>
-      <p>Entrando como invitado...</p>
-    </div>
-
     <div class="auth-wrapper">
-      <!-- Logo -->
       <a href="../index.html" class="auth-logo">
         <div class="logo-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
@@ -163,33 +163,6 @@
       <div class="auth-card">
         <h1 class="auth-title">Bienvenido de vuelta</h1>
         <p class="auth-sub">Ingresa a tu cuenta para continuar</p>
-
-        <!-- Modo invitado INFO (se muestra al hover) -->
-        <div class="guest-info" id="guest-info">
-          <p class="guest-info-title">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              width="14"
-              height="14"
-            >
-              <circle cx="12" cy="12" r="10" />
-              <line x1="12" y1="8" x2="12" y2="12" />
-              <line x1="12" y1="16" x2="12.01" y2="16" />
-            </svg>
-            Como invitado puedes:
-          </p>
-          <ul>
-            <li>Generar quizzes con IA ilimitados</li>
-            <li>Usar todos los modos (opción múltiple, flashcards, V/F)</li>
-            <li>Subir PDFs y archivos de texto</li>
-            <li>Cambiar idioma y tema de la app</li>
-            <li class="no">Guardar tu historial de resultados</li>
-            <li class="no">Acceder a tu perfil personal</li>
-          </ul>
-        </div>
 
         <div id="auth-error" class="auth-alert" style="display: none"></div>
 
@@ -224,14 +197,50 @@
           Iniciar sesión
         </button>
 
-        <!-- DIVIDER -->
         <div class="divider">
           <div class="divider-line"></div>
           <span class="divider-text">o continúa sin cuenta</span>
           <div class="divider-line"></div>
         </div>
 
-        <!-- BOTÓN MODO INVITADO -->
+        <!-- Info invitado (animación suave) -->
+        <div class="guest-info" id="guest-info">
+          <p class="guest-info-title">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              width="13"
+              height="13"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+            Como invitado puedes:
+          </p>
+          <ul>
+            <li>
+              <span class="guest-check">✓</span> Generar quizzes con IA
+              ilimitados
+            </li>
+            <li>
+              <span class="guest-check">✓</span> Usar todos los modos de estudio
+            </li>
+            <li>
+              <span class="guest-check">✓</span> Subir PDFs y archivos de texto
+            </li>
+            <li>
+              <span class="guest-cross">✕</span> Guardar historial de resultados
+            </li>
+            <li>
+              <span class="guest-cross">✕</span> Acceder a tu perfil personal
+            </li>
+          </ul>
+        </div>
+
+        <!-- Botón invitado -->
         <button
           class="btn-guest"
           id="guest-btn"
@@ -239,7 +248,9 @@
           onmouseenter="showGuestInfo()"
           onmouseleave="hideGuestInfo()"
         >
+          <div class="btn-spinner" id="guest-spinner"></div>
           <svg
+            id="guest-icon"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -250,7 +261,7 @@
             <line x1="19" y1="8" x2="19" y2="14" />
             <line x1="22" y1="11" x2="16" y2="11" />
           </svg>
-          Continuar como invitado
+          <span id="guest-label">Continuar como invitado</span>
         </button>
 
         <p class="auth-footer-text">
@@ -289,30 +300,38 @@
       }
 
       /* ════════════════════════
-       MODO INVITADO
+       MODO INVITADO — sin parpadeo
     ════════════════════════ */
       function enterAsGuest() {
-        /* Marcar sesión de invitado en localStorage */
+        const btn = document.getElementById("guest-btn");
+        const spinner = document.getElementById("guest-spinner");
+        const icon = document.getElementById("guest-icon");
+        const label = document.getElementById("guest-label");
+
+        /* Deshabilitar botón y mostrar spinner */
+        btn.disabled = true;
+        spinner.style.display = "block";
+        icon.style.display = "none";
+        label.textContent = "Entrando...";
+
+        /* Guardar estado JUSTO antes de navegar */
         localStorage.setItem("qf_guest_mode", "true");
         localStorage.setItem("qf_guest_name", "Invitado");
 
-        /* Mostrar loading */
-        document.getElementById("loading-overlay").classList.add("show");
-
-        /* Redirigir al inicio después de un momento */
+        /* Pequeño delay para que el spinner se vea, luego navegar */
         setTimeout(() => {
-          window.location.href = "../index.html";
-        }, 1200);
+          window.location.replace("../index.html");
+        }, 600);
       }
 
       /* ════════════════════════
-       HOVER INFO INVITADO
+       HOVER INFO
     ════════════════════════ */
       function showGuestInfo() {
-        document.getElementById("guest-info").style.display = "block";
+        document.getElementById("guest-info").classList.add("visible");
       }
       function hideGuestInfo() {
-        document.getElementById("guest-info").style.display = "none";
+        document.getElementById("guest-info").classList.remove("visible");
       }
 
       /* ════════════════════════
@@ -328,11 +347,6 @@
       document.addEventListener("keydown", (e) => {
         if (e.key === "Enter") handleLogin();
       });
-
-      /* Si ya está en modo invitado, redirigir directo */
-      if (localStorage.getItem("qf_guest_mode") === "true") {
-        window.location.href = "../index.html";
-      }
     </script>
   </body>
 </html>
