@@ -1,0 +1,1613 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mi Perfil — QuizForge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --bg: #f0f6ff;
+        --surface: #ffffff;
+        --surface2: #f7faff;
+        --border: #d0e3fa;
+        --border2: #b8d4f7;
+        --accent: #2563eb;
+        --accent-light: #dbeafe;
+        --accent-mid: #60a5fa;
+        --accent-dark: #1d4ed8;
+        --text: #0f172a;
+        --muted: #64748b;
+        --muted2: #94a3b8;
+        --danger: #dc2626;
+        --danger-bg: #fef2f2;
+        --danger-bdr: #fca5a5;
+        --correct: #16a34a;
+        --correct-bg: #f0fdf4;
+        --correct-bdr: #86efac;
+        --radius: 14px;
+        --radius-sm: 9px;
+        --shadow:
+          0 1px 4px rgba(37, 99, 235, 0.07), 0 4px 18px rgba(37, 99, 235, 0.06);
+        --shadow-md: 0 6px 28px rgba(37, 99, 235, 0.11);
+        --font: "Inter", Arial, sans-serif;
+      }
+      html {
+        font-size: 16px;
+        scroll-behavior: smooth;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--font);
+        font-weight: 400;
+        min-height: 100vh;
+        line-height: 1.7;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* ── NAV ── */
+      nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.1rem 3rem;
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(18px);
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .logo {
+        font-family: var(--font);
+        font-weight: 800;
+        font-size: 1.2rem;
+        letter-spacing: -0.03em;
+        color: var(--accent);
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        text-decoration: none;
+      }
+      .logo-icon {
+        width: 32px;
+        height: 32px;
+        background: var(--accent);
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .logo-icon svg {
+        width: 16px;
+        height: 16px;
+      }
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .btn-ghost {
+        background: none;
+        border: 1.5px solid var(--border2);
+        color: var(--muted);
+        padding: 0.48rem 1.1rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.18s;
+        text-decoration: none;
+        display: inline-block;
+      }
+      .btn-ghost:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: var(--accent-light);
+      }
+      .btn-primary {
+        background: var(--accent);
+        border: none;
+        color: #fff;
+        padding: 0.52rem 1.3rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-weight: 600;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.18s;
+        text-decoration: none;
+        display: inline-block;
+      }
+      .btn-primary:hover {
+        background: var(--accent-dark);
+        transform: translateY(-1px);
+      }
+
+      /* ── PAGE LAYOUT ── */
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 2.5rem 1.5rem 5rem;
+      }
+
+      /* ── BANNER ── */
+      .banner-wrap {
+        position: relative;
+        border-radius: var(--radius);
+        overflow: hidden;
+        height: 200px;
+        background: linear-gradient(135deg, #2563eb 0%, #60a5fa 100%);
+        cursor: pointer;
+        margin-bottom: 0;
+        box-shadow: var(--shadow-md);
+      }
+      .banner-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: none;
+      }
+      .banner-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: all 0.2s;
+      }
+      .banner-wrap:hover .banner-overlay {
+        opacity: 1;
+        background: rgba(0, 0, 0, 0.3);
+      }
+      .banner-edit-btn {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        padding: 0.55rem 1.2rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text);
+        cursor: pointer;
+      }
+      .banner-edit-btn svg {
+        width: 15px;
+        height: 15px;
+      }
+      #banner-input {
+        display: none;
+      }
+
+      /* ── PROFILE HEADER ── */
+      .profile-header {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-top: none;
+        border-radius: 0 0 var(--radius) var(--radius);
+        padding: 0 2rem 1.75rem;
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow);
+        position: relative;
+      }
+
+      .avatar-wrap {
+        position: relative;
+        display: inline-block;
+        margin-top: -52px;
+        margin-bottom: 1rem;
+      }
+      .avatar-img {
+        width: 104px;
+        height: 104px;
+        border-radius: 50%;
+        border: 4px solid var(--surface);
+        object-fit: cover;
+        background: var(--accent-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: var(--accent);
+        overflow: hidden;
+      }
+      .avatar-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+        display: none;
+      }
+      .avatar-edit {
+        position: absolute;
+        bottom: 4px;
+        right: 4px;
+        width: 30px;
+        height: 30px;
+        background: var(--accent);
+        border: 2.5px solid var(--surface);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.18s;
+      }
+      .avatar-edit:hover {
+        background: var(--accent-dark);
+      }
+      .avatar-edit svg {
+        width: 13px;
+        height: 13px;
+        stroke: #fff;
+      }
+      #avatar-input {
+        display: none;
+      }
+
+      .profile-info-row {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      .profile-name {
+        font-family: var(--font);
+        font-weight: 800;
+        font-size: 1.5rem;
+        color: var(--text);
+        letter-spacing: -0.03em;
+        margin-bottom: 0.2rem;
+      }
+      .profile-username {
+        font-size: 0.875rem;
+        color: var(--muted);
+        margin-bottom: 0.6rem;
+      }
+      .profile-bio {
+        font-size: 0.9rem;
+        color: var(--muted);
+        max-width: 500px;
+        line-height: 1.7;
+      }
+      .profile-badges {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-top: 0.75rem;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: var(--accent-light);
+        border: 1px solid var(--border2);
+        color: var(--accent);
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+        border-radius: 999px;
+      }
+      .badge svg {
+        width: 12px;
+        height: 12px;
+      }
+
+      .btn-edit-profile {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        background: var(--surface);
+        border: 1.5px solid var(--border2);
+        color: var(--muted);
+        padding: 0.55rem 1.2rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.18s;
+        white-space: nowrap;
+      }
+      .btn-edit-profile:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: var(--accent-light);
+      }
+      .btn-edit-profile svg {
+        width: 15px;
+        height: 15px;
+      }
+
+      /* ── STATS ROW ── */
+      .profile-stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+      .pstat {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.4rem 1.25rem;
+        text-align: center;
+        box-shadow: var(--shadow);
+        transition: transform 0.2s;
+      }
+      .pstat:hover {
+        transform: translateY(-2px);
+      }
+      .pstat-num {
+        font-family: var(--font);
+        font-weight: 800;
+        font-size: 1.75rem;
+        color: var(--accent);
+        line-height: 1;
+        margin-bottom: 0.35rem;
+      }
+      .pstat-label {
+        font-size: 0.8rem;
+        color: var(--muted);
+        font-weight: 400;
+      }
+
+      /* ── GRID ── */
+      .profile-grid {
+        display: grid;
+        grid-template-columns: 1fr 1.6fr;
+        gap: 1.5rem;
+        align-items: start;
+      }
+
+      /* ── CARDS ── */
+      .pcard {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.75rem;
+        box-shadow: var(--shadow);
+      }
+      .pcard-title {
+        font-family: var(--font);
+        font-weight: 700;
+        font-size: 1rem;
+        color: var(--text);
+        margin-bottom: 1.35rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .pcard-title svg {
+        width: 18px;
+        height: 18px;
+        color: var(--accent);
+      }
+
+      /* Info rows */
+      .info-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 0.85rem 0;
+        border-bottom: 1px solid var(--border);
+        font-size: 0.9rem;
+      }
+      .info-row:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+      .info-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: var(--radius-sm);
+        background: var(--accent-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: var(--accent);
+      }
+      .info-icon svg {
+        width: 16px;
+        height: 16px;
+      }
+      .info-label {
+        font-size: 0.75rem;
+        color: var(--muted2);
+        margin-bottom: 1px;
+      }
+      .info-value {
+        font-weight: 500;
+        color: var(--text);
+        font-size: 0.9rem;
+      }
+
+      /* Recent quizzes */
+      .quiz-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 0.9rem 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .quiz-row:last-child {
+        border-bottom: none;
+      }
+      .quiz-mode-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: var(--radius-sm);
+        background: var(--accent-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: var(--accent);
+      }
+      .quiz-mode-icon svg {
+        width: 17px;
+        height: 17px;
+      }
+      .quiz-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .quiz-mode-label {
+        font-size: 0.78rem;
+        color: var(--muted2);
+        margin-bottom: 1px;
+      }
+      .quiz-date {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--text);
+      }
+      .quiz-pct {
+        font-family: var(--font);
+        font-weight: 700;
+        font-size: 1rem;
+        min-width: 42px;
+        text-align: right;
+      }
+      .pct-high {
+        color: var(--correct);
+      }
+      .pct-mid {
+        color: var(--accent);
+      }
+      .pct-low {
+        color: var(--danger);
+      }
+
+      /* ── MODAL EDITAR ── */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.45);
+        z-index: 200;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+      }
+      .modal-overlay.open {
+        display: flex;
+      }
+      .modal {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        padding: 2rem;
+        width: 100%;
+        max-width: 520px;
+        box-shadow: var(--shadow-md);
+        animation: modalIn 0.25s ease;
+      }
+      @keyframes modalIn {
+        from {
+          opacity: 0;
+          transform: scale(0.97) translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
+      }
+      .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.75rem;
+      }
+      .modal-title {
+        font-family: var(--font);
+        font-weight: 700;
+        font-size: 1.15rem;
+        color: var(--text);
+      }
+      .modal-close {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--muted);
+        padding: 0.25rem;
+        border-radius: var(--radius-sm);
+        transition: color 0.15s;
+      }
+      .modal-close:hover {
+        color: var(--danger);
+      }
+      .modal-close svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      .form-group {
+        margin-bottom: 1.35rem;
+      }
+      .form-label {
+        display: block;
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--muted);
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        margin-bottom: 0.55rem;
+      }
+      .form-input,
+      .form-textarea {
+        width: 100%;
+        background: var(--surface2);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        color: var(--text);
+        font-family: var(--font);
+        font-size: 0.9rem;
+        padding: 0.7rem 1rem;
+        outline: none;
+        transition:
+          border-color 0.18s,
+          box-shadow 0.18s;
+      }
+      .form-input:focus,
+      .form-textarea:focus {
+        border-color: var(--accent-mid);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        background: var(--surface);
+      }
+      .form-input::placeholder,
+      .form-textarea::placeholder {
+        color: var(--muted2);
+      }
+      .form-textarea {
+        min-height: 90px;
+        resize: vertical;
+        line-height: 1.7;
+      }
+      .form-hint {
+        font-size: 0.78rem;
+        color: var(--muted2);
+        margin-top: 0.4rem;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+      }
+
+      .modal-footer {
+        display: flex;
+        gap: 0.75rem;
+        justify-content: flex-end;
+        margin-top: 1.75rem;
+        padding-top: 1.5rem;
+        border-top: 1.5px solid var(--border);
+      }
+      .btn-cancel {
+        background: var(--surface);
+        border: 1.5px solid var(--border2);
+        color: var(--muted);
+        padding: 0.6rem 1.35rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.18s;
+      }
+      .btn-cancel:hover {
+        border-color: var(--danger);
+        color: var(--danger);
+      }
+      .btn-save {
+        background: var(--accent);
+        border: none;
+        color: #fff;
+        padding: 0.6rem 1.6rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.18s;
+        box-shadow: 0 2px 10px rgba(37, 99, 235, 0.22);
+      }
+      .btn-save:hover {
+        background: var(--accent-dark);
+        transform: translateY(-1px);
+      }
+
+      /* ── TOAST ── */
+      .toast {
+        position: fixed;
+        bottom: 1.75rem;
+        right: 1.75rem;
+        background: var(--surface);
+        border: 1.5px solid var(--border2);
+        color: var(--text);
+        padding: 0.85rem 1.4rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.9rem;
+        font-weight: 500;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.25s;
+        z-index: 999;
+        pointer-events: none;
+        box-shadow: var(--shadow-md);
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .toast.success {
+        border-color: rgba(37, 99, 235, 0.4);
+        color: var(--accent);
+      }
+      .toast.error {
+        border-color: rgba(220, 38, 38, 0.4);
+        color: var(--danger);
+      }
+
+      /* ── RESPONSIVE ── */
+      @media (max-width: 640px) {
+        nav {
+          padding: 1rem 1.25rem;
+        }
+        .profile-stats {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .profile-grid {
+          grid-template-columns: 1fr;
+        }
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+        .page {
+          padding: 1.5rem 1rem 4rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- NAV -->
+    <nav>
+      <a href="../index.html" class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+          </svg>
+        </div>
+        QuizForge
+      </a>
+      <div class="nav-links">
+        <a href="../index.html" class="btn-ghost">Inicio</a>
+        <a href="dashboard.html" class="btn-ghost">Mi historial</a>
+        <button class="btn-primary" onclick="handleLogout()">
+          Cerrar sesión
+        </button>
+      </div>
+    </nav>
+
+    <div class="page">
+      <!-- BANNER -->
+      <div
+        class="banner-wrap"
+        onclick="document.getElementById('banner-input').click()"
+      >
+        <img class="banner-img" id="banner-img" alt="Banner de perfil" />
+        <div class="banner-overlay">
+          <button class="banner-edit-btn">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"
+              />
+              <circle cx="12" cy="13" r="4" />
+            </svg>
+            Cambiar banner
+          </button>
+        </div>
+        <input
+          type="file"
+          id="banner-input"
+          accept="image/*"
+          onchange="changeBanner(this)"
+        />
+      </div>
+
+      <!-- PROFILE HEADER -->
+      <div class="profile-header">
+        <div class="profile-info-row">
+          <div>
+            <!-- AVATAR -->
+            <div class="avatar-wrap">
+              <div class="avatar-img" id="avatar-display">
+                <span id="avatar-initials">?</span>
+                <img id="avatar-img-tag" alt="Foto de perfil" />
+              </div>
+              <div
+                class="avatar-edit"
+                onclick="document.getElementById('avatar-input').click()"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                  <path
+                    d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"
+                  />
+                  <circle cx="12" cy="13" r="4" />
+                </svg>
+              </div>
+              <input
+                type="file"
+                id="avatar-input"
+                accept="image/*"
+                onchange="changeAvatar(this)"
+              />
+            </div>
+
+            <p class="profile-name" id="display-name">Cargando...</p>
+            <p class="profile-username" id="display-username">@usuario</p>
+            <p class="profile-bio" id="display-bio">Sin descripción aún.</p>
+            <div class="profile-badges">
+              <span class="badge">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+                Estudiante
+              </span>
+              <span class="badge" id="badge-member">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+                Miembro desde 2026
+              </span>
+            </div>
+          </div>
+
+          <button class="btn-edit-profile" onclick="openModal()">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+              <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+            </svg>
+            Editar perfil
+          </button>
+        </div>
+      </div>
+
+      <!-- STATS -->
+      <div class="profile-stats">
+        <div class="pstat">
+          <p class="pstat-num" id="stat-quizzes">0</p>
+          <p class="pstat-label">Quizzes</p>
+        </div>
+        <div class="pstat">
+          <p class="pstat-num" id="stat-avg">0%</p>
+          <p class="pstat-label">Promedio</p>
+        </div>
+        <div class="pstat">
+          <p class="pstat-num" id="stat-best">0%</p>
+          <p class="pstat-label">Mejor nota</p>
+        </div>
+        <div class="pstat">
+          <p class="pstat-num" id="stat-questions">0</p>
+          <p class="pstat-label">Preguntas</p>
+        </div>
+      </div>
+
+      <!-- GRID -->
+      <div class="profile-grid">
+        <!-- COLUMNA IZQUIERDA: info personal -->
+        <div style="display: flex; flex-direction: column; gap: 1.25rem">
+          <div class="pcard">
+            <p class="pcard-title">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              Información personal
+            </p>
+            <div class="info-row">
+              <div class="info-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+              </div>
+              <div>
+                <p class="info-label">Nombre completo</p>
+                <p class="info-value" id="info-name">—</p>
+              </div>
+            </div>
+            <div class="info-row">
+              <div class="info-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+                  />
+                  <polyline points="22,6 12,13 2,6" />
+                </svg>
+              </div>
+              <div>
+                <p class="info-label">Correo electrónico</p>
+                <p class="info-value" id="info-email">—</p>
+              </div>
+            </div>
+            <div class="info-row">
+              <div class="info-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+              </div>
+              <div>
+                <p class="info-label">País</p>
+                <p class="info-value" id="info-country">—</p>
+              </div>
+            </div>
+            <div class="info-row">
+              <div class="info-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <rect x="2" y="3" width="20" height="14" rx="2" />
+                  <line x1="8" y1="21" x2="16" y2="21" />
+                  <line x1="12" y1="17" x2="12" y2="21" />
+                </svg>
+              </div>
+              <div>
+                <p class="info-label">Institución</p>
+                <p class="info-value" id="info-school">—</p>
+              </div>
+            </div>
+            <div class="info-row">
+              <div class="info-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+              </div>
+              <div>
+                <p class="info-label">Miembro desde</p>
+                <p class="info-value" id="info-since">—</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="pcard">
+            <p class="pcard-title">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"
+                />
+                <path
+                  d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"
+                />
+              </svg>
+              Redes sociales
+            </p>
+            <div class="info-row">
+              <div class="info-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"
+                  />
+                </svg>
+              </div>
+              <div>
+                <p class="info-label">GitHub</p>
+                <p class="info-value" id="info-github">—</p>
+              </div>
+            </div>
+            <div class="info-row">
+              <div class="info-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"
+                  />
+                  <rect x="2" y="9" width="4" height="12" />
+                  <circle cx="4" cy="4" r="2" />
+                </svg>
+              </div>
+              <div>
+                <p class="info-label">LinkedIn</p>
+                <p class="info-value" id="info-linkedin">—</p>
+              </div>
+            </div>
+            <div class="info-row">
+              <div class="info-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M21 2H3v16h5v4l4-4h5l4-4V2zM11 11V7m4 4V7" />
+                </svg>
+              </div>
+              <div>
+                <p class="info-label">Twitter / X</p>
+                <p class="info-value" id="info-twitter">—</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLUMNA DERECHA: actividad reciente -->
+        <div style="display: flex; flex-direction: column; gap: 1.25rem">
+          <div class="pcard">
+            <p class="pcard-title">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+              </svg>
+              Actividad reciente
+            </p>
+            <div id="recent-quizzes">
+              <p
+                style="
+                  font-size: 0.875rem;
+                  color: var(--muted);
+                  text-align: center;
+                  padding: 1.5rem 0;
+                "
+              >
+                Aún no tienes quizzes.
+              </p>
+            </div>
+            <a
+              href="dashboard.html"
+              style="
+                display: block;
+                text-align: center;
+                margin-top: 1rem;
+                font-size: 0.875rem;
+                color: var(--accent);
+                font-weight: 500;
+                text-decoration: none;
+              "
+              >Ver historial completo →</a
+            >
+          </div>
+
+          <div class="pcard">
+            <p class="pcard-title">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polygon
+                  points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                />
+              </svg>
+              Logros
+            </p>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0.75rem;
+              "
+              id="logros-grid"
+            >
+              <div class="logro-badge" id="logro1">
+                <div style="font-size: 1.75rem; margin-bottom: 0.4rem">🎯</div>
+                <p
+                  style="
+                    font-size: 0.75rem;
+                    font-weight: 600;
+                    color: var(--text);
+                  "
+                >
+                  Primer quiz
+                </p>
+                <p style="font-size: 0.7rem; color: var(--muted2)">
+                  Completa tu primer quiz
+                </p>
+              </div>
+              <div class="logro-badge" id="logro2">
+                <div style="font-size: 1.75rem; margin-bottom: 0.4rem">⚡</div>
+                <p
+                  style="
+                    font-size: 0.75rem;
+                    font-weight: 600;
+                    color: var(--text);
+                  "
+                >
+                  Racha x5
+                </p>
+                <p style="font-size: 0.7rem; color: var(--muted2)">
+                  5 quizzes seguidos
+                </p>
+              </div>
+              <div class="logro-badge" id="logro3">
+                <div style="font-size: 1.75rem; margin-bottom: 0.4rem">🏆</div>
+                <p
+                  style="
+                    font-size: 0.75rem;
+                    font-weight: 600;
+                    color: var(--text);
+                  "
+                >
+                  Perfecto
+                </p>
+                <p style="font-size: 0.7rem; color: var(--muted2)">
+                  100% en un quiz
+                </p>
+              </div>
+            </div>
+            <style>
+              .logro-badge {
+                background: var(--surface2);
+                border: 1.5px solid var(--border);
+                border-radius: var(--radius-sm);
+                padding: 0.9rem 0.75rem;
+                text-align: center;
+                opacity: 0.45;
+                transition: opacity 0.2s;
+              }
+              .logro-badge.unlocked {
+                opacity: 1;
+                border-color: var(--accent-mid);
+                background: var(--accent-light);
+              }
+            </style>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL EDITAR PERFIL -->
+    <div
+      class="modal-overlay"
+      id="modal-overlay"
+      onclick="closeModalOutside(event)"
+    >
+      <div class="modal">
+        <div class="modal-header">
+          <p class="modal-title">Editar perfil</p>
+          <button class="modal-close" onclick="closeModal()">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Nombre</label>
+            <input
+              type="text"
+              class="form-input"
+              id="edit-name"
+              placeholder="Tu nombre"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Apellido</label>
+            <input
+              type="text"
+              class="form-input"
+              id="edit-lastname"
+              placeholder="Tu apellido"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Nombre de usuario</label>
+          <input
+            type="text"
+            class="form-input"
+            id="edit-username"
+            placeholder="@usuario"
+          />
+          <p class="form-hint">Solo letras, números y guiones bajos.</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Descripción / Bio</label>
+          <textarea
+            class="form-textarea"
+            id="edit-bio"
+            placeholder="Cuéntanos algo sobre ti..."
+          ></textarea>
+          <p class="form-hint"><span id="bio-count">0</span>/160 caracteres</p>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">País</label>
+            <input
+              type="text"
+              class="form-input"
+              id="edit-country"
+              placeholder="Ej: Perú"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Institución / Universidad</label>
+            <input
+              type="text"
+              class="form-input"
+              id="edit-school"
+              placeholder="Ej: UNMSM"
+            />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">GitHub</label>
+            <input
+              type="text"
+              class="form-input"
+              id="edit-github"
+              placeholder="usuario"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">LinkedIn</label>
+            <input
+              type="text"
+              class="form-input"
+              id="edit-linkedin"
+              placeholder="usuario"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Twitter / X</label>
+          <input
+            type="text"
+            class="form-input"
+            id="edit-twitter"
+            placeholder="@usuario"
+          />
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+          <button class="btn-save" onclick="saveProfile()">
+            Guardar cambios
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <script src="../js/supabase.js" type="module"></script>
+    <script>
+      /* ── Estado del perfil ── */
+      let profileData = {
+        name: "",
+        lastname: "",
+        username: "",
+        bio: "",
+        country: "",
+        school: "",
+        github: "",
+        linkedin: "",
+        twitter: "",
+        avatarUrl: "",
+        bannerUrl: "",
+      };
+
+      /* ── Inicializar página ── */
+      async function init() {
+        try {
+          const user = await window.getCurrentUser();
+          if (!user) {
+            window.location.href = "login.html";
+            return;
+          }
+
+          /* Datos básicos de Supabase Auth */
+          const meta = user.user_metadata || {};
+          const email = user.email;
+          const since = new Date(user.created_at).toLocaleDateString("es", {
+            month: "long",
+            year: "numeric",
+          });
+
+          /* Cargar perfil guardado en localStorage */
+          const saved = JSON.parse(
+            localStorage.getItem("qf_profile_" + user.id) || "{}",
+          );
+          profileData = { ...profileData, ...saved };
+
+          /* Nombre por defecto desde el registro */
+          if (!profileData.name) {
+            profileData.name = meta.full_name?.split(" ")[0] || "Usuario";
+            profileData.lastname =
+              meta.full_name?.split(" ").slice(1).join(" ") || "";
+          }
+
+          renderProfile(email, since);
+          loadStats(user.id);
+          loadRecentQuizzes(user.id);
+        } catch (e) {
+          window.location.href = "login.html";
+        }
+      }
+
+      /* ── Renderizar perfil ── */
+      function renderProfile(email, since) {
+        const fullName = [profileData.name, profileData.lastname]
+          .filter(Boolean)
+          .join(" ");
+        const initials =
+          (profileData.name[0] || "") +
+          (profileData.lastname[0] || profileData.name[1] || "");
+
+        document.getElementById("display-name").textContent =
+          fullName || "Sin nombre";
+        document.getElementById("display-username").textContent =
+          "@" + (profileData.username || "usuario");
+        document.getElementById("display-bio").textContent =
+          profileData.bio || "Sin descripción aún.";
+        document.getElementById("avatar-initials").textContent =
+          initials.toUpperCase() || "?";
+        document.getElementById("info-name").textContent = fullName || "—";
+        document.getElementById("info-email").textContent = email;
+        document.getElementById("info-country").textContent =
+          profileData.country || "—";
+        document.getElementById("info-school").textContent =
+          profileData.school || "—";
+        document.getElementById("info-since").textContent = since;
+        document.getElementById("info-github").textContent = profileData.github
+          ? "@" + profileData.github
+          : "—";
+        document.getElementById("info-linkedin").textContent =
+          profileData.linkedin ? "@" + profileData.linkedin : "—";
+        document.getElementById("info-twitter").textContent =
+          profileData.twitter ? "@" + profileData.twitter : "—";
+        document.getElementById("badge-member").querySelector("span") && null;
+
+        /* Restaurar avatar */
+        if (profileData.avatarUrl) {
+          const img = document.getElementById("avatar-img-tag");
+          img.src = profileData.avatarUrl;
+          img.style.display = "block";
+          document.getElementById("avatar-initials").style.display = "none";
+        }
+        /* Restaurar banner */
+        if (profileData.bannerUrl) {
+          const bimg = document.getElementById("banner-img");
+          bimg.src = profileData.bannerUrl;
+          bimg.style.display = "block";
+        }
+      }
+
+      /* ── Cargar stats ── */
+      async function loadStats(userId) {
+        try {
+          const results = await window.getResults();
+          const total = results.length;
+          const avg = total
+            ? Math.round(results.reduce((s, r) => s + r.pct, 0) / total)
+            : 0;
+          const best = total ? Math.max(...results.map((r) => r.pct)) : 0;
+          const totalQ = results.reduce((s, r) => s + (r.total || 0), 0);
+
+          document.getElementById("stat-quizzes").textContent = total;
+          document.getElementById("stat-avg").textContent = avg + "%";
+          document.getElementById("stat-best").textContent = best + "%";
+          document.getElementById("stat-questions").textContent = totalQ;
+
+          /* Logros */
+          if (total >= 1)
+            document.getElementById("logro1").classList.add("unlocked");
+          if (total >= 5)
+            document.getElementById("logro2").classList.add("unlocked");
+          if (best === 100)
+            document.getElementById("logro3").classList.add("unlocked");
+
+          loadRecentQuizzes(results);
+        } catch {}
+      }
+
+      /* ── Quizzes recientes ── */
+      function loadRecentQuizzes(results) {
+        if (!Array.isArray(results) || !results.length) return;
+        const modeLabel = {
+          multiple: "Opción múltiple",
+          flashcard: "Flashcards",
+          truefalse: "V / F",
+        };
+        const icons = {
+          multiple: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>`,
+          flashcard: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>`,
+          truefalse: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>`,
+        };
+        const recent = results.slice(0, 5);
+        document.getElementById("recent-quizzes").innerHTML = recent
+          .map((r) => {
+            const date = new Date(r.created_at).toLocaleDateString("es", {
+              day: "2-digit",
+              month: "short",
+            });
+            const pClass =
+              r.pct >= 80 ? "pct-high" : r.pct >= 50 ? "pct-mid" : "pct-low";
+            return `<div class="quiz-row">
+          <div class="quiz-mode-icon">${icons[r.mode] || icons.multiple}</div>
+          <div class="quiz-info">
+            <p class="quiz-mode-label">${modeLabel[r.mode] || r.mode}</p>
+            <p class="quiz-date">${date} · ${r.total} preguntas</p>
+          </div>
+          <span class="quiz-pct ${pClass}">${r.pct}%</span>
+        </div>`;
+          })
+          .join("");
+      }
+
+      /* ── Modal ── */
+      function openModal() {
+        document.getElementById("edit-name").value = profileData.name || "";
+        document.getElementById("edit-lastname").value =
+          profileData.lastname || "";
+        document.getElementById("edit-username").value =
+          profileData.username || "";
+        document.getElementById("edit-bio").value = profileData.bio || "";
+        document.getElementById("edit-country").value =
+          profileData.country || "";
+        document.getElementById("edit-school").value = profileData.school || "";
+        document.getElementById("edit-github").value = profileData.github || "";
+        document.getElementById("edit-linkedin").value =
+          profileData.linkedin || "";
+        document.getElementById("edit-twitter").value =
+          profileData.twitter || "";
+        updateBioCount();
+        document.getElementById("modal-overlay").classList.add("open");
+      }
+
+      function closeModal() {
+        document.getElementById("modal-overlay").classList.remove("open");
+      }
+      function closeModalOutside(e) {
+        if (e.target.id === "modal-overlay") closeModal();
+      }
+
+      /* Contador bio */
+      document.addEventListener("DOMContentLoaded", () => {
+        document
+          .getElementById("edit-bio")
+          ?.addEventListener("input", updateBioCount);
+      });
+      function updateBioCount() {
+        const val = document.getElementById("edit-bio")?.value || "";
+        document.getElementById("bio-count").textContent = Math.min(
+          val.length,
+          160,
+        );
+      }
+
+      /* ── Guardar perfil ── */
+      async function saveProfile() {
+        const user = await window.getCurrentUser();
+        profileData.name = document.getElementById("edit-name").value.trim();
+        profileData.lastname = document
+          .getElementById("edit-lastname")
+          .value.trim();
+        profileData.username = document
+          .getElementById("edit-username")
+          .value.trim()
+          .replace(/[^a-zA-Z0-9_]/g, "");
+        profileData.bio = document
+          .getElementById("edit-bio")
+          .value.trim()
+          .slice(0, 160);
+        profileData.country = document
+          .getElementById("edit-country")
+          .value.trim();
+        profileData.school = document
+          .getElementById("edit-school")
+          .value.trim();
+        profileData.github = document
+          .getElementById("edit-github")
+          .value.trim()
+          .replace("@", "");
+        profileData.linkedin = document
+          .getElementById("edit-linkedin")
+          .value.trim()
+          .replace("@", "");
+        profileData.twitter = document
+          .getElementById("edit-twitter")
+          .value.trim()
+          .replace("@", "");
+
+        localStorage.setItem(
+          "qf_profile_" + user.id,
+          JSON.stringify(profileData),
+        );
+
+        const email = user.email;
+        const since = new Date(user.created_at).toLocaleDateString("es", {
+          month: "long",
+          year: "numeric",
+        });
+        renderProfile(email, since);
+        closeModal();
+        showToast("Perfil actualizado correctamente", "success");
+      }
+
+      /* ── Cambiar avatar ── */
+      function changeAvatar(input) {
+        const file = input.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          profileData.avatarUrl = e.target.result;
+          const img = document.getElementById("avatar-img-tag");
+          img.src = e.target.result;
+          img.style.display = "block";
+          document.getElementById("avatar-initials").style.display = "none";
+          const user = await window.getCurrentUser();
+          localStorage.setItem(
+            "qf_profile_" + user.id,
+            JSON.stringify(profileData),
+          );
+          showToast("Foto de perfil actualizada", "success");
+        };
+        reader.readAsDataURL(file);
+      }
+
+      /* ── Cambiar banner ── */
+      function changeBanner(input) {
+        const file = input.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          profileData.bannerUrl = e.target.result;
+          const bimg = document.getElementById("banner-img");
+          bimg.src = e.target.result;
+          bimg.style.display = "block";
+          const user = await window.getCurrentUser();
+          localStorage.setItem(
+            "qf_profile_" + user.id,
+            JSON.stringify(profileData),
+          );
+          showToast("Banner actualizado", "success");
+        };
+        reader.readAsDataURL(file);
+      }
+
+      /* ── Logout ── */
+      async function handleLogout() {
+        await window.signOut();
+        window.location.href = "../index.html";
+      }
+
+      /* ── Toast ── */
+      function showToast(msg, type = "") {
+        const t = document.getElementById("toast");
+        t.textContent = msg;
+        t.className = "toast show " + type;
+        setTimeout(() => {
+          t.className = "toast";
+        }, 3000);
+      }
+
+      init();
+    </script>
+  </body>
+</html>
