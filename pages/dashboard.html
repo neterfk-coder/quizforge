@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mi historial — QuizForge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/dashboard.css" />
+  </head>
+  <body>
+    <!-- NAV -->
+    <nav>
+      <a href="../index.html" class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+          </svg>
+        </div>
+        QuizForge
+      </a>
+      <div class="nav-links">
+        <span class="nav-user" id="nav-user">—</span>
+        <button class="btn-ghost" onclick="handleLogout()">
+          Cerrar sesión
+        </button>
+      </div>
+    </nav>
+
+    <!-- HEADER -->
+    <div class="dash-header">
+      <div class="dash-header-text">
+        <h1 class="dash-title">Mi historial</h1>
+        <p class="dash-sub">Todos tus quizzes completados</p>
+      </div>
+      <a href="../index.html" class="btn-primary">+ Nuevo quiz</a>
+    </div>
+
+    <!-- STATS CARDS -->
+    <div class="dash-stats">
+      <div class="stat-card">
+        <p class="stat-card-label">Quizzes completados</p>
+        <p class="stat-card-value" id="total-quizzes">—</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-card-label">Promedio de precisión</p>
+        <p class="stat-card-value" id="avg-pct">—</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-card-label">Mejor resultado</p>
+        <p class="stat-card-value" id="best-score">—</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-card-label">Preguntas respondidas</p>
+        <p class="stat-card-value" id="total-questions">—</p>
+      </div>
+    </div>
+
+    <!-- FILTRO -->
+    <div class="dash-filters">
+      <select id="filter-mode" onchange="filterResults()">
+        <option value="all">Todos los modos</option>
+        <option value="multiple">Opción múltiple</option>
+        <option value="flashcard">Flashcards</option>
+        <option value="truefalse">Verdadero / Falso</option>
+      </select>
+      <select id="filter-sort" onchange="filterResults()">
+        <option value="recent">Más recientes</option>
+        <option value="best">Mejor resultado</option>
+        <option value="worst">Peor resultado</option>
+      </select>
+    </div>
+
+    <!-- TABLA DE RESULTADOS -->
+    <div class="dash-table-wrap">
+      <div id="loading-results" class="dash-loading">
+        <div class="spinner"></div>
+        <span>Cargando historial...</span>
+      </div>
+      <div id="empty-state" class="dash-empty" style="display: none">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          width="48"
+          height="48"
+          style="color: var(--muted2)"
+        >
+          <path
+            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"
+          />
+          <rect x="9" y="3" width="6" height="4" rx="1" />
+        </svg>
+        <p>Aún no tienes quizzes guardados.</p>
+        <a href="../index.html" class="btn-primary" style="margin-top: 1rem"
+          >Crear mi primer quiz</a
+        >
+      </div>
+      <table class="dash-table" id="results-table" style="display: none">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Modo</th>
+            <th>Preguntas</th>
+            <th>Correctas</th>
+            <th>Precisión</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="results-body"></tbody>
+      </table>
+    </div>
+
+    <script src="../js/supabase.js"></script>
+    <script>
+      let allResults = [];
+
+      async function init() {
+        try {
+          const user = await window.getCurrentUser();
+          if (!user) {
+            window.location.href = "login.html";
+            return;
+          }
+          document.getElementById("nav-user").textContent = user.email;
+
+          allResults = await window.getResults();
+          renderStats(allResults);
+          renderTable(allResults);
+        } catch {
+          window.location.href = "login.html";
+        }
+      }
+
+      function renderStats(data) {
+        const total = data.length;
+        const avgPct = total
+          ? Math.round(data.reduce((s, r) => s + r.pct, 0) / total)
+          : 0;
+        const best = total ? Math.max(...data.map((r) => r.pct)) : 0;
+        const totalQ = data.reduce((s, r) => s + (r.total || 0), 0);
+
+        document.getElementById("total-quizzes").textContent = total;
+        document.getElementById("avg-pct").textContent = total
+          ? avgPct + "%"
+          : "—";
+        document.getElementById("best-score").textContent = total
+          ? best + "%"
+          : "—";
+        document.getElementById("total-questions").textContent = totalQ || "—";
+      }
+
+      function renderTable(data) {
+        document.getElementById("loading-results").style.display = "none";
+
+        if (!data.length) {
+          document.getElementById("empty-state").style.display = "flex";
+          return;
+        }
+
+        const modeLabel = {
+          multiple: "Opción múltiple",
+          flashcard: "Flashcards",
+          truefalse: "V / F",
+        };
+        const tbody = document.getElementById("results-body");
+        tbody.innerHTML = data
+          .map((r) => {
+            const fecha = new Date(r.created_at).toLocaleDateString("es", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            });
+            const pctColor =
+              r.pct >= 80
+                ? "var(--correct)"
+                : r.pct >= 50
+                  ? "var(--accent)"
+                  : "var(--danger)";
+            return `<tr>
+          <td>${fecha}</td>
+          <td><span class="mode-badge">${modeLabel[r.mode] || r.mode}</span></td>
+          <td>${r.total}</td>
+          <td>${r.correct}</td>
+          <td><strong style="color:${pctColor}">${r.pct}%</strong></td>
+          <td><a href="results.html?id=${r.id}" class="form-link">Ver →</a></td>
+        </tr>`;
+          })
+          .join("");
+
+        document.getElementById("results-table").style.display = "table";
+      }
+
+      function filterResults() {
+        const mode = document.getElementById("filter-mode").value;
+        const sort = document.getElementById("filter-sort").value;
+
+        let filtered =
+          mode === "all"
+            ? [...allResults]
+            : allResults.filter((r) => r.mode === mode);
+
+        if (sort === "best") filtered.sort((a, b) => b.pct - a.pct);
+        if (sort === "worst") filtered.sort((a, b) => a.pct - b.pct);
+        if (sort === "recent")
+          filtered.sort(
+            (a, b) => new Date(b.created_at) - new Date(a.created_at),
+          );
+
+        renderTable(filtered);
+      }
+
+      async function handleLogout() {
+        await window.signOut();
+        window.location.href = "../index.html";
+      }
+
+      init();
+    </script>
+  </body>
+</html>

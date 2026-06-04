@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recuperar contraseña — QuizForge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/auth.css" />
+  </head>
+  <body class="auth-body">
+    <div class="auth-wrapper">
+      <a href="../index.html" class="auth-logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+          </svg>
+        </div>
+        QuizForge
+      </a>
+
+      <div class="auth-card">
+        <!-- Vista: pedir correo -->
+        <div id="step-email">
+          <h1 class="auth-title">Recuperar contraseña</h1>
+          <p class="auth-sub">
+            Te enviaremos un enlace para restablecer tu contraseña.
+          </p>
+
+          <div id="auth-error" class="auth-alert" style="display: none"></div>
+
+          <div class="form-group">
+            <label class="form-label" for="email">Correo electrónico</label>
+            <input
+              type="email"
+              id="email"
+              class="form-input"
+              placeholder="tucorreo@ejemplo.com"
+            />
+          </div>
+
+          <button class="btn-auth" id="send-btn" onclick="handleReset()">
+            Enviar enlace
+          </button>
+
+          <p class="auth-footer-text">
+            <a href="login.html" class="form-link"
+              >← Volver al inicio de sesión</a
+            >
+          </p>
+        </div>
+
+        <!-- Vista: confirmación enviada -->
+        <div
+          id="step-sent"
+          style="display: none; text-align: center; padding: 1rem 0"
+        >
+          <div class="success-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              width="32"
+              height="32"
+            >
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </div>
+          <h2 class="auth-title" style="margin-top: 1rem">Revisa tu correo</h2>
+          <p class="auth-sub">
+            Si el correo existe en nuestro sistema, recibirás un enlace en los
+            próximos minutos.
+          </p>
+          <a
+            href="login.html"
+            class="btn-auth"
+            style="
+              display: block;
+              margin-top: 1.5rem;
+              text-decoration: none;
+              text-align: center;
+            "
+          >
+            Volver al inicio de sesión
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <script src="../js/supabase.js"></script>
+    <script>
+      async function handleReset() {
+        const email = document.getElementById("email").value.trim();
+        const btn = document.getElementById("send-btn");
+
+        if (!email) {
+          showError("Ingresa tu correo electrónico.");
+          return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = "Enviando...";
+
+        try {
+          await window.resetPassword(email);
+          document.getElementById("step-email").style.display = "none";
+          document.getElementById("step-sent").style.display = "block";
+        } catch {
+          showError("No se pudo enviar el correo. Intenta de nuevo.");
+          btn.disabled = false;
+          btn.textContent = "Enviar enlace";
+        }
+      }
+
+      function showError(msg) {
+        const box = document.getElementById("auth-error");
+        box.textContent = msg;
+        box.style.display = "block";
+      }
+    </script>
+  </body>
+</html>

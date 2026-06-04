@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Resultado — QuizForge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/dashboard.css" />
+  </head>
+  <body>
+    <!-- NAV -->
+    <nav>
+      <a href="../index.html" class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+          </svg>
+        </div>
+        QuizForge
+      </a>
+      <div class="nav-links">
+        <a href="dashboard.html" class="btn-ghost">← Mi historial</a>
+        <a href="../index.html" class="btn-primary">Nuevo quiz</a>
+      </div>
+    </nav>
+
+    <!-- RESULTADO -->
+    <div class="result-page">
+      <div
+        id="loading-result"
+        style="text-align: center; padding: 4rem; color: var(--muted)"
+      >
+        <div class="spinner" style="margin: 0 auto 1rem"></div>
+        Cargando resultado...
+      </div>
+
+      <div id="result-content" style="display: none">
+        <!-- Score grande -->
+        <div class="result-hero">
+          <div class="score-circle-lg" id="score-circle-lg">
+            <span class="score-num-lg" id="score-pct-lg">0%</span>
+            <span class="score-label-lg">precisión</span>
+          </div>
+          <h1 class="result-page-title" id="result-page-title">
+            ¡Buen trabajo!
+          </h1>
+          <p class="result-page-sub" id="result-page-sub">—</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="result-stats-grid">
+          <div class="stat-card">
+            <p class="stat-card-label">Correctas</p>
+            <p class="stat-card-value correct-color" id="rs-correct">—</p>
+          </div>
+          <div class="stat-card">
+            <p class="stat-card-label">Incorrectas</p>
+            <p class="stat-card-value danger-color" id="rs-wrong">—</p>
+          </div>
+          <div class="stat-card">
+            <p class="stat-card-label">Total preguntas</p>
+            <p class="stat-card-value" id="rs-total">—</p>
+          </div>
+          <div class="stat-card">
+            <p class="stat-card-label">Modo</p>
+            <p class="stat-card-value" id="rs-mode">—</p>
+          </div>
+        </div>
+
+        <!-- Acciones -->
+        <div class="result-page-actions">
+          <a href="../index.html" class="btn-primary">Nuevo quiz</a>
+          <a href="dashboard.html" class="btn-outline">Ver historial</a>
+        </div>
+      </div>
+    </div>
+
+    <script src="../js/supabase.js"></script>
+    <script>
+      async function init() {
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get("id");
+
+        if (!id) {
+          window.location.href = "dashboard.html";
+          return;
+        }
+
+        try {
+          const result = await window.getResultById(id);
+          const modeLabel = {
+            multiple: "Opción múltiple",
+            flashcard: "Flashcards",
+            truefalse: "Verdadero / Falso",
+          };
+          const pct = result.pct;
+          const pctColor =
+            pct >= 80
+              ? "var(--correct)"
+              : pct >= 50
+                ? "var(--accent)"
+                : "var(--danger)";
+
+          document.getElementById("score-pct-lg").textContent = pct + "%";
+          document.getElementById("score-circle-lg").style.borderColor =
+            pctColor;
+          document.getElementById("score-circle-lg").style.background =
+            pct >= 80
+              ? "var(--correct-bg)"
+              : pct >= 50
+                ? "var(--accent-light)"
+                : "var(--danger-bg)";
+          document.getElementById("score-num-lg").style.color = pctColor;
+
+          document.getElementById("result-page-title").textContent =
+            pct >= 80
+              ? "¡Excelente resultado!"
+              : pct >= 50
+                ? "¡Buen trabajo!"
+                : "Sigue practicando";
+          document.getElementById("result-page-sub").textContent =
+            `Respondiste ${result.correct} de ${result.total} correctamente.`;
+
+          document.getElementById("rs-correct").textContent = result.correct;
+          document.getElementById("rs-wrong").textContent =
+            result.total - result.correct;
+          document.getElementById("rs-total").textContent = result.total;
+          document.getElementById("rs-mode").textContent =
+            modeLabel[result.mode] || result.mode;
+
+          document.getElementById("loading-result").style.display = "none";
+          document.getElementById("result-content").style.display = "block";
+        } catch {
+          window.location.href = "dashboard.html";
+        }
+      }
+
+      init();
+    </script>
+  </body>
+</html>
