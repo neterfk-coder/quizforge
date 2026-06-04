@@ -1316,3 +1316,32 @@ footer {
     display: none;
   }
 }
+
+/* ════════════════════════
+   BOTÓN DE IDIOMA
+════════════════════════ */
+.btn-lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--surface);
+  border: 1.5px solid var(--border2);
+  color: var(--muted);
+  padding: 0.45rem 0.9rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+  letter-spacing: 0.03em;
+}
+.btn-lang:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-light);
+  transform: translateY(-1px);
+}
+.lang-flag {
+  font-size: 0.9rem;
+}
