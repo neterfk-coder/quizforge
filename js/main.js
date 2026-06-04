@@ -109,3 +109,77 @@ async function saveResult() {
     UI.toast("Inicia sesión para guardar tu resultado", "error");
   }
 }
+
+/* ════════════════════════
+   MODO INVITADO
+   Se ejecuta al cargar index.html
+════════════════════════ */
+document.addEventListener("DOMContentLoaded", () => {
+  const isGuest = localStorage.getItem("qf_guest_mode") === "true";
+  if (!isGuest) return;
+
+  /* Crear banner de invitado */
+  const banner = document.createElement("div");
+  banner.id = "guest-banner";
+  banner.innerHTML = `
+    <div style="
+      background: linear-gradient(90deg, #1d4ed8, #2563eb);
+      color: #fff;
+      padding: .65rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: .75rem;
+      font-family: 'Inter', Arial, sans-serif;
+      font-size: .875rem;
+    ">
+      <span style="display:flex;align-items:center;gap:8px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+          <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        Estás en <strong style="margin:0 3px">modo invitado</strong> — tus resultados no se guardarán
+      </span>
+      <span style="display:flex;align-items:center;gap:.6rem;">
+        <a href="pages/register.html" style="
+          background:#fff; color:#1d4ed8;
+          padding:.35rem .9rem; border-radius:7px;
+          font-weight:600; font-size:.82rem;
+          text-decoration:none; transition:opacity .15s;
+        ">Crear cuenta gratis</a>
+        <button onclick="exitGuestMode()" style="
+          background:rgba(255,255,255,.15);
+          border:1px solid rgba(255,255,255,.3);
+          color:#fff; padding:.35rem .9rem;
+          border-radius:7px; font-size:.82rem;
+          cursor:pointer; font-family:inherit;
+        ">Salir</button>
+      </span>
+    </div>`;
+
+  /* Insertar debajo del nav */
+  const nav = document.getElementById("navbar");
+  nav.parentNode.insertBefore(banner, nav.nextSibling);
+
+  /* Actualizar nav para mostrar nombre invitado */
+  const navLinks = document.querySelector(".nav-links");
+  if (navLinks) {
+    const chip = document.createElement("span");
+    chip.style.cssText = `
+      font-size:.8rem; font-weight:600; color:var(--accent);
+      background:var(--accent-light); border:1.5px solid var(--border2);
+      padding:.3rem .85rem; border-radius:999px;
+      font-family:'Inter',Arial,sans-serif;
+    `;
+    chip.textContent = "👤 Invitado";
+    navLinks.prepend(chip);
+  }
+});
+
+/* Salir del modo invitado */
+function exitGuestMode() {
+  localStorage.removeItem("qf_guest_mode");
+  localStorage.removeItem("qf_guest_name");
+  window.location.href = "pages/login.html";
+}

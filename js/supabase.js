@@ -133,3 +133,25 @@ supabase.auth.onAuthStateChange((event, session) => {
 
 /* Exponer cliente para uso directo en settings.html */
 window._supabase = supabase;
+
+/* ════════════════════════
+   MODO INVITADO
+   Sobrescribe saveQuizResult para
+   que no falle cuando no hay sesión
+════════════════════════ */
+const _originalSave = window.saveQuizResult;
+window.saveQuizResult = async (data) => {
+  if (localStorage.getItem("qf_guest_mode") === "true") {
+    /* En modo invitado guardar solo en localStorage */
+    const key = "qf_guest_results";
+    const results = JSON.parse(localStorage.getItem(key) || "[]");
+    results.unshift({
+      ...data,
+      id: Date.now(),
+      created_at: new Date().toISOString(),
+    });
+    localStorage.setItem(key, JSON.stringify(results.slice(0, 20)));
+    return;
+  }
+  return _originalSave(data);
+};
