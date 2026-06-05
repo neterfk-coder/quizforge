@@ -21,15 +21,83 @@ function setMode(mode) {
 }
 
 /* ── Leer archivo subido ── */
-function handleFile(input) {
+async function handleFile(input) {
   const file = input.files[0];
   if (!file) return;
-  document.getElementById("file-name").textContent = file.name;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    document.getElementById("text-input").value = e.target.result;
-  };
-  reader.readAsText(file);
+
+  const fileNameEl = document.getElementById("file-name");
+  const textInputEl = document.getElementById("text-input");
+
+  fileNameEl.textContent = "⏳ Reading " + file.name + "...";
+  textInputEl.value = "";
+
+  try {
+    /* TXT file — read directly */
+    if (file.type === "text/plain" || file.name.endsWith(".txt")) {
+      const text = await file.text();
+      textInputEl.value = text;
+      fileNameEl.textContent = "✅ " + file.name;
+      return;
+    }
+
+    /* PDF file — extract text with PDF.js */
+    if (typeof pdfjsLib === "undefined") {
+      /* Load PDF.js dynamically if not loaded yet */
+      await new Promise((resolve, reject) => {
+        const s = document.createElement("script");
+        s.src =
+          "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js";
+        s.onload = () => {
+          pdfjsLib.GlobalWorkerOptions.workerSrc =
+            "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js";
+          resolve();
+        };
+        s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
+
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    const maxPages = Math.min(pdf.numPages, 25);
+    let fullText = "";
+
+    fileNameEl.textContent = "⏳ Extracting text (" + maxPages + " pages)...";
+
+    for (let i = 1; i <= maxPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      const text = content.items.map((item) => item.str).join(" ");
+      fullText += text + "\n";
+    }
+
+    fullText = fullText.trim();
+
+    if (!fullText || fullText.length < 30) {
+      fileNameEl.textContent =
+        "⚠️ Could not extract text — try a text-based PDF";
+      if (window.showToast)
+        showToast("Could not extract text from PDF", "error");
+      return;
+    }
+
+    textInputEl.value = fullText;
+    fileNameEl.textContent =
+      "✅ " +
+      file.name +
+      " (" +
+      pdf.numPages +
+      " pages, " +
+      fullText.length.toLocaleString() +
+      " chars)";
+    if (window.showToast)
+      showToast("✅ PDF loaded! Ready to generate quiz.", "success");
+  } catch (err) {
+    fileNameEl.textContent = "⚠️ Error reading file";
+    console.error("PDF read error:", err);
+    if (window.showToast)
+      showToast("Error reading PDF: " + err.message, "error");
+  }
 }
 
 /* ── Generar quiz ── */
