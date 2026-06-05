@@ -1,0 +1,1334 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Multiplayer 1v1 — QuizForge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --bg: #f0f6ff;
+        --surface: #fff;
+        --surface2: #f7faff;
+        --border: #d0e3fa;
+        --border2: #b8d4f7;
+        --accent: #2563eb;
+        --accent-light: #dbeafe;
+        --accent-mid: #60a5fa;
+        --accent-dark: #1d4ed8;
+        --text: #0f172a;
+        --muted: #64748b;
+        --muted2: #94a3b8;
+        --correct: #16a34a;
+        --correct-bg: #f0fdf4;
+        --correct-bdr: #86efac;
+        --danger: #dc2626;
+        --danger-bg: #fef2f2;
+        --danger-bdr: #fca5a5;
+        --gold: #f59e0b;
+        --radius: 16px;
+        --radius-sm: 10px;
+        --shadow:
+          0 1px 4px rgba(37, 99, 235, 0.07), 0 4px 18px rgba(37, 99, 235, 0.06);
+        --shadow-md: 0 6px 28px rgba(37, 99, 235, 0.12);
+        --font: "Inter", Arial, sans-serif;
+      }
+      html {
+        font-size: 16px;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--font);
+        min-height: 100vh;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 3rem;
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(18px);
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .logo {
+        font-weight: 800;
+        font-size: 1.2rem;
+        letter-spacing: -0.03em;
+        color: var(--accent);
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        text-decoration: none;
+      }
+      .logo-icon {
+        width: 32px;
+        height: 32px;
+        background: var(--accent);
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .logo-icon svg {
+        width: 16px;
+        height: 16px;
+      }
+      .btn-ghost {
+        background: none;
+        border: 1.5px solid var(--border2);
+        color: var(--muted);
+        padding: 0.48rem 1.1rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.18s;
+        text-decoration: none;
+      }
+      .btn-ghost:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: var(--accent-light);
+      }
+
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 2.5rem 1.5rem 6rem;
+      }
+      .screen {
+        display: none;
+      }
+      .screen.active {
+        display: block;
+        animation: fadeIn 0.3s ease;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ── LOBBY ── */
+      .lobby-hero {
+        background: linear-gradient(135deg, #6d28d9, #7c3aed 50%, #a855f7);
+        border-radius: var(--radius);
+        padding: 2.5rem 2rem;
+        text-align: center;
+        margin-bottom: 1.5rem;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(109, 40, 217, 0.35);
+      }
+      .lobby-hero::before {
+        content: "";
+        position: absolute;
+        bottom: -30px;
+        right: -30px;
+        width: 180px;
+        height: 180px;
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 50%;
+      }
+      .lobby-title {
+        font-weight: 900;
+        font-size: clamp(1.6rem, 4vw, 2.2rem);
+        color: #fff;
+        letter-spacing: -0.04em;
+        margin-bottom: 0.4rem;
+      }
+      .lobby-sub {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.75);
+        margin-bottom: 1.75rem;
+      }
+      .lobby-stats {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 2rem;
+      }
+      .lobby-stat {
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: var(--radius-sm);
+        padding: 0.65rem 1.1rem;
+        text-align: center;
+      }
+      .lobby-stat-num {
+        font-weight: 800;
+        font-size: 1.2rem;
+        color: #fff;
+      }
+      .lobby-stat-label {
+        font-size: 0.68rem;
+        color: rgba(255, 255, 255, 0.65);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .online-dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        background: #4ade80;
+        border-radius: 50%;
+        margin-right: 4px;
+        animation: blink 1.5s infinite;
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.3;
+        }
+      }
+
+      .lobby-modes {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      .mode-card {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 1.25rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: var(--shadow);
+      }
+      .mode-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        border-color: var(--accent-mid);
+      }
+      .mode-card.selected {
+        border-color: #7c3aed;
+        background: #ede9fe;
+      }
+      .mode-icon {
+        font-size: 1.75rem;
+        margin-bottom: 0.5rem;
+      }
+      .mode-name {
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: var(--text);
+        margin-bottom: 0.2rem;
+      }
+      .mode-desc {
+        font-size: 0.75rem;
+        color: var(--muted);
+      }
+
+      .btn-find {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #7c3aed;
+        border: none;
+        color: #fff;
+        padding: 0.85rem 2rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 4px 16px rgba(109, 40, 217, 0.35);
+      }
+      .btn-find:hover {
+        background: #6d28d9;
+        transform: translateY(-2px);
+      }
+
+      /* ── MATCHMAKING ── */
+      .matchmaking-card {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        padding: 3rem 2rem;
+        text-align: center;
+        box-shadow: var(--shadow-md);
+      }
+      .search-anim {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        border: 3px solid var(--border);
+        border-top-color: #7c3aed;
+        animation: spin 0.8s linear infinite;
+        margin: 0 auto 1.5rem;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .mm-title {
+        font-weight: 700;
+        font-size: 1.25rem;
+        color: var(--text);
+        margin-bottom: 0.4rem;
+      }
+      .mm-sub {
+        font-size: 0.875rem;
+        color: var(--muted);
+        margin-bottom: 1.5rem;
+      }
+      .mm-dots span {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        background: #7c3aed;
+        border-radius: 50%;
+        margin: 0 3px;
+        animation: dotBounce 1.2s infinite;
+      }
+      .mm-dots span:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .mm-dots span:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+      @keyframes dotBounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-8px);
+        }
+      }
+      .btn-cancel {
+        background: none;
+        border: 1.5px solid var(--border2);
+        color: var(--muted);
+        padding: 0.55rem 1.3rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        margin-top: 1.5rem;
+        transition: all 0.18s;
+      }
+      .btn-cancel:hover {
+        border-color: var(--danger);
+        color: var(--danger);
+      }
+
+      /* ── BATTLE ── */
+      .battle-header {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.25rem 1.75rem;
+        margin-bottom: 1.25rem;
+        box-shadow: var(--shadow);
+      }
+      .players-row {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+      .player {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+      }
+      .player-avatar {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        border: 2.5px solid transparent;
+      }
+      .player-avatar.you {
+        background: var(--accent-light);
+        border-color: var(--accent);
+      }
+      .player-avatar.bot {
+        background: #ede9fe;
+        border-color: #7c3aed;
+      }
+      .player-name {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .player-score {
+        font-weight: 900;
+        font-size: 1.5rem;
+        color: var(--text);
+        letter-spacing: -0.03em;
+      }
+      .vs-badge {
+        background: linear-gradient(135deg, #7c3aed, #ec4899);
+        color: #fff;
+        font-weight: 800;
+        font-size: 0.9rem;
+        padding: 0.35rem 0.75rem;
+        border-radius: 999px;
+        letter-spacing: 0.05em;
+      }
+      .battle-progress {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+      }
+      .prog-bar {
+        height: 6px;
+        border-radius: 999px;
+        overflow: hidden;
+        background: var(--border);
+      }
+      .prog-bar-fill {
+        height: 100%;
+        border-radius: 999px;
+        transition: width 0.4s ease;
+      }
+      .prog-bar-fill.you {
+        background: var(--accent);
+      }
+      .prog-bar-fill.bot {
+        background: #7c3aed;
+      }
+
+      .battle-timer {
+        text-align: center;
+        font-weight: 800;
+        font-size: 1.1rem;
+        color: var(--text);
+      }
+      .battle-timer.warning {
+        color: var(--gold);
+      }
+      .battle-timer.danger {
+        color: var(--danger);
+        animation: timerPulse 0.5s infinite;
+      }
+      @keyframes timerPulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.08);
+        }
+      }
+
+      .battle-q-card {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        padding: 2rem;
+        margin-bottom: 1.25rem;
+        box-shadow: var(--shadow-md);
+      }
+      .battle-q-num {
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: #7c3aed;
+        text-transform: uppercase;
+        letter-spacing: 0.09em;
+        margin-bottom: 0.6rem;
+      }
+      .battle-q-text {
+        font-size: 1.05rem;
+        font-weight: 500;
+        color: var(--text);
+        line-height: 1.7;
+        margin-bottom: 1.5rem;
+      }
+      .battle-options {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.65rem;
+      }
+      .battle-option {
+        background: var(--surface2);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 0.85rem 1rem;
+        cursor: pointer;
+        transition: all 0.18s;
+        font-size: 0.9rem;
+        color: var(--muted);
+        font-family: var(--font);
+        font-weight: 500;
+        text-align: left;
+      }
+      .battle-option:hover:not(:disabled) {
+        border-color: #a855f7;
+        color: #7c3aed;
+        background: #ede9fe;
+      }
+      .battle-option:disabled {
+        cursor: default;
+      }
+      .battle-option.correct {
+        border-color: var(--correct-bdr);
+        background: var(--correct-bg);
+        color: var(--correct);
+        font-weight: 600;
+      }
+      .battle-option.wrong {
+        border-color: var(--danger-bdr);
+        background: var(--danger-bg);
+        color: var(--danger);
+      }
+      .battle-option.bot-choice {
+        position: relative;
+      }
+      .battle-option.bot-choice::after {
+        content: "🤖";
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        font-size: 0.85rem;
+      }
+
+      /* Bot thinking */
+      .bot-thinking {
+        text-align: center;
+        font-size: 0.82rem;
+        color: var(--muted);
+        margin: 0.5rem 0;
+        min-height: 20px;
+      }
+
+      /* ── RESULT ── */
+      .battle-result {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        padding: 3rem 2rem;
+        text-align: center;
+        box-shadow: var(--shadow-md);
+      }
+      .result-banner {
+        font-size: 4rem;
+        margin-bottom: 0.75rem;
+        animation: bounceIn 0.6s;
+      }
+      @keyframes bounceIn {
+        from {
+          transform: scale(0);
+        }
+        to {
+          transform: scale(1);
+        }
+      }
+      .result-outcome {
+        font-weight: 900;
+        font-size: 2rem;
+        letter-spacing: -0.04em;
+        margin-bottom: 0.4rem;
+      }
+      .result-outcome.win {
+        color: #7c3aed;
+      }
+      .result-outcome.lose {
+        color: var(--danger);
+      }
+      .result-outcome.draw {
+        color: var(--gold);
+      }
+      .result-detail {
+        font-size: 0.9rem;
+        color: var(--muted);
+        margin-bottom: 2rem;
+      }
+      .result-scores {
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+        margin-bottom: 2rem;
+      }
+      .rs-card {
+        background: var(--surface2);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 1rem 1.5rem;
+        text-align: center;
+      }
+      .rs-num {
+        font-weight: 800;
+        font-size: 1.5rem;
+        letter-spacing: -0.03em;
+      }
+      .rs-num.you {
+        color: var(--accent);
+      }
+      .rs-num.bot {
+        color: #7c3aed;
+      }
+      .rs-label {
+        font-size: 0.72rem;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .result-btns {
+        display: flex;
+        gap: 0.85rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .btn-primary {
+        background: var(--accent);
+        border: none;
+        color: #fff;
+        padding: 0.7rem 1.5rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.18s;
+      }
+      .btn-primary:hover {
+        background: var(--accent-dark);
+        transform: translateY(-1px);
+      }
+      .btn-outline {
+        background: var(--surface);
+        border: 1.5px solid var(--border2);
+        color: var(--muted);
+        padding: 0.7rem 1.5rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-weight: 500;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.18s;
+      }
+      .btn-outline:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: var(--accent-light);
+      }
+
+      .float-d {
+        position: fixed;
+        font-size: 1.4rem;
+        pointer-events: none;
+        z-index: 501;
+        animation: floatUp 1.4s ease forwards;
+      }
+      @keyframes floatUp {
+        0% {
+          transform: translateY(0) rotate(0);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-160px) rotate(360deg);
+          opacity: 0;
+        }
+      }
+
+      .toast {
+        position: fixed;
+        bottom: 1.75rem;
+        right: 1.75rem;
+        background: var(--surface);
+        border: 1.5px solid var(--border2);
+        color: var(--text);
+        padding: 0.85rem 1.4rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.9rem;
+        font-weight: 500;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.25s;
+        z-index: 999;
+        pointer-events: none;
+        box-shadow: var(--shadow-md);
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      @media (max-width: 600px) {
+        nav {
+          padding: 1rem 1.25rem;
+        }
+        .page {
+          padding: 2rem 1rem 5rem;
+        }
+        .battle-options {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="../index.html" class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+          </svg>
+        </div>
+        QuizForge
+      </a>
+      <div style="display: flex; align-items: center; gap: 0.75rem">
+        <a href="../index.html" class="btn-ghost">Home</a>
+        <a href="diamonds.html" class="btn-ghost">💎 Diamonds</a>
+      </div>
+    </nav>
+
+    <div class="page">
+      <!-- ══ LOBBY ══ -->
+      <div class="screen active" id="screen-lobby">
+        <div class="lobby-hero">
+          <h1 class="lobby-title">🎮 Multiplayer 1v1</h1>
+          <p class="lobby-sub">
+            Challenge an opponent in real-time knowledge battles.<br />Answer
+            faster and more accurately to win!
+          </p>
+          <div class="lobby-stats">
+            <div class="lobby-stat">
+              <div class="lobby-stat-num">
+                <span class="online-dot"></span
+                ><span id="online-count">847</span>
+              </div>
+              <div class="lobby-stat-label">Online now</div>
+            </div>
+            <div class="lobby-stat">
+              <div class="lobby-stat-num" id="battles-count">2,400+</div>
+              <div class="lobby-stat-label">Battles today</div>
+            </div>
+            <div class="lobby-stat">
+              <div class="lobby-stat-num">10</div>
+              <div class="lobby-stat-label">Questions</div>
+            </div>
+            <div class="lobby-stat">
+              <div class="lobby-stat-num">+100</div>
+              <div class="lobby-stat-label">💎 Win reward</div>
+            </div>
+          </div>
+        </div>
+
+        <p
+          style="
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.85rem;
+          "
+        >
+          Select battle mode:
+        </p>
+        <div class="lobby-modes">
+          <div
+            class="mode-card selected"
+            id="mode-math"
+            onclick="selectMode('math', this)"
+          >
+            <div class="mode-icon">📐</div>
+            <div class="mode-name">Math Battle</div>
+            <div class="mode-desc">Calculus & algebra questions</div>
+          </div>
+          <div
+            class="mode-card"
+            id="mode-science"
+            onclick="selectMode('science', this)"
+          >
+            <div class="mode-icon">🔬</div>
+            <div class="mode-name">Science Battle</div>
+            <div class="mode-desc">Physics, chemistry, biology</div>
+          </div>
+          <div
+            class="mode-card"
+            id="mode-random"
+            onclick="selectMode('random', this)"
+          >
+            <div class="mode-icon">🎲</div>
+            <div class="mode-name">Random Mix</div>
+            <div class="mode-desc">All topics, surprise questions</div>
+          </div>
+        </div>
+
+        <div style="text-align: center">
+          <button class="btn-find" onclick="findMatch()">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              width="18"
+              height="18"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            Find Match
+          </button>
+        </div>
+      </div>
+
+      <!-- ══ MATCHMAKING ══ -->
+      <div class="screen" id="screen-matchmaking">
+        <div class="matchmaking-card">
+          <div class="search-anim"></div>
+          <h2 class="mm-title">Finding your opponent...</h2>
+          <p class="mm-sub">Searching for a player with similar skill level</p>
+          <div class="mm-dots"><span></span><span></span><span></span></div>
+          <p
+            id="mm-status"
+            style="font-size: 0.82rem; color: var(--muted); margin-top: 1rem"
+          ></p>
+          <button class="btn-cancel" onclick="cancelMatch()">Cancel</button>
+        </div>
+      </div>
+
+      <!-- ══ BATTLE ══ -->
+      <div class="screen" id="screen-battle">
+        <div class="battle-header">
+          <div class="players-row">
+            <div class="player">
+              <div class="player-avatar you" id="you-avatar">👤</div>
+              <div class="player-name">You</div>
+              <div class="player-score" id="you-score">0</div>
+            </div>
+            <div style="text-align: center">
+              <div class="vs-badge">VS</div>
+              <div
+                class="battle-timer"
+                id="battle-timer"
+                style="margin-top: 0.5rem"
+              >
+                0:20
+              </div>
+            </div>
+            <div class="player">
+              <div class="player-avatar bot" id="bot-avatar">🤖</div>
+              <div class="player-name" id="bot-name">QuizBot</div>
+              <div class="player-score" id="bot-score">0</div>
+            </div>
+          </div>
+          <div class="battle-progress">
+            <div class="prog-bar">
+              <div
+                class="prog-bar-fill you"
+                id="you-prog"
+                style="width: 0%"
+              ></div>
+            </div>
+            <div class="prog-bar">
+              <div
+                class="prog-bar-fill bot"
+                id="bot-prog"
+                style="width: 0%"
+              ></div>
+            </div>
+          </div>
+          <div
+            style="text-align: center; font-size: 0.75rem; color: var(--muted)"
+          >
+            Question <span id="battle-q-num">1</span> of
+            <span id="battle-q-total">10</span>
+          </div>
+        </div>
+
+        <div class="battle-q-card">
+          <div class="battle-q-num" id="battle-q-label">Question 1</div>
+          <div class="battle-q-text" id="battle-q-text"></div>
+          <div class="battle-options" id="battle-options"></div>
+          <div class="bot-thinking" id="bot-thinking"></div>
+        </div>
+      </div>
+
+      <!-- ══ RESULT ══ -->
+      <div class="screen" id="screen-result">
+        <div class="battle-result">
+          <div class="result-banner" id="result-banner">🏆</div>
+          <div class="result-outcome" id="result-outcome">Victory!</div>
+          <p class="result-detail" id="result-detail">You won the battle!</p>
+          <div class="result-scores">
+            <div class="rs-card">
+              <div class="rs-num you" id="final-you">0</div>
+              <div class="rs-label">Your score</div>
+            </div>
+            <div class="rs-card">
+              <div class="rs-num bot" id="final-bot">0</div>
+              <div class="rs-label" id="final-bot-label">Bot score</div>
+            </div>
+          </div>
+          <div class="result-btns">
+            <button class="btn-primary" onclick="playAgain()">
+              Play Again
+            </button>
+            <button class="btn-outline" onclick="showScreen('lobby')">
+              Change Mode
+            </button>
+            <button
+              class="btn-outline"
+              onclick="window.location.href = '../index.html'"
+            >
+              Home
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="../js/diamonds.js"></script>
+    <script>
+      const BOT_NAMES = [
+        "MathBot 3000",
+        "AlgebraAI",
+        "Calculus King",
+        "Neural Nova",
+        "QuizMaster X",
+      ];
+      const BOT_EMOJIS = ["🤖", "🦾", "👾", "🧠", "⚡"];
+
+      const ALL_QUESTIONS = {
+        math: [
+          {
+            q: "What is d/dx[tan(x)]?",
+            opts: ["sec²(x)", "cos²(x)", "−csc²(x)", "sec(x)tan(x)"],
+            correct: 0,
+          },
+          {
+            q: "Find ∫ 2x dx",
+            opts: ["x² + C", "2x² + C", "x + C", "2 + C"],
+            correct: 0,
+          },
+          {
+            q: "What is lim(x→0) sin(x)/x?",
+            opts: ["1", "0", "∞", "undefined"],
+            correct: 0,
+          },
+          {
+            q: "Derivative of e^(3x)?",
+            opts: ["3e^(3x)", "e^(3x)", "3xe^(3x)", "3e^x"],
+            correct: 0,
+          },
+          {
+            q: "∫ cos(x) dx = ?",
+            opts: ["sin(x) + C", "−sin(x) + C", "cos(x) + C", "tan(x) + C"],
+            correct: 0,
+          },
+          {
+            q: "What is the derivative of ln(x)?",
+            opts: ["1/x", "x", "ln(x)/x", "1/ln(x)"],
+            correct: 0,
+          },
+          {
+            q: "Find f'(x) for f(x) = x⁵",
+            opts: ["5x⁴", "5x⁵", "x⁴", "4x⁵"],
+            correct: 0,
+          },
+          {
+            q: "∫ 1/x dx = ?",
+            opts: ["ln|x| + C", "x + C", "−1/x² + C", "1/x + C"],
+            correct: 0,
+          },
+          {
+            q: "What is the slope of y = 3x² at x = 2?",
+            opts: ["12", "6", "8", "4"],
+            correct: 0,
+          },
+          { q: "lim(x→∞) 1/x = ?", opts: ["0", "1", "∞", "−1"], correct: 0 },
+        ],
+        science: [
+          {
+            q: "What is Newton's second law?",
+            opts: ["F = ma", "E = mc²", "PV = nRT", "F = kx"],
+            correct: 0,
+          },
+          {
+            q: "What is the speed of light in vacuum?",
+            opts: ["3×10⁸ m/s", "3×10⁶ m/s", "3×10¹⁰ m/s", "1.5×10⁸ m/s"],
+            correct: 0,
+          },
+          {
+            q: "What is the atomic number of Carbon?",
+            opts: ["6", "12", "8", "14"],
+            correct: 0,
+          },
+          {
+            q: "What is Avogadro's number?",
+            opts: ["6.022×10²³", "6.022×10²⁶", "9.8×10²³", "3.14×10²³"],
+            correct: 0,
+          },
+          {
+            q: "What is the formula for kinetic energy?",
+            opts: ["½mv²", "mv²", "mgh", "F×d"],
+            correct: 0,
+          },
+          {
+            q: "Which gas makes up most of Earth's atmosphere?",
+            opts: ["Nitrogen", "Oxygen", "CO₂", "Argon"],
+            correct: 0,
+          },
+          {
+            q: "What is the pH of pure water at 25°C?",
+            opts: ["7", "6", "8", "14"],
+            correct: 0,
+          },
+          {
+            q: "What is Ohm's law?",
+            opts: ["V = IR", "P = IV", "E = mc²", "F = qE"],
+            correct: 0,
+          },
+          {
+            q: "What is the unit of electric current?",
+            opts: ["Ampere", "Volt", "Watt", "Ohm"],
+            correct: 0,
+          },
+          {
+            q: "What type of bond shares electrons equally?",
+            opts: ["Nonpolar covalent", "Ionic", "Polar covalent", "Metallic"],
+            correct: 0,
+          },
+        ],
+      };
+
+      ALL_QUESTIONS.random = [
+        ...ALL_QUESTIONS.math.slice(0, 5),
+        ...ALL_QUESTIONS.science.slice(0, 5),
+      ].sort(() => Math.random() - 0.5);
+
+      let battle = {
+        mode: "math",
+        questions: [],
+        current: 0,
+        youScore: 0,
+        botScore: 0,
+        timer: 20,
+        timerInterval: null,
+        botName: "QuizBot",
+        botEmoji: "🤖",
+        answered: false,
+      };
+
+      function selectMode(m, el) {
+        battle.mode = m;
+        document
+          .querySelectorAll(".mode-card")
+          .forEach((c) => c.classList.remove("selected"));
+        el.classList.add("selected");
+      }
+
+      function findMatch() {
+        showScreen("matchmaking");
+        const statuses = [
+          "Scanning 847 players...",
+          "Found potential match...",
+          "Verifying skill level...",
+          "Match found!",
+        ];
+        let i = 0;
+        const iv = setInterval(() => {
+          document.getElementById("mm-status").textContent =
+            statuses[i++] || "";
+          if (i >= statuses.length) {
+            clearInterval(iv);
+            setTimeout(startBattle, 600);
+          }
+        }, 700);
+      }
+
+      function cancelMatch() {
+        showScreen("lobby");
+      }
+
+      function startBattle() {
+        const pool = [...ALL_QUESTIONS[battle.mode]].sort(
+          () => Math.random() - 0.5,
+        );
+        battle.questions = pool.slice(0, 10);
+        battle.current = 0;
+        battle.youScore = 0;
+        battle.botScore = 0;
+        battle.botName =
+          BOT_NAMES[Math.floor(Math.random() * BOT_NAMES.length)];
+        battle.botEmoji =
+          BOT_EMOJIS[Math.floor(Math.random() * BOT_EMOJIS.length)];
+
+        document.getElementById("bot-name").textContent = battle.botName;
+        document.getElementById("bot-avatar").textContent = battle.botEmoji;
+        document.getElementById("battle-q-total").textContent =
+          battle.questions.length;
+
+        showScreen("battle");
+        renderBattleQ();
+      }
+
+      function renderBattleQ() {
+        const q = battle.questions[battle.current];
+        battle.answered = false;
+        battle.timer = 20;
+
+        document.getElementById("battle-q-label").textContent =
+          "Question " + (battle.current + 1);
+        document.getElementById("battle-q-num").textContent =
+          battle.current + 1;
+        document.getElementById("battle-q-text").textContent = q.q;
+        document.getElementById("bot-thinking").textContent = "";
+
+        const opts = document.getElementById("battle-options");
+        const keys = ["A", "B", "C", "D"];
+        opts.innerHTML = q.opts
+          .map(
+            (o, i) => `
+    <button class="battle-option" onclick="battleAnswer(this, ${i}, ${q.correct})">${keys[i]}. ${o}</button>`,
+          )
+          .join("");
+
+        startBattleTimer(q);
+      }
+
+      function startBattleTimer(q) {
+        clearInterval(battle.timerInterval);
+        const timerEl = document.getElementById("battle-timer");
+
+        /* Bot thinks and answers at random time */
+        const botSpeed = 3 + Math.random() * 12; /* 3–15 seconds */
+        const botCorrect = Math.random() < 0.65; /* 65% accuracy */
+
+        setTimeout(
+          () => {
+            if (!battle.answered) {
+              document.getElementById("bot-thinking").textContent =
+                battle.botName + " is thinking...";
+            }
+          },
+          Math.max(botSpeed * 1000 - 2000, 500),
+        );
+
+        setTimeout(() => {
+          if (!battle.answered) {
+            botAnswers(q, botCorrect);
+          }
+        }, botSpeed * 1000);
+
+        battle.timerInterval = setInterval(() => {
+          battle.timer--;
+          timerEl.textContent = "0:" + String(battle.timer).padStart(2, "0");
+          timerEl.className =
+            "battle-timer" +
+            (battle.timer <= 5
+              ? " danger"
+              : battle.timer <= 10
+                ? " warning"
+                : "");
+          if (battle.timer <= 0) {
+            clearInterval(battle.timerInterval);
+            if (!battle.answered) {
+              battle.answered = true;
+              document.getElementById("bot-thinking").textContent = "";
+              disableBattleOptions();
+              document
+                .querySelectorAll(".battle-option")
+                [q.correct].classList.add("correct");
+              setTimeout(nextBattleQ, 1500);
+            }
+          }
+        }, 1000);
+      }
+
+      function battleAnswer(btn, chosen, correct) {
+        if (battle.answered) return;
+        battle.answered = true;
+        clearInterval(battle.timerInterval);
+        document.getElementById("bot-thinking").textContent = "";
+
+        disableBattleOptions();
+        const isCorrect = chosen === correct;
+        btn.classList.add(isCorrect ? "correct" : "wrong");
+        if (!isCorrect)
+          document
+            .querySelectorAll(".battle-option")
+            [correct].classList.add("correct");
+        if (isCorrect) {
+          battle.youScore++;
+          document.getElementById("you-score").textContent = battle.youScore;
+          updateProgs();
+          showToast("✓ Correct! +1 point", "success");
+        }
+        setTimeout(nextBattleQ, 1400);
+      }
+
+      function botAnswers(q, isCorrect) {
+        if (battle.answered) return;
+        document.getElementById("bot-thinking").textContent =
+          battle.botName + " answered!";
+
+        let botChoice = isCorrect
+          ? q.correct
+          : (q.correct + 1 + Math.floor(Math.random() * 3)) % q.opts.length;
+        const btns = document.querySelectorAll(".battle-option");
+        btns[botChoice].classList.add("bot-choice");
+
+        if (isCorrect) {
+          battle.botScore++;
+          document.getElementById("bot-score").textContent = battle.botScore;
+          updateProgs();
+        }
+      }
+
+      function disableBattleOptions() {
+        document
+          .querySelectorAll(".battle-option")
+          .forEach((b) => (b.disabled = true));
+      }
+
+      function updateProgs() {
+        const total = battle.questions.length;
+        document.getElementById("you-prog").style.width =
+          (battle.youScore / total) * 100 + "%";
+        document.getElementById("bot-prog").style.width =
+          (battle.botScore / total) * 100 + "%";
+      }
+
+      function nextBattleQ() {
+        battle.current++;
+        if (battle.current >= battle.questions.length) endBattle();
+        else renderBattleQ();
+      }
+
+      async function endBattle() {
+        clearInterval(battle.timerInterval);
+        const you = battle.youScore,
+          bot = battle.botScore;
+        const won = you > bot,
+          draw = you === bot;
+
+        document.getElementById("final-you").textContent = you;
+        document.getElementById("final-bot").textContent = bot;
+        document.getElementById("final-bot-label").textContent = battle.botName;
+
+        let banner, outcome, detail, diamonds;
+        if (won) {
+          banner = "🏆";
+          outcome = "Victory!";
+          detail = `You beat ${battle.botName} ${you}–${bot}!`;
+          diamonds = 100;
+          document.getElementById("result-outcome").className =
+            "result-outcome win";
+          launchDiamonds();
+        } else if (draw) {
+          banner = "🤝";
+          outcome = "Draw!";
+          detail = `It\'s a tie! ${you}–${bot}`;
+          diamonds = 50;
+          document.getElementById("result-outcome").className =
+            "result-outcome draw";
+        } else {
+          banner = "💪";
+          outcome = "Defeat";
+          detail = `${battle.botName} won ${bot}–${you}. Try again!`;
+          diamonds = 25;
+          document.getElementById("result-outcome").className =
+            "result-outcome lose";
+        }
+
+        document.getElementById("result-banner").textContent = banner;
+        document.getElementById("result-outcome").textContent = outcome;
+        document.getElementById("result-detail").textContent = detail;
+
+        if (typeof Diamonds !== "undefined") {
+          await Diamonds.award(
+            diamonds,
+            won
+              ? "🏆 Battle victory!"
+              : draw
+                ? "🤝 Battle draw"
+                : "💪 Battle played",
+            "quiz",
+          );
+        }
+        showToast(
+          (won ? "🏆 Victory! " : "") + "+" + diamonds + " 💎 earned!",
+          "success",
+        );
+        showScreen("result");
+      }
+
+      function launchDiamonds() {
+        for (let i = 0; i < 16; i++) {
+          setTimeout(() => {
+            const el = document.createElement("div");
+            el.className = "float-d";
+            el.textContent = "💎";
+            el.style.left = 10 + Math.random() * 80 + "vw";
+            el.style.bottom = 20 + Math.random() * 30 + "vh";
+            el.style.animationDuration = 1 + Math.random() * 0.7 + "s";
+            document.body.appendChild(el);
+            el.addEventListener("animationend", () => el.remove());
+          }, i * 60);
+        }
+      }
+
+      function playAgain() {
+        startBattle();
+      }
+      function showScreen(id) {
+        document
+          .querySelectorAll(".screen")
+          .forEach((s) => s.classList.remove("active"));
+        document.getElementById("screen-" + id).classList.add("active");
+        window.scrollTo(0, 0);
+      }
+      function showToast(msg, type = "") {
+        const t = document.getElementById("toast");
+        t.textContent = msg;
+        t.className = "toast show " + type;
+        setTimeout(() => (t.className = "toast"), 3000);
+      }
+
+      /* Animate online counter */
+      setInterval(() => {
+        const el = document.getElementById("online-count");
+        if (el)
+          el.textContent = (
+            840 + Math.floor(Math.random() * 20)
+          ).toLocaleString();
+      }, 3000);
+    </script>
+  </body>
+</html>

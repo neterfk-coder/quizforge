@@ -1,0 +1,1476 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daily Challenge — QuizForge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <!-- MathJax for math rendering -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+      async
+    ></script>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --bg: #f0f6ff;
+        --surface: #fff;
+        --surface2: #f7faff;
+        --border: #d0e3fa;
+        --border2: #b8d4f7;
+        --accent: #2563eb;
+        --accent-light: #dbeafe;
+        --accent-mid: #60a5fa;
+        --accent-dark: #1d4ed8;
+        --text: #0f172a;
+        --muted: #64748b;
+        --muted2: #94a3b8;
+        --correct: #16a34a;
+        --correct-bg: #f0fdf4;
+        --correct-bdr: #86efac;
+        --danger: #dc2626;
+        --danger-bg: #fef2f2;
+        --danger-bdr: #fca5a5;
+        --gold: #f59e0b;
+        --gold-light: #fffbeb;
+        --radius: 16px;
+        --radius-sm: 10px;
+        --shadow:
+          0 1px 4px rgba(37, 99, 235, 0.07), 0 4px 18px rgba(37, 99, 235, 0.06);
+        --shadow-md: 0 6px 28px rgba(37, 99, 235, 0.12);
+        --font: "Inter", Arial, sans-serif;
+      }
+      html {
+        font-size: 16px;
+        scroll-behavior: smooth;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--font);
+        min-height: 100vh;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 3rem;
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(18px);
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .logo {
+        font-weight: 800;
+        font-size: 1.2rem;
+        letter-spacing: -0.03em;
+        color: var(--accent);
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        text-decoration: none;
+      }
+      .logo-icon {
+        width: 32px;
+        height: 32px;
+        background: var(--accent);
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .logo-icon svg {
+        width: 16px;
+        height: 16px;
+      }
+      .btn-ghost {
+        background: none;
+        border: 1.5px solid var(--border2);
+        color: var(--muted);
+        padding: 0.48rem 1.1rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.18s;
+        text-decoration: none;
+      }
+      .btn-ghost:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: var(--accent-light);
+      }
+
+      .page {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 2.5rem 1.5rem 6rem;
+      }
+
+      /* ── SCREENS ── */
+      .screen {
+        display: none;
+      }
+      .screen.active {
+        display: block;
+        animation: fadeIn 0.3s ease;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ── INTRO SCREEN ── */
+      .intro-hero {
+        background: linear-gradient(135deg, #1e40af, #2563eb, #3b82f6);
+        border-radius: var(--radius);
+        padding: 3rem 2rem;
+        text-align: center;
+        margin-bottom: 1.5rem;
+        position: relative;
+        overflow: hidden;
+        box-shadow: var(--shadow-md);
+      }
+      .intro-hero::before {
+        content: "";
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        width: 200px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 50%;
+      }
+      .intro-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        color: #fff;
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 0.3rem 0.9rem;
+        border-radius: 999px;
+        margin-bottom: 1.1rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+      .intro-title {
+        font-weight: 900;
+        font-size: clamp(1.6rem, 4vw, 2.2rem);
+        color: #fff;
+        letter-spacing: -0.04em;
+        margin-bottom: 0.5rem;
+      }
+      .intro-sub {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.75);
+        margin-bottom: 1.75rem;
+        line-height: 1.7;
+      }
+      .intro-stats {
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 2rem;
+      }
+      .intro-stat {
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: var(--radius-sm);
+        padding: 0.75rem 1.25rem;
+        text-align: center;
+        min-width: 100px;
+      }
+      .intro-stat-num {
+        font-weight: 800;
+        font-size: 1.4rem;
+        color: #fff;
+        line-height: 1;
+      }
+      .intro-stat-label {
+        font-size: 0.72rem;
+        color: rgba(255, 255, 255, 0.65);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-top: 3px;
+      }
+      .btn-start {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #fff;
+        color: var(--accent-dark);
+        border: none;
+        padding: 0.85rem 2rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+      }
+      .btn-start:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.2);
+      }
+      .btn-start svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      .topic-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 0.85rem;
+        margin-bottom: 1.5rem;
+      }
+      .topic-card {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 1.1rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: var(--shadow);
+      }
+      .topic-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        border-color: var(--accent-mid);
+      }
+      .topic-card.selected {
+        border-color: var(--accent);
+        background: var(--accent-light);
+      }
+      .topic-icon {
+        font-size: 1.6rem;
+        margin-bottom: 0.5rem;
+      }
+      .topic-name {
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: var(--text);
+        margin-bottom: 0.2rem;
+      }
+      .topic-desc {
+        font-size: 0.75rem;
+        color: var(--muted);
+      }
+
+      /* ── QUIZ SCREEN ── */
+      .quiz-header {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.25rem 1.75rem;
+        margin-bottom: 1.25rem;
+        box-shadow: var(--shadow);
+      }
+      .quiz-header-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.85rem;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+      }
+      .quiz-topic-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--accent-light);
+        border: 1.5px solid var(--border2);
+        color: var(--accent);
+        font-size: 0.78rem;
+        font-weight: 700;
+        padding: 0.3rem 0.85rem;
+        border-radius: 999px;
+      }
+      .quiz-score-live {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .quiz-score-live span {
+        color: var(--accent);
+      }
+      .progress-wrap {
+        height: 6px;
+        background: var(--border);
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent-mid), var(--accent));
+        border-radius: 999px;
+        transition: width 0.4s ease;
+        width: 0%;
+      }
+
+      /* Timer */
+      .timer-wrap {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+      }
+      .timer-circle {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: var(--surface2);
+        border: 2px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 1rem;
+        color: var(--text);
+        transition: all 0.3s;
+        flex-shrink: 0;
+      }
+      .timer-circle.warning {
+        border-color: var(--gold);
+        color: var(--gold);
+        background: var(--gold-light);
+      }
+      .timer-circle.danger {
+        border-color: var(--danger);
+        color: var(--danger);
+        background: var(--danger-bg);
+        animation: timerPulse 0.5s infinite;
+      }
+      @keyframes timerPulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.08);
+        }
+      }
+      .timer-label {
+        font-size: 0.75rem;
+        color: var(--muted);
+      }
+
+      /* Question */
+      .question-card {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        padding: 2rem;
+        margin-bottom: 1.25rem;
+        box-shadow: var(--shadow-md);
+      }
+      .q-num {
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: var(--accent);
+        text-transform: uppercase;
+        letter-spacing: 0.09em;
+        margin-bottom: 0.75rem;
+      }
+      .q-text {
+        font-size: 1.05rem;
+        font-weight: 500;
+        color: var(--text);
+        line-height: 1.7;
+        margin-bottom: 1.5rem;
+      }
+      .q-text .math {
+        display: block;
+        text-align: center;
+        margin: 0.75rem 0;
+        font-size: 1.1rem;
+      }
+
+      .options {
+        display: flex;
+        flex-direction: column;
+        gap: 0.65rem;
+      }
+      .option {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: var(--surface2);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 0.85rem 1.1rem;
+        cursor: pointer;
+        transition: all 0.18s;
+        font-size: 0.925rem;
+        color: var(--muted);
+        width: 100%;
+        text-align: left;
+        font-family: var(--font);
+      }
+      .option:hover:not(:disabled) {
+        border-color: var(--accent-mid);
+        color: var(--accent);
+        background: var(--accent-light);
+      }
+      .option:disabled {
+        cursor: default;
+      }
+      .option.correct {
+        border-color: var(--correct-bdr);
+        background: var(--correct-bg);
+        color: var(--correct);
+        font-weight: 500;
+      }
+      .option.wrong {
+        border-color: var(--danger-bdr);
+        background: var(--danger-bg);
+        color: var(--danger);
+      }
+      .opt-key {
+        width: 28px;
+        height: 28px;
+        border: 1.5px solid var(--border2);
+        border-radius: 7px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: var(--muted2);
+      }
+      .explanation {
+        background: var(--accent-light);
+        border: 1.5px solid var(--border2);
+        border-radius: var(--radius-sm);
+        padding: 1rem 1.25rem;
+        margin-top: 1rem;
+        font-size: 0.875rem;
+        color: var(--accent-dark);
+        line-height: 1.7;
+        display: none;
+      }
+      .explanation.show {
+        display: block;
+        animation: fadeIn 0.3s ease;
+      }
+
+      .btn-next {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        background: var(--accent);
+        border: none;
+        color: #fff;
+        padding: 0.7rem 1.6rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-weight: 600;
+        font-size: 0.925rem;
+        cursor: pointer;
+        transition: all 0.18s;
+        box-shadow: 0 2px 12px rgba(37, 99, 235, 0.28);
+        margin-top: 1.25rem;
+        margin-left: auto;
+      }
+      .btn-next:hover {
+        background: var(--accent-dark);
+        transform: translateY(-1px);
+      }
+      .btn-next svg {
+        width: 15px;
+        height: 15px;
+      }
+
+      /* ── RESULTS SCREEN ── */
+      .results-hero {
+        background: linear-gradient(135deg, #1e40af, #2563eb);
+        border-radius: var(--radius);
+        padding: 3rem 2rem;
+        text-align: center;
+        margin-bottom: 1.5rem;
+        box-shadow: var(--shadow-md);
+      }
+      .result-score-circle {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.15);
+        border: 3px solid rgba(255, 255, 255, 0.4);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.25rem;
+      }
+      .result-score-num {
+        font-weight: 900;
+        font-size: 2.2rem;
+        color: #fff;
+        line-height: 1;
+      }
+      .result-score-label {
+        font-size: 0.72rem;
+        color: rgba(255, 255, 255, 0.7);
+        margin-top: 2px;
+      }
+      .result-title {
+        font-weight: 800;
+        font-size: 1.5rem;
+        color: #fff;
+        margin-bottom: 0.4rem;
+      }
+      .result-sub {
+        font-size: 0.875rem;
+        color: rgba(255, 255, 255, 0.75);
+        margin-bottom: 1.5rem;
+      }
+      .result-stats {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .result-stat {
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: var(--radius-sm);
+        padding: 0.65rem 1.1rem;
+        text-align: center;
+      }
+      .result-stat-num {
+        font-weight: 800;
+        font-size: 1.2rem;
+        color: #fff;
+      }
+      .result-stat-label {
+        font-size: 0.68rem;
+        color: rgba(255, 255, 255, 0.65);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .review-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.85rem;
+        margin-bottom: 1.5rem;
+      }
+      .review-item {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 1.25rem;
+        box-shadow: var(--shadow);
+      }
+      .review-item.correct {
+        border-left: 4px solid var(--correct);
+      }
+      .review-item.wrong {
+        border-left: 4px solid var(--danger);
+      }
+      .review-q {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--text);
+        margin-bottom: 0.5rem;
+      }
+      .review-answer {
+        font-size: 0.82rem;
+        color: var(--muted);
+        margin-bottom: 0.3rem;
+      }
+      .review-answer.correct {
+        color: var(--correct);
+      }
+      .review-answer.wrong {
+        color: var(--danger);
+      }
+      .review-explain {
+        font-size: 0.78rem;
+        color: var(--muted);
+        line-height: 1.65;
+        margin-top: 0.5rem;
+        padding-top: 0.5rem;
+        border-top: 1px solid var(--border);
+      }
+
+      .result-actions {
+        display: flex;
+        gap: 0.85rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 2rem;
+      }
+      .btn-primary {
+        background: var(--accent);
+        border: none;
+        color: #fff;
+        padding: 0.7rem 1.5rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.18s;
+        box-shadow: 0 2px 10px rgba(37, 99, 235, 0.25);
+      }
+      .btn-primary:hover {
+        background: var(--accent-dark);
+        transform: translateY(-1px);
+      }
+      .btn-outline {
+        background: var(--surface);
+        border: 1.5px solid var(--border2);
+        color: var(--muted);
+        padding: 0.7rem 1.5rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-weight: 500;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.18s;
+      }
+      .btn-outline:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: var(--accent-light);
+      }
+
+      /* Reward popup */
+      .reward-popup {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        background: var(--surface);
+        border: 2px solid var(--gold);
+        border-radius: 20px;
+        padding: 2rem;
+        text-align: center;
+        width: min(360px, 90vw);
+        box-shadow: 0 20px 60px rgba(245, 158, 11, 0.3);
+        z-index: 500;
+        transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      .reward-popup.show {
+        transform: translate(-50%, -50%) scale(1);
+      }
+      .reward-emoji {
+        font-size: 3.5rem;
+        display: block;
+        margin-bottom: 0.5rem;
+        animation: bounceIn 0.5s;
+      }
+      @keyframes bounceIn {
+        from {
+          transform: scale(0);
+        }
+        to {
+          transform: scale(1);
+        }
+      }
+      .reward-title {
+        font-weight: 900;
+        font-size: 1.4rem;
+        color: var(--text);
+        margin-bottom: 0.3rem;
+      }
+      .reward-diamonds {
+        font-weight: 900;
+        font-size: 2rem;
+        color: #0891b2;
+        margin-bottom: 0.5rem;
+      }
+      .reward-sub {
+        font-size: 0.85rem;
+        color: var(--muted);
+        margin-bottom: 1.25rem;
+      }
+      .float-d {
+        position: fixed;
+        font-size: 1.4rem;
+        pointer-events: none;
+        z-index: 501;
+        animation: floatUp 1.4s ease forwards;
+      }
+      @keyframes floatUp {
+        0% {
+          transform: translateY(0) rotate(0);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-160px) rotate(360deg);
+          opacity: 0;
+        }
+      }
+      .reward-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.4);
+        z-index: 499;
+        backdrop-filter: blur(3px);
+      }
+      .reward-overlay.show {
+        display: block;
+      }
+
+      .toast {
+        position: fixed;
+        bottom: 1.75rem;
+        right: 1.75rem;
+        background: var(--surface);
+        border: 1.5px solid var(--border2);
+        color: var(--text);
+        padding: 0.85rem 1.4rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.9rem;
+        font-weight: 500;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.25s;
+        z-index: 999;
+        pointer-events: none;
+        box-shadow: var(--shadow-md);
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .toast.success {
+        border-color: rgba(22, 163, 74, 0.4);
+        color: var(--correct);
+      }
+
+      @media (max-width: 600px) {
+        nav {
+          padding: 1rem 1.25rem;
+        }
+        .page {
+          padding: 2rem 1rem 5rem;
+        }
+        .quiz-header {
+          padding: 1rem 1.25rem;
+        }
+        .question-card {
+          padding: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="../index.html" class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+          </svg>
+        </div>
+        QuizForge
+      </a>
+      <div style="display: flex; align-items: center; gap: 0.75rem">
+        <a href="../index.html" class="btn-ghost">Home</a>
+        <a href="diamonds.html" class="btn-ghost">💎 Diamonds</a>
+      </div>
+    </nav>
+
+    <div class="page">
+      <!-- ══ INTRO SCREEN ══ -->
+      <div class="screen active" id="screen-intro">
+        <div class="intro-hero">
+          <div class="intro-badge">⚡ Daily Challenge</div>
+          <h1 class="intro-title">Math Challenge</h1>
+          <p class="intro-sub">
+            10 questions · 3 minutes · Calculus I & II<br />Answer correctly to
+            earn diamonds and XP!
+          </p>
+          <div class="intro-stats">
+            <div class="intro-stat">
+              <div class="intro-stat-num">10</div>
+              <div class="intro-stat-label">Questions</div>
+            </div>
+            <div class="intro-stat">
+              <div class="intro-stat-num">3:00</div>
+              <div class="intro-stat-label">Time limit</div>
+            </div>
+            <div class="intro-stat">
+              <div class="intro-stat-num">+150</div>
+              <div class="intro-stat-label">💎 Reward</div>
+            </div>
+            <div class="intro-stat">
+              <div class="intro-stat-num">+50</div>
+              <div class="intro-stat-label">⚡ XP</div>
+            </div>
+          </div>
+          <button class="btn-start" onclick="startChallenge()">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <polygon points="5 3 19 12 5 21 5 3" />
+            </svg>
+            Start Challenge
+          </button>
+        </div>
+
+        <p
+          style="
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.85rem;
+          "
+        >
+          Choose your topic:
+        </p>
+        <div class="topic-cards">
+          <div
+            class="topic-card selected"
+            id="topic-calc1"
+            onclick="selectTopic('calc1', this)"
+          >
+            <div class="topic-icon">📐</div>
+            <div class="topic-name">Calculus I</div>
+            <div class="topic-desc">
+              Limits, derivatives, chain rule, related rates
+            </div>
+          </div>
+          <div
+            class="topic-card"
+            id="topic-calc2"
+            onclick="selectTopic('calc2', this)"
+          >
+            <div class="topic-icon">∫</div>
+            <div class="topic-name">Calculus II</div>
+            <div class="topic-desc">
+              Integration, series, sequences, convergence
+            </div>
+          </div>
+          <div
+            class="topic-card"
+            id="topic-mixed"
+            onclick="selectTopic('mixed', this)"
+          >
+            <div class="topic-icon">🔥</div>
+            <div class="topic-name">Mixed Hard</div>
+            <div class="topic-desc">Both topics, hardest questions only</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ QUIZ SCREEN ══ -->
+      <div class="screen" id="screen-quiz">
+        <div class="quiz-header">
+          <div class="quiz-header-top">
+            <div style="display: flex; align-items: center; gap: 0.75rem">
+              <span class="quiz-topic-badge" id="quiz-topic-badge"
+                >📐 Calculus I</span
+              >
+              <div class="quiz-score-live">
+                Score: <span id="live-score">0</span> /
+                <span id="live-total">10</span>
+              </div>
+            </div>
+            <div class="timer-wrap">
+              <div class="timer-circle" id="timer-circle">3:00</div>
+              <div class="timer-label">remaining</div>
+            </div>
+          </div>
+          <div class="progress-wrap">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+        </div>
+
+        <div class="question-card" id="question-card">
+          <div class="q-num" id="q-num">Question 1 of 10</div>
+          <div class="q-text" id="q-text"></div>
+          <div class="options" id="options-list"></div>
+          <div class="explanation" id="explanation"></div>
+          <div style="display: flex; justify-content: flex-end">
+            <button
+              class="btn-next"
+              id="btn-next"
+              onclick="nextQuestion()"
+              style="display: none"
+            >
+              Next
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+              >
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ RESULTS SCREEN ══ -->
+      <div class="screen" id="screen-results">
+        <div class="results-hero">
+          <div class="result-score-circle">
+            <div class="result-score-num" id="result-pct">0%</div>
+            <div class="result-score-label">accuracy</div>
+          </div>
+          <h2 class="result-title" id="result-title">Challenge Complete!</h2>
+          <p class="result-sub" id="result-sub">
+            You answered 0 of 10 correctly.
+          </p>
+          <div class="result-stats">
+            <div class="result-stat">
+              <div class="result-stat-num" id="r-correct">0</div>
+              <div class="result-stat-label">Correct</div>
+            </div>
+            <div class="result-stat">
+              <div class="result-stat-num" id="r-wrong">0</div>
+              <div class="result-stat-label">Wrong</div>
+            </div>
+            <div class="result-stat">
+              <div class="result-stat-num" id="r-time">0s</div>
+              <div class="result-stat-label">Time used</div>
+            </div>
+            <div class="result-stat">
+              <div class="result-stat-num" id="r-diamonds">+0</div>
+              <div class="result-stat-label">💎 Earned</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="result-actions">
+          <button class="btn-primary" onclick="retryChallenge()">
+            Try Again
+          </button>
+          <button
+            class="btn-outline"
+            onclick="window.location.href = '../index.html'"
+          >
+            Back to Home
+          </button>
+          <button
+            class="btn-outline"
+            onclick="window.location.href = 'diamonds.html'"
+          >
+            💎 My Diamonds
+          </button>
+        </div>
+
+        <p
+          style="
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.85rem;
+          "
+        >
+          Review your answers:
+        </p>
+        <div class="review-list" id="review-list"></div>
+      </div>
+    </div>
+
+    <!-- Reward popup -->
+    <div
+      class="reward-overlay"
+      id="reward-overlay"
+      onclick="closeReward()"
+    ></div>
+    <div class="reward-popup" id="reward-popup">
+      <span class="reward-emoji" id="reward-emoji">🏆</span>
+      <h2 class="reward-title" id="reward-title">Challenge Complete!</h2>
+      <div class="reward-diamonds" id="reward-diamonds">+150 💎</div>
+      <p class="reward-sub" id="reward-sub">Diamonds added to your balance!</p>
+      <button class="btn-primary" onclick="closeReward()" style="width: 100%">
+        Collect reward!
+      </button>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="../js/diamonds.js"></script>
+    <script>
+      /* ════════════════════════
+   QUESTION BANK
+   Calculus I & II — Intermediate/Hard
+════════════════════════ */
+      const QUESTIONS = {
+        calc1: [
+          {
+            q: "Find the derivative of f(x) = x³·sin(x)",
+            math: null,
+            options: [
+              "3x²·sin(x) + x³·cos(x)",
+              "3x²·cos(x)",
+              "x³·cos(x) + sin(x)",
+              "3x²·sin(x)",
+            ],
+            correct: 0,
+            explain:
+              "Using the product rule: f'(x) = (x³)'·sin(x) + x³·(sin(x))' = 3x²·sin(x) + x³·cos(x)",
+          },
+          {
+            q: "Evaluate the limit: lim(x→0) [sin(3x) / (5x)]",
+            options: ["3/5", "1", "0", "5/3"],
+            correct: 0,
+            explain:
+              "Using lim(x→0)[sin(ax)/bx] = a/b, we get sin(3x)/5x → 3/5 as x→0",
+          },
+          {
+            q: "Find the critical points of f(x) = 2x³ − 9x² + 12x − 4",
+            options: [
+              "x = 1 and x = 2",
+              "x = 0 and x = 3",
+              "x = −1 and x = 2",
+              "x = 1 and x = 3",
+            ],
+            correct: 0,
+            explain:
+              "f'(x) = 6x² − 18x + 12 = 6(x² − 3x + 2) = 6(x−1)(x−2) = 0, so x = 1 and x = 2",
+          },
+          {
+            q: "Using implicit differentiation, find dy/dx for x² + y² = 25",
+            options: ["−x/y", "x/y", "−y/x", "2x + 2y"],
+            correct: 0,
+            explain:
+              "Differentiating both sides: 2x + 2y(dy/dx) = 0, so dy/dx = −x/y",
+          },
+          {
+            q: "Find the equation of the tangent line to y = x² at x = 3",
+            options: ["y = 6x − 9", "y = 3x + 9", "y = 6x + 9", "y = 9x − 6"],
+            correct: 0,
+            explain:
+              "At x=3: y=9, slope=f'(3)=6. Tangent: y − 9 = 6(x − 3) → y = 6x − 9",
+          },
+          {
+            q: "What is the derivative of f(x) = ln(x² + 1)?",
+            options: ["2x/(x² + 1)", "1/(x² + 1)", "2x·ln(x² + 1)", "1/(2x)"],
+            correct: 0,
+            explain:
+              "Using chain rule: f'(x) = [1/(x² + 1)] · 2x = 2x/(x² + 1)",
+          },
+          {
+            q: "Find lim(x→∞) [(3x² − 2x) / (x² + 5)]",
+            options: ["3", "0", "∞", "−2"],
+            correct: 0,
+            explain:
+              "Dividing numerator and denominator by x²: (3 − 2/x)/(1 + 5/x²) → 3/1 = 3 as x→∞",
+          },
+          {
+            q: "Find the derivative of f(x) = e^(x²)",
+            options: ["2x·e^(x²)", "e^(x²)", "x²·e^(x²−1)", "2·e^(x²)"],
+            correct: 0,
+            explain: "Chain rule: f'(x) = e^(x²) · (x²)' = 2x·e^(x²)",
+          },
+          {
+            q: "For f(x) = x⁴ − 4x², find the intervals where f is concave up",
+            options: [
+              "x < −√(2/3) and x > √(2/3)",
+              "x < 0 and x > 2",
+              "−1 < x < 1",
+              "x > 0",
+            ],
+            correct: 0,
+            explain:
+              "f''(x) = 12x² − 8 > 0 → x² > 2/3 → |x| > √(2/3). Concave up outside this interval.",
+          },
+          {
+            q: "Apply L'Hôpital's rule: lim(x→0) [(e^x − 1) / x]",
+            options: ["1", "0", "e", "∞"],
+            correct: 0,
+            explain: "0/0 form. L'Hôpital: lim(x→0)[e^x / 1] = e⁰ = 1",
+          },
+        ],
+        calc2: [
+          {
+            q: "Evaluate: ∫ x·e^x dx",
+            options: [
+              "e^x(x − 1) + C",
+              "x·e^x + C",
+              "e^x(x + 1) + C",
+              "x²·e^x/2 + C",
+            ],
+            correct: 0,
+            explain:
+              "Integration by parts: u=x, dv=e^x dx → v=e^x. Result: x·e^x − ∫e^x dx = x·e^x − e^x = e^x(x−1) + C",
+          },
+          {
+            q: "Determine if the series Σ(1/n²) from n=1 to ∞ converges or diverges",
+            options: [
+              "Converges (p-series, p=2>1)",
+              "Diverges (harmonic series)",
+              "Converges conditionally",
+              "Diverges by ratio test",
+            ],
+            correct: 0,
+            explain:
+              "This is a p-series with p=2. Since p > 1, the series converges. Its sum is π²/6 (Basel problem).",
+          },
+          {
+            q: "Find ∫ sin²(x) dx",
+            options: [
+              "x/2 − sin(2x)/4 + C",
+              "−cos²(x) + C",
+              "sin(x)cos(x)/2 + C",
+              "x/2 + cos(2x)/4 + C",
+            ],
+            correct: 0,
+            explain:
+              "Using identity sin²(x) = (1 − cos(2x))/2: ∫(1/2 − cos(2x)/2)dx = x/2 − sin(2x)/4 + C",
+          },
+          {
+            q: "What is the radius of convergence of Σ(x^n / n!) from n=0 to ∞?",
+            options: ["∞ (converges for all x)", "1", "0", "e"],
+            correct: 0,
+            explain:
+              "By ratio test: |a(n+1)/a(n)| = |x|/(n+1) → 0 for all x. Radius of convergence = ∞.",
+          },
+          {
+            q: "Evaluate ∫₀¹ x²·e^x dx using integration by parts",
+            options: ["e − 2", "e + 2", "2e − 2", "e − 1"],
+            correct: 0,
+            explain:
+              "Applying IBP twice: [x²e^x − 2xe^x + 2e^x]₀¹ = (e − 2e + 2e) − (0 − 0 + 2) = e − 2",
+          },
+          {
+            q: "Which test determines convergence of Σ(−1)^n / n?",
+            options: [
+              "Alternating Series Test",
+              "Ratio Test",
+              "p-Series Test",
+              "Divergence Test",
+            ],
+            correct: 0,
+            explain:
+              "The Alternating Series Test applies: bₙ = 1/n is decreasing and lim(n→∞) 1/n = 0, so the series converges conditionally.",
+          },
+          {
+            q: "Find ∫ 1/(x² − 1) dx using partial fractions",
+            options: [
+              "½·ln|x−1| − ½·ln|x+1| + C",
+              "ln|x²−1| + C",
+              "½·ln|(x−1)/(x+1)| + C",
+              "Both A and C",
+            ],
+            correct: 3,
+            explain:
+              "1/(x²−1) = ½·[1/(x−1) − 1/(x+1)]. Integrating: ½ln|x−1| − ½ln|x+1| + C = ½ln|(x−1)/(x+1)| + C. Both A and C are equivalent.",
+          },
+          {
+            q: "Find the Taylor series for f(x) = cos(x) centered at x = 0",
+            options: [
+              "Σ(−1)^n · x^(2n) / (2n)!",
+              "Σ x^n / n!",
+              "Σ(−1)^n · x^(2n+1) / (2n+1)!",
+              "Σ x^(2n) / (2n)!",
+            ],
+            correct: 0,
+            explain:
+              "cos(x) = 1 − x²/2! + x⁴/4! − ... = Σ(n=0 to ∞)(−1)^n · x^(2n) / (2n)!",
+          },
+          {
+            q: "Evaluate the improper integral ∫₁^∞ 1/x^3 dx",
+            options: ["1/2", "1", "∞ (diverges)", "1/3"],
+            correct: 0,
+            explain: "∫₁^∞ x^(−3)dx = [x^(−2)/(−2)]₁^∞ = 0 − (−1/2) = 1/2",
+          },
+          {
+            q: "Use the ratio test on Σ n!/2^n. What is the result?",
+            options: [
+              "Diverges (L = ∞)",
+              "Converges (L = 1/2)",
+              "Converges (L = 0)",
+              "Inconclusive (L = 1)",
+            ],
+            correct: 0,
+            explain:
+              "L = lim|(a_{n+1}/aₙ)| = lim|(n+1)!/2^(n+1) · 2^n/n!| = lim(n+1)/2 = ∞ > 1, so the series diverges.",
+          },
+        ],
+      };
+      QUESTIONS.mixed = [
+        ...QUESTIONS.calc1.slice(4),
+        ...QUESTIONS.calc2.slice(4),
+      ].sort(() => Math.random() - 0.5);
+
+      /* ════════════════════════
+   GAME STATE
+════════════════════════ */
+      let state = {
+        topic: "calc1",
+        questions: [],
+        current: 0,
+        correct: 0,
+        answers: [],
+        timer: 180,
+        timerInterval: null,
+        startTime: null,
+        timeUsed: 0,
+      };
+
+      function selectTopic(t, el) {
+        state.topic = t;
+        document
+          .querySelectorAll(".topic-card")
+          .forEach((c) => c.classList.remove("selected"));
+        el.classList.add("selected");
+      }
+
+      function startChallenge() {
+        const pool = [...QUESTIONS[state.topic]];
+        state.questions = pool.sort(() => Math.random() - 0.5).slice(0, 10);
+        state.current = 0;
+        state.correct = 0;
+        state.answers = [];
+        state.timer = 180;
+        state.startTime = Date.now();
+
+        const badges = {
+          calc1: "📐 Calculus I",
+          calc2: "∫ Calculus II",
+          mixed: "🔥 Mixed Hard",
+        };
+        document.getElementById("quiz-topic-badge").textContent =
+          badges[state.topic];
+
+        showScreen("quiz");
+        renderQuestion();
+        startTimer();
+      }
+
+      function startTimer() {
+        clearInterval(state.timerInterval);
+        state.timerInterval = setInterval(() => {
+          state.timer--;
+          const m = Math.floor(state.timer / 60);
+          const s = String(state.timer % 60).padStart(2, "0");
+          const el = document.getElementById("timer-circle");
+          el.textContent = `${m}:${s}`;
+          el.className =
+            "timer-circle" +
+            (state.timer <= 30
+              ? " danger"
+              : state.timer <= 60
+                ? " warning"
+                : "");
+          if (state.timer <= 0) {
+            clearInterval(state.timerInterval);
+            finishChallenge();
+          }
+        }, 1000);
+      }
+
+      function renderQuestion() {
+        const q = state.questions[state.current];
+        const total = state.questions.length;
+        const pct = (state.current / total) * 100;
+
+        document.getElementById("q-num").textContent =
+          `Question ${state.current + 1} of ${total}`;
+        document.getElementById("live-score").textContent = state.correct;
+        document.getElementById("live-total").textContent = total;
+        document.getElementById("progress-fill").style.width = pct + "%";
+        document.getElementById("btn-next").style.display = "none";
+        document.getElementById("explanation").className = "explanation";
+
+        const qText = document.getElementById("q-text");
+        qText.textContent = q.q;
+
+        const optsList = document.getElementById("options-list");
+        const keys = ["A", "B", "C", "D"];
+        optsList.innerHTML = q.options
+          .map(
+            (opt, i) => `
+    <button class="option" onclick="selectAnswer(this, ${i}, ${q.correct})">
+      <span class="opt-key">${keys[i]}</span>
+      <span>${opt}</span>
+    </button>`,
+          )
+          .join("");
+
+        /* Re-render MathJax */
+        if (window.MathJax)
+          MathJax.typesetPromise([
+            document.getElementById("question-card"),
+          ]).catch(() => {});
+      }
+
+      function selectAnswer(btn, chosen, correct) {
+        const q = state.questions[state.current];
+        const buttons = document.querySelectorAll(".option");
+        buttons.forEach((b) => (b.disabled = true));
+
+        const isCorrect = chosen === correct;
+        if (isCorrect) {
+          btn.classList.add("correct");
+          state.correct++;
+        } else {
+          btn.classList.add("wrong");
+          buttons[correct].classList.add("correct");
+        }
+
+        state.answers.push({
+          q: q.q,
+          chosen,
+          correct,
+          isCorrect,
+          options: q.options,
+          explain: q.explain,
+        });
+
+        const exp = document.getElementById("explanation");
+        exp.textContent = "💡 " + q.explain;
+        exp.className = "explanation show";
+
+        document.getElementById("btn-next").style.display = "flex";
+        document.getElementById("live-score").textContent = state.correct;
+      }
+
+      function nextQuestion() {
+        state.current++;
+        if (state.current >= state.questions.length) finishChallenge();
+        else renderQuestion();
+      }
+
+      async function finishChallenge() {
+        clearInterval(state.timerInterval);
+        state.timeUsed = Math.round((Date.now() - state.startTime) / 1000);
+        showScreen("results");
+        renderResults();
+
+        const total = state.questions.length;
+        const pct = Math.round((state.correct / total) * 100);
+        const diamonds =
+          pct >= 80 ? 200 : pct >= 60 ? 150 : pct >= 40 ? 100 : 50;
+        const xp = 30 + state.correct * 5;
+
+        /* Award diamonds */
+        if (typeof Diamonds !== "undefined") {
+          await Diamonds.award(diamonds, `⚡ Daily Challenge ${pct}%`, "quiz");
+        }
+
+        setTimeout(() => showReward(diamonds, pct, xp), 800);
+      }
+
+      function renderResults() {
+        const total = state.questions.length;
+        const pct = Math.round((state.correct / total) * 100);
+        const diamonds =
+          pct >= 80 ? 200 : pct >= 60 ? 150 : pct >= 40 ? 100 : 50;
+
+        document.getElementById("result-pct").textContent = pct + "%";
+        document.getElementById("result-title").textContent =
+          pct >= 90
+            ? "🏆 Exceptional!"
+            : pct >= 70
+              ? "⭐ Great job!"
+              : pct >= 50
+                ? "💪 Good effort!"
+                : "📚 Keep studying!";
+        document.getElementById("result-sub").textContent =
+          `You answered ${state.correct} of ${total} correctly.`;
+        document.getElementById("r-correct").textContent = state.correct;
+        document.getElementById("r-wrong").textContent = total - state.correct;
+        document.getElementById("r-time").textContent = state.timeUsed + "s";
+        document.getElementById("r-diamonds").textContent = "+" + diamonds;
+
+        const reviewList = document.getElementById("review-list");
+        reviewList.innerHTML = state.answers
+          .map(
+            (a, i) => `
+    <div class="review-item ${a.isCorrect ? "correct" : "wrong"}">
+      <div class="review-q">${i + 1}. ${a.q}</div>
+      <div class="review-answer ${a.isCorrect ? "correct" : "wrong"}">
+        ${a.isCorrect ? "✓ Correct" : "✗ Wrong"}: ${a.options[a.chosen]}
+      </div>
+      ${!a.isCorrect ? `<div class="review-answer correct">✓ Correct answer: ${a.options[a.correct]}</div>` : ""}
+      <div class="review-explain">${a.explain}</div>
+    </div>`,
+          )
+          .join("");
+      }
+
+      function showReward(diamonds, pct, xp) {
+        document.getElementById("reward-emoji").textContent =
+          pct >= 80 ? "🏆" : pct >= 60 ? "⭐" : "💪";
+        document.getElementById("reward-title").textContent =
+          pct >= 80 ? "Outstanding!" : pct >= 60 ? "Well done!" : "Keep going!";
+        document.getElementById("reward-diamonds").textContent =
+          "+" + diamonds + " 💎";
+        document.getElementById("reward-sub").textContent =
+          `+${xp} XP · Score: ${pct}%`;
+        document.getElementById("reward-overlay").classList.add("show");
+        document.getElementById("reward-popup").classList.add("show");
+        launchDiamonds();
+      }
+
+      function closeReward() {
+        document.getElementById("reward-overlay").classList.remove("show");
+        document.getElementById("reward-popup").classList.remove("show");
+      }
+
+      function launchDiamonds() {
+        for (let i = 0; i < 16; i++) {
+          setTimeout(() => {
+            const el = document.createElement("div");
+            el.className = "float-d";
+            el.textContent = "💎";
+            el.style.left = 15 + Math.random() * 70 + "vw";
+            el.style.bottom = 20 + Math.random() * 30 + "vh";
+            el.style.animationDuration = 1 + Math.random() * 0.7 + "s";
+            el.style.animationDelay = Math.random() * 0.4 + "s";
+            document.body.appendChild(el);
+            el.addEventListener("animationend", () => el.remove());
+          }, i * 60);
+        }
+      }
+
+      function retryChallenge() {
+        showScreen("intro");
+      }
+
+      function showScreen(id) {
+        document
+          .querySelectorAll(".screen")
+          .forEach((s) => s.classList.remove("active"));
+        document.getElementById("screen-" + id).classList.add("active");
+        window.scrollTo(0, 0);
+      }
+
+      function showToast(msg, type = "") {
+        const t = document.getElementById("toast");
+        t.textContent = msg;
+        t.className = "toast show " + type;
+        setTimeout(() => (t.className = "toast"), 3000);
+      }
+    </script>
+  </body>
+</html>
