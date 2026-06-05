@@ -1,0 +1,1503 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Features — QuizForge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --bg: #f0f6ff;
+        --surface: #ffffff;
+        --surface2: #f7faff;
+        --border: #d0e3fa;
+        --border2: #b8d4f7;
+        --accent: #2563eb;
+        --accent-light: #dbeafe;
+        --accent-mid: #60a5fa;
+        --accent-dark: #1d4ed8;
+        --text: #0f172a;
+        --muted: #64748b;
+        --muted2: #94a3b8;
+        --radius: 18px;
+        --radius-sm: 10px;
+        --font: "Inter", Arial, sans-serif;
+      }
+      html {
+        font-size: 16px;
+        scroll-behavior: smooth;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--font);
+        min-height: 100vh;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* ── NAV ── */
+      nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 3rem;
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(18px);
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .logo {
+        font-weight: 800;
+        font-size: 1.2rem;
+        letter-spacing: -0.03em;
+        color: var(--accent);
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        text-decoration: none;
+      }
+      .logo-icon {
+        width: 32px;
+        height: 32px;
+        background: var(--accent);
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .logo-icon svg {
+        width: 16px;
+        height: 16px;
+      }
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .btn-ghost {
+        background: none;
+        border: 1.5px solid var(--border2);
+        color: var(--muted);
+        padding: 0.48rem 1.1rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.18s;
+        text-decoration: none;
+      }
+      .btn-ghost:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: var(--accent-light);
+      }
+      .btn-primary {
+        background: var(--accent);
+        border: none;
+        color: #fff;
+        padding: 0.52rem 1.3rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-weight: 600;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.18s;
+        text-decoration: none;
+      }
+      .btn-primary:hover {
+        background: var(--accent-dark);
+        transform: translateY(-1px);
+      }
+
+      /* ── PAGE ── */
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem 6rem;
+      }
+      .page-header {
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+      .page-tag {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--accent);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 0.6rem;
+      }
+      .page-title {
+        font-weight: 800;
+        font-size: clamp(1.8rem, 4vw, 2.6rem);
+        color: var(--text);
+        letter-spacing: -0.04em;
+        margin-bottom: 0.75rem;
+        line-height: 1.15;
+      }
+      .page-sub {
+        font-size: 1rem;
+        color: var(--muted);
+        max-width: 480px;
+        margin: 0 auto;
+        line-height: 1.75;
+      }
+
+      /* ════════════════════════
+       1. LIMITED TIME EVENT
+    ════════════════════════ */
+      .event-card {
+        background: linear-gradient(
+          135deg,
+          #1e40af 0%,
+          #2563eb 60%,
+          #3b82f6 100%
+        );
+        border-radius: var(--radius);
+        padding: 1.75rem 2rem;
+        margin-bottom: 1.25rem;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+        box-shadow: 0 8px 32px rgba(37, 99, 235, 0.3);
+      }
+      .event-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 14px 40px rgba(37, 99, 235, 0.4);
+      }
+      .event-card::before {
+        content: "";
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        width: 180px;
+        height: 180px;
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 50%;
+      }
+      .event-card::after {
+        content: "";
+        position: absolute;
+        bottom: -60px;
+        right: 80px;
+        width: 120px;
+        height: 120px;
+        background: rgba(255, 255, 255, 0.04);
+        border-radius: 50%;
+      }
+      .event-top {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        margin-bottom: 1.1rem;
+        flex-wrap: wrap;
+      }
+      .event-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 0.3rem 0.8rem;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+      .badge-fire {
+        background: rgba(249, 115, 22, 0.25);
+        border: 1px solid rgba(249, 115, 22, 0.4);
+        color: #fed7aa;
+      }
+      .badge-time {
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        color: rgba(255, 255, 255, 0.9);
+      }
+      .badge-users {
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: rgba(255, 255, 255, 0.85);
+        margin-left: auto;
+      }
+      .event-body {
+        display: flex;
+        align-items: flex-start;
+        gap: 1.25rem;
+      }
+      .event-icon-wrap {
+        width: 56px;
+        height: 56px;
+        flex-shrink: 0;
+        background: rgba(255, 255, 255, 0.15);
+        border: 1.5px solid rgba(255, 255, 255, 0.2);
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+      }
+      .event-content {
+        flex: 1;
+      }
+      .event-title {
+        font-weight: 800;
+        font-size: 1.3rem;
+        color: #fff;
+        letter-spacing: -0.02em;
+        margin-bottom: 0.3rem;
+      }
+      .event-desc {
+        font-size: 0.875rem;
+        color: rgba(255, 255, 255, 0.78);
+        line-height: 1.65;
+        margin-bottom: 0.9rem;
+      }
+      .event-rewards {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+      }
+      .reward-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: rgba(255, 255, 255, 0.9);
+        padding: 0.28rem 0.75rem;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 600;
+      }
+      .event-action {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 700;
+        font-size: 0.9rem;
+        margin-left: auto;
+        white-space: nowrap;
+        padding-top: 0.25rem;
+      }
+      .event-action svg {
+        width: 16px;
+        height: 16px;
+      }
+      .event-progress-wrap {
+        margin-top: 1.25rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+      }
+      .event-progress-label {
+        font-size: 0.78rem;
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 0.5rem;
+        display: flex;
+        justify-content: space-between;
+      }
+      .event-progress-bar {
+        height: 6px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .event-progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #fbbf24, #f97316);
+        border-radius: 999px;
+        width: 68%;
+        transition: width 1.2s ease;
+      }
+
+      /* Countdown */
+      .event-countdown {
+        display: flex;
+        gap: 0.6rem;
+        margin-top: 0.75rem;
+      }
+      .cd-unit {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        padding: 0.4rem 0.7rem;
+        text-align: center;
+        min-width: 48px;
+      }
+      .cd-num {
+        font-weight: 800;
+        font-size: 1.2rem;
+        color: #fff;
+        line-height: 1;
+      }
+      .cd-label {
+        font-size: 0.62rem;
+        color: rgba(255, 255, 255, 0.6);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      /* ════════════════════════
+       2. AI TUTOR
+    ════════════════════════ */
+      .tutor-card {
+        background: linear-gradient(
+          135deg,
+          #0f172a 0%,
+          #1e293b 50%,
+          #0f2d4a 100%
+        );
+        border-radius: var(--radius);
+        padding: 1.75rem 2rem;
+        margin-bottom: 1.25rem;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+      }
+      .tutor-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+      }
+      .tutor-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 260px;
+        height: 260px;
+        background: radial-gradient(
+          circle,
+          rgba(37, 99, 235, 0.15) 0%,
+          transparent 70%
+        );
+      }
+      .tutor-top {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.25rem;
+      }
+      .tutor-avatar {
+        width: 64px;
+        height: 64px;
+        flex-shrink: 0;
+        background: linear-gradient(135deg, #1e40af, #3b82f6);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.4);
+      }
+      .tutor-name-wrap {
+        flex: 1;
+      }
+      .tutor-name {
+        font-weight: 800;
+        font-size: 1.35rem;
+        color: #fff;
+        letter-spacing: -0.02em;
+        margin-bottom: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+      }
+      .tutor-speed-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: linear-gradient(90deg, #f97316, #ef4444);
+        color: #fff;
+        font-size: 0.7rem;
+        font-weight: 700;
+        padding: 0.2rem 0.65rem;
+        border-radius: 999px;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+      .tutor-desc {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.65);
+        line-height: 1.65;
+        margin-bottom: 1.1rem;
+      }
+      .tutor-tags {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.4rem;
+      }
+      .tutor-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: rgba(255, 255, 255, 0.75);
+        padding: 0.3rem 0.8rem;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 500;
+      }
+      .tutor-actions {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .btn-ask {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        padding: 0.75rem 1.6rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-weight: 700;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.4);
+      }
+      .btn-ask:hover {
+        background: var(--accent-dark);
+        transform: translateY(-2px);
+      }
+      .btn-ask svg {
+        width: 16px;
+        height: 16px;
+      }
+      .btn-pdf {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1.5px solid rgba(255, 255, 255, 0.2);
+        color: rgba(255, 255, 255, 0.85);
+        padding: 0.72rem 1.3rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-weight: 600;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .btn-pdf:hover {
+        background: rgba(255, 255, 255, 0.18);
+        border-color: rgba(255, 255, 255, 0.35);
+      }
+      .tutor-model {
+        font-size: 0.72rem;
+        color: rgba(255, 255, 255, 0.35);
+        margin-top: 0.4rem;
+      }
+
+      /* Chat preview */
+      .tutor-chat-preview {
+        margin-top: 1.25rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+      }
+      .chat-msg {
+        padding: 0.65rem 1rem;
+        border-radius: 10px;
+        font-size: 0.82rem;
+        line-height: 1.55;
+        max-width: 85%;
+      }
+      .chat-user {
+        background: rgba(37, 99, 235, 0.35);
+        color: rgba(255, 255, 255, 0.9);
+        align-self: flex-end;
+        border: 1px solid rgba(37, 99, 235, 0.4);
+      }
+      .chat-bot {
+        background: rgba(255, 255, 255, 0.07);
+        color: rgba(255, 255, 255, 0.8);
+        align-self: flex-start;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .chat-typing {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+        padding: 0.5rem 0.75rem;
+      }
+      .dot-typing {
+        width: 6px;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.4);
+        border-radius: 50%;
+        animation: typing 0.8s infinite;
+      }
+      .dot-typing:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .dot-typing:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+      @keyframes typing {
+        0%,
+        100% {
+          transform: translateY(0);
+          opacity: 0.4;
+        }
+        50% {
+          transform: translateY(-4px);
+          opacity: 1;
+        }
+      }
+
+      /* ════════════════════════
+       3. MULTIPLAYER
+    ════════════════════════ */
+      .multi-card {
+        background: linear-gradient(
+          135deg,
+          #6d28d9 0%,
+          #7c3aed 40%,
+          #a855f7 80%,
+          #ec4899 100%
+        );
+        border-radius: var(--radius);
+        padding: 1.75rem 2rem;
+        margin-bottom: 1.25rem;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+        box-shadow: 0 8px 32px rgba(109, 40, 217, 0.35);
+      }
+      .multi-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 14px 40px rgba(109, 40, 217, 0.5);
+      }
+      .multi-card::before {
+        content: "";
+        position: absolute;
+        bottom: -30px;
+        right: -30px;
+        width: 200px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 50%;
+      }
+      .multi-top {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+      }
+      .multi-icon-wrap {
+        width: 68px;
+        height: 68px;
+        flex-shrink: 0;
+        background: rgba(255, 255, 255, 0.15);
+        border: 1.5px solid rgba(255, 255, 255, 0.25);
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      }
+      .multi-content {
+        flex: 1;
+      }
+      .multi-title-row {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        margin-bottom: 0.4rem;
+      }
+      .multi-title {
+        font-weight: 900;
+        font-size: 1.5rem;
+        color: #fff;
+        letter-spacing: -0.03em;
+      }
+      .multi-badge {
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: #fff;
+        font-size: 0.7rem;
+        font-weight: 700;
+        padding: 0.22rem 0.7rem;
+        border-radius: 999px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .multi-desc {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.8);
+        line-height: 1.65;
+        max-width: 520px;
+      }
+      .multi-arrow {
+        width: 44px;
+        height: 44px;
+        background: rgba(255, 255, 255, 0.18);
+        border: 1.5px solid rgba(255, 255, 255, 0.25);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: auto;
+        flex-shrink: 0;
+        transition: all 0.2s;
+        color: #fff;
+      }
+      .multi-card:hover .multi-arrow {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateX(4px);
+      }
+      .multi-arrow svg {
+        width: 18px;
+        height: 18px;
+      }
+      .multi-stats {
+        display: flex;
+        gap: 1.5rem;
+        margin-top: 1.25rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        flex-wrap: wrap;
+      }
+      .multi-stat {
+        text-align: center;
+      }
+      .multi-stat-num {
+        font-weight: 800;
+        font-size: 1.3rem;
+        color: #fff;
+      }
+      .multi-stat-label {
+        font-size: 0.72rem;
+        color: rgba(255, 255, 255, 0.65);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .online-dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        background: #4ade80;
+        border-radius: 50%;
+        margin-right: 4px;
+        animation: blink 1.5s infinite;
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.4;
+        }
+      }
+
+      /* ════════════════════════
+       4. DAILY CHALLENGE
+    ════════════════════════ */
+      .challenge-card {
+        background: linear-gradient(
+          135deg,
+          #064e3b 0%,
+          #065f46 50%,
+          #047857 100%
+        );
+        border-radius: var(--radius);
+        padding: 1.75rem 2rem;
+        margin-bottom: 1.25rem;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+        box-shadow: 0 8px 32px rgba(6, 78, 59, 0.4);
+      }
+      .challenge-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 14px 40px rgba(6, 78, 59, 0.55);
+      }
+      .challenge-card::before {
+        content: "";
+        position: absolute;
+        top: -50px;
+        left: -50px;
+        width: 200px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.04);
+        border-radius: 50%;
+      }
+      .challenge-row {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+      }
+      .challenge-icon {
+        width: 64px;
+        height: 64px;
+        flex-shrink: 0;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1.5px solid rgba(255, 255, 255, 0.2);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+      }
+      .challenge-content {
+        flex: 1;
+      }
+      .challenge-label {
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.6);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 0.3rem;
+      }
+      .challenge-title {
+        font-weight: 800;
+        font-size: 1.25rem;
+        color: #fff;
+        letter-spacing: -0.02em;
+        margin-bottom: 0.3rem;
+      }
+      .challenge-desc {
+        font-size: 0.875rem;
+        color: rgba(255, 255, 255, 0.7);
+      }
+      .challenge-right {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.6rem;
+      }
+      .challenge-reward {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #fff;
+        font-size: 0.82rem;
+        font-weight: 700;
+        padding: 0.35rem 0.85rem;
+        border-radius: 999px;
+      }
+      .btn-challenge {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: rgba(255, 255, 255, 0.15);
+        border: 1.5px solid rgba(255, 255, 255, 0.25);
+        color: #fff;
+        padding: 0.65rem 1.4rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-weight: 600;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .btn-challenge:hover {
+        background: rgba(255, 255, 255, 0.25);
+      }
+
+      /* ════════════════════════
+       TUTOR MODAL
+    ════════════════════════ */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.6);
+        z-index: 200;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        backdrop-filter: blur(4px);
+      }
+      .modal-overlay.open {
+        display: flex;
+      }
+      .rex-modal {
+        background: #0f172a;
+        border: 1.5px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        width: 100%;
+        max-width: 560px;
+        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+        overflow: hidden;
+        animation: modalIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      @keyframes modalIn {
+        from {
+          opacity: 0;
+          transform: translateY(14px) scale(0.97);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .rex-modal-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.03);
+      }
+      .rex-modal-header .avatar {
+        background: linear-gradient(135deg, #1e40af, #3b82f6);
+        font-size: 1.2rem;
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        color: #fff;
+        border: none;
+      }
+      .modal-title {
+        font-weight: 700;
+        font-size: 1rem;
+        color: #fff;
+      }
+      .modal-subtitle {
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.4);
+      }
+      .modal-close {
+        margin-left: auto;
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.4);
+        cursor: pointer;
+        font-size: 1.1rem;
+        transition: color 0.15s;
+      }
+      .modal-close:hover {
+        color: #f87171;
+      }
+      .modal-messages {
+        padding: 1.25rem 1.5rem;
+        height: 280px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      .modal-messages::-webkit-scrollbar {
+        width: 4px;
+      }
+      .modal-messages::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+      }
+      .msg {
+        padding: 0.7rem 1rem;
+        border-radius: 12px;
+        font-size: 0.875rem;
+        line-height: 1.6;
+        max-width: 82%;
+      }
+      .msg-bot {
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.85);
+        align-self: flex-start;
+      }
+      .msg-user {
+        background: #1d4ed8;
+        color: #fff;
+        align-self: flex-end;
+        border: 1px solid #2563eb;
+      }
+      .modal-input-row {
+        display: flex;
+        gap: 0.75rem;
+        padding: 1rem 1.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .modal-input {
+        flex: 1;
+        background: rgba(255, 255, 255, 0.07);
+        border: 1.5px solid rgba(255, 255, 255, 0.12);
+        border-radius: var(--radius-sm);
+        color: #fff;
+        font-family: var(--font);
+        font-size: 0.875rem;
+        padding: 0.65rem 1rem;
+        outline: none;
+        transition: border-color 0.18s;
+      }
+      .modal-input:focus {
+        border-color: var(--accent-mid);
+      }
+      .modal-input::placeholder {
+        color: rgba(255, 255, 255, 0.3);
+      }
+      .btn-send {
+        background: var(--accent);
+        border: none;
+        color: #fff;
+        width: 40px;
+        height: 40px;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.18s;
+        flex-shrink: 0;
+      }
+      .btn-send:hover {
+        background: var(--accent-dark);
+      }
+      .btn-send svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      /* ── TOAST ── */
+      .toast {
+        position: fixed;
+        bottom: 1.75rem;
+        right: 1.75rem;
+        background: #fff;
+        border: 1.5px solid var(--border2);
+        color: var(--text);
+        padding: 0.85rem 1.4rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.9rem;
+        font-weight: 500;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.25s;
+        z-index: 999;
+        pointer-events: none;
+        box-shadow: 0 6px 28px rgba(37, 99, 235, 0.12);
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .toast.info {
+        border-color: rgba(37, 99, 235, 0.4);
+        color: var(--accent);
+      }
+
+      @media (max-width: 640px) {
+        nav {
+          padding: 1rem 1.25rem;
+        }
+        .page {
+          padding: 2rem 1rem 5rem;
+        }
+        .event-body {
+          flex-direction: column;
+        }
+        .multi-top {
+          flex-wrap: wrap;
+        }
+        .challenge-row {
+          flex-wrap: wrap;
+        }
+        .challenge-right {
+          flex-direction: row;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="../index.html" class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+          </svg>
+        </div>
+        QuizForge
+      </a>
+      <div class="nav-links">
+        <a href="../index.html" class="btn-ghost">Home</a>
+        <a href="dashboard.html" class="btn-ghost">My history</a>
+        <a href="streak.html" class="btn-ghost">🔥 Streak</a>
+        <a href="diamonds.html" class="btn-ghost">💎 Diamonds</a>
+        <a href="settings.html" class="btn-ghost">⚙️</a>
+      </div>
+    </nav>
+
+    <div class="page">
+      <div class="page-header">
+        <p class="page-tag">Discover</p>
+        <h1 class="page-title">What can you do<br />with QuizForge?</h1>
+        <p class="page-sub">
+          Explore all the tools designed to make your study sessions smarter,
+          faster and more fun.
+        </p>
+      </div>
+
+      <!-- ══════════════════════
+         1. LIMITED TIME EVENT
+    ══════════════════════ -->
+      <div class="event-card" id="event-card">
+        <div class="event-top">
+          <span class="event-badge badge-fire">🔥 Limited time</span>
+          <span class="event-badge badge-time" id="event-days"
+            >⏳ 5 days left</span
+          >
+          <span class="event-badge badge-users"
+            >👥 <span id="event-users">1,247</span> joined</span
+          >
+        </div>
+        <div class="event-body">
+          <div class="event-icon-wrap">🧠</div>
+          <div class="event-content">
+            <h2 class="event-title">Quiz Sprint Challenge</h2>
+            <p class="event-desc">
+              Complete 5 quizzes this week on any topic and earn exclusive
+              rewards. Every correct answer counts toward your final score!
+            </p>
+            <div class="event-rewards">
+              <span class="reward-chip">⬆️ Level Up</span>
+              <span class="reward-chip">💎 +2,500 Diamonds</span>
+              <span class="reward-chip">🏆 Sprint Badge</span>
+            </div>
+          </div>
+          <div class="event-action" onclick="joinEvent()">
+            Join Now
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </div>
+        </div>
+        <div class="event-progress-wrap">
+          <div class="event-progress-label">
+            <span>Your progress</span>
+            <span id="event-progress-text">2 / 5 quizzes</span>
+          </div>
+          <div class="event-progress-bar">
+            <div
+              class="event-progress-fill"
+              id="event-progress-fill"
+              style="width: 40%"
+            ></div>
+          </div>
+          <div class="event-countdown" id="event-countdown"></div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════
+         2. AI TUTOR — LEO
+    ══════════════════════ -->
+      <div class="tutor-card" onclick="openTutor()">
+        <div class="tutor-top">
+          <div class="tutor-avatar">🤖</div>
+          <div class="tutor-name-wrap">
+            <div class="tutor-name">
+              Rex — AI Tutor
+              <span class="tutor-speed-badge">⚡ Groq Ultra Fast</span>
+            </div>
+            <div class="tutor-model">Powered by LLaMA 3.3 70B</div>
+          </div>
+        </div>
+        <p class="tutor-desc">
+          Your lightning-fast AI study companion. Ask anything about math,
+          science, history, languages and more — get precise answers instantly
+          without leaving the page.
+        </p>
+        <div class="tutor-tags">
+          <span class="tutor-tag">📐 Math</span>
+          <span class="tutor-tag">🔬 Science</span>
+          <span class="tutor-tag">🌍 History</span>
+          <span class="tutor-tag">💻 Coding</span>
+          <span class="tutor-tag">🌐 Languages</span>
+          <span class="tutor-tag">📖 Literature</span>
+        </div>
+        <div class="tutor-actions">
+          <button
+            class="btn-ask"
+            onclick="
+              event.stopPropagation();
+              openTutor();
+            "
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+            </svg>
+            Ask Rex Now
+          </button>
+          <button
+            class="btn-pdf"
+            onclick="
+              event.stopPropagation();
+              showToast('Upload a PDF to chat with Leo about it!', 'info');
+            "
+          >
+            📄 + PDF
+          </button>
+        </div>
+        <div class="tutor-chat-preview">
+          <div class="chat-msg chat-user">What is the Pythagorean theorem?</div>
+          <div class="chat-msg chat-bot">
+            The Pythagorean theorem states that in a right triangle, a² + b² =
+            c², where c is the hypotenuse. Want me to show you some examples?
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════
+         3. MULTIPLAYER 1v1
+    ══════════════════════ -->
+      <div
+        class="multi-card"
+        onclick="showToast('Multiplayer mode coming soon! 🎮', 'info')"
+      >
+        <div class="multi-top">
+          <div class="multi-icon-wrap">🎮</div>
+          <div class="multi-content">
+            <div class="multi-title-row">
+              <h2 class="multi-title">Multiplayer 1v1</h2>
+              <span class="multi-badge">Multiplayer</span>
+              <span
+                class="multi-badge"
+                style="
+                  background: rgba(74, 222, 128, 0.2);
+                  border-color: rgba(74, 222, 128, 0.3);
+                "
+              >
+                <span class="online-dot"></span>Coming soon
+              </span>
+            </div>
+            <p class="multi-desc">
+              Challenge your friends in real-time knowledge battles! Compete
+              head-to-head and prove who's the ultimate study champion.
+            </p>
+          </div>
+          <div class="multi-arrow">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </div>
+        </div>
+        <div class="multi-stats">
+          <div class="multi-stat">
+            <div class="multi-stat-num">2,400+</div>
+            <div class="multi-stat-label">Battles played</div>
+          </div>
+          <div class="multi-stat">
+            <div class="multi-stat-num">847</div>
+            <div class="multi-stat-label">
+              <span class="online-dot"></span>Online now
+            </div>
+          </div>
+          <div class="multi-stat">
+            <div class="multi-stat-num">45s</div>
+            <div class="multi-stat-label">Avg match time</div>
+          </div>
+          <div class="multi-stat">
+            <div class="multi-stat-num">#1</div>
+            <div class="multi-stat-label">Top ranked</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════
+         4. DAILY CHALLENGE
+    ══════════════════════ -->
+      <div
+        class="challenge-card"
+        onclick="showToast('Daily challenge activated! +150 💎', 'info')"
+      >
+        <div class="challenge-row">
+          <div class="challenge-icon">⚡</div>
+          <div class="challenge-content">
+            <p class="challenge-label">Daily challenge</p>
+            <h3 class="challenge-title" id="challenge-title">
+              Today's Topic: General Knowledge
+            </h3>
+            <p class="challenge-desc">
+              Answer 10 questions in under 3 minutes. New challenge every day at
+              midnight.
+            </p>
+          </div>
+          <div class="challenge-right">
+            <span class="challenge-reward">💎 +150 diamonds</span>
+            <button class="btn-challenge">Start now →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── LEO TUTOR MODAL ── -->
+    <div class="modal-overlay" id="rex-modal" onclick="closeTutorModal(event)">
+      <div class="rex-modal">
+        <div class="rex-modal-header">
+          <div
+            class="avatar"
+            style="
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 1.3rem;
+              width: 40px;
+              height: 40px;
+              border-radius: 10px;
+              background: linear-gradient(135deg, #1e40af, #3b82f6);
+              flex-shrink: 0;
+            "
+          >
+            🤖
+          </div>
+          <div>
+            <p class="modal-title">Rex — AI Tutor</p>
+            <p class="modal-subtitle">⚡ Groq Ultra Fast · LLaMA 3.3 70B</p>
+          </div>
+          <button
+            class="modal-close"
+            onclick="
+              document.getElementById('rex-modal').classList.remove('open')
+            "
+          >
+            ✕
+          </button>
+        </div>
+        <div class="modal-messages" id="modal-messages">
+          <div class="msg msg-bot">
+            👋 Hi! I'm Rex, your AI tutor. Ask me anything — math, science,
+            history, coding or any topic you're studying!
+          </div>
+        </div>
+        <div class="modal-input-row">
+          <input
+            type="text"
+            class="modal-input"
+            id="tutor-input"
+            placeholder="Ask Rex anything..."
+            onkeydown="if (event.key === 'Enter') sendMessage();"
+          />
+          <button class="btn-send" onclick="sendMessage()">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <line x1="22" y1="2" x2="11" y2="13" />
+              <polygon points="22 2 15 22 11 13 2 9 22 2" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+      window.__GROQ_KEY__ = "YOUR_GROQ_API_KEY_HERE";
+    </script>
+    <script src="../js/diamonds.js"></script>
+    <script>
+      /* ── Countdown timer ── */
+      function buildCountdown() {
+        const end = new Date();
+        end.setDate(end.getDate() + 5);
+        end.setHours(0, 0, 0, 0);
+
+        function tick() {
+          const diff = end - Date.now();
+          if (diff <= 0) {
+            document.getElementById("event-countdown").innerHTML =
+              '<span style="color:rgba(255,255,255,.6);font-size:.78rem">Event ended</span>';
+            return;
+          }
+          const d = Math.floor(diff / 86400000);
+          const h = Math.floor((diff % 86400000) / 3600000);
+          const m = Math.floor((diff % 3600000) / 60000);
+          const s = Math.floor((diff % 60000) / 1000);
+          document.getElementById("event-countdown").innerHTML = `
+          <div class="cd-unit"><div class="cd-num">${String(d).padStart(2, "0")}</div><div class="cd-label">Days</div></div>
+          <div class="cd-unit"><div class="cd-num">${String(h).padStart(2, "0")}</div><div class="cd-label">Hrs</div></div>
+          <div class="cd-unit"><div class="cd-num">${String(m).padStart(2, "0")}</div><div class="cd-label">Min</div></div>
+          <div class="cd-unit"><div class="cd-num">${String(s).padStart(2, "0")}</div><div class="cd-label">Sec</div></div>`;
+        }
+        tick();
+        setInterval(tick, 1000);
+      }
+      buildCountdown();
+
+      /* ── Join Event ── */
+      function joinEvent() {
+        if (typeof Diamonds !== "undefined") {
+          Diamonds.award(500, "Event joined 🏆", "reward");
+        }
+        showToast("🎉 You joined the Quiz Sprint Challenge! +500 💎", "info");
+      }
+
+      /* ── Leo Tutor Modal ── */
+      function openTutor() {
+        document.getElementById("rex-modal").classList.add("open");
+        document.getElementById("tutor-input").focus();
+      }
+      function closeTutorModal(e) {
+        if (e.target.id === "rex-modal")
+          document.getElementById("rex-modal").classList.remove("open");
+      }
+
+      /* ── Send message to Leo via Groq ── */
+      const messages = [
+        {
+          role: "system",
+          content:
+            "You are Leo, a friendly and knowledgeable AI tutor for students. Give clear, concise and helpful answers. Use emojis occasionally to be engaging. Keep responses under 3 sentences unless more detail is needed.",
+        },
+      ];
+
+      async function sendMessage() {
+        const input = document.getElementById("tutor-input");
+        const text = input.value.trim();
+        if (!text) return;
+
+        input.value = "";
+        addMessage(text, "user");
+        messages.push({ role: "user", content: text });
+
+        /* Typing indicator */
+        const typingId = addTyping();
+
+        try {
+          const res = await fetch(
+            "https://api.groq.com/openai/v1/chat/completions",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${window.__GROQ_KEY__ || ""}`,
+              },
+              body: JSON.stringify({
+                model: "llama-3.3-70b-versatile",
+                max_tokens: 300,
+                temperature: 0.7,
+                messages,
+              }),
+            },
+          );
+
+          const data = await res.json();
+          const reply =
+            data.choices?.[0]?.message?.content ||
+            "Sorry, I couldn't get a response. Check your API key!";
+          messages.push({ role: "assistant", content: reply });
+          removeTyping(typingId);
+          addMessage(reply, "bot");
+        } catch {
+          removeTyping(typingId);
+          addMessage(
+            "⚠️ Couldn't connect to Leo. Make sure your Groq API key is set!",
+            "bot",
+          );
+        }
+      }
+
+      function addMessage(text, type) {
+        const el = document.createElement("div");
+        el.className = `msg msg-${type}`;
+        el.textContent = text;
+        const box = document.getElementById("modal-messages");
+        box.appendChild(el);
+        box.scrollTop = box.scrollHeight;
+      }
+
+      function addTyping() {
+        const id = "typing-" + Date.now();
+        const el = document.createElement("div");
+        el.id = id;
+        el.className = "msg msg-bot chat-typing";
+        el.innerHTML =
+          '<div class="dot-typing"></div><div class="dot-typing"></div><div class="dot-typing"></div>';
+        document.getElementById("modal-messages").appendChild(el);
+        document.getElementById("modal-messages").scrollTop = 99999;
+        return id;
+      }
+
+      function removeTyping(id) {
+        document.getElementById(id)?.remove();
+      }
+
+      /* ── Daily challenge topic ── */
+      const topics = [
+        "General Knowledge",
+        "Science & Nature",
+        "World History",
+        "Mathematics",
+        "Technology",
+        "Geography",
+        "Literature",
+        "Pop Culture",
+      ];
+      const dayIdx = new Date().getDay();
+      document.getElementById("challenge-title").textContent =
+        `Today's Topic: ${topics[dayIdx]}`;
+
+      /* ── Toast ── */
+      function showToast(msg, type = "") {
+        const t = document.getElementById("toast");
+        t.textContent = msg;
+        t.className = "toast show " + type;
+        setTimeout(() => {
+          t.className = "toast";
+        }, 3500);
+      }
+    </script>
+  </body>
+</html>
