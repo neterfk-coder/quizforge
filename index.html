@@ -1943,6 +1943,7 @@
           >💎 0</a
         >
         <a href="pages/store.html" class="btn-ghost">🏪 Store</a>
+        <a href="pages/pdf-study.html" class="btn-ghost">📄 PDF</a>
         <a href="pages/profile.html" class="btn-ghost">My profile</a>
         <a href="pages/settings.html" class="btn-ghost">⚙️</a>
         <button id="lang-toggle" class="btn-lang" onclick="toggleLang()">
@@ -2234,7 +2235,7 @@
         <!-- DAILY CHALLENGE -->
         <div
           class="dev-challenge-card reveal"
-          onclick="showToast('Daily challenge started! +150 💎', 'success')"
+          onclick="window.location.href = 'pages/challenge.html'"
         >
           <div class="dev-challenge-icon">⚡</div>
           <div class="dev-challenge-label">Daily challenge</div>
@@ -2937,58 +2938,312 @@
       </div>
     </section>
 
-    <!-- TESTIMONIALS -->
-    <section class="section-wrap">
-      <div class="section-tag">Testimonials</div>
-      <h2 class="section-title">What students are saying</h2>
-      <p class="section-sub">
-        Hundreds of students already study smarter with QuizForge.
-      </p>
-      <div class="testimonios-grid">
-        <div class="testimonio-card reveal">
-          <div class="stars">★★★★★</div>
-          <p class="testimonio-text">
-            "I generated 20 questions from my biology notes in 10 seconds.
-            Incredible for reviewing before an exam."
-          </p>
-          <div class="testimonio-author">
-            <div class="avatar">AM</div>
-            <div>
-              <p class="author-name">Ana M.</p>
-              <p class="author-role">Medical student</p>
-            </div>
-          </div>
-        </div>
-        <div class="testimonio-card reveal">
-          <div class="stars">★★★★★</div>
-          <p class="testimonio-text">
-            "The flashcards helped me memorize English vocabulary much faster
-            than any traditional method I'd tried."
-          </p>
-          <div class="testimonio-author">
-            <div class="avatar">JR</div>
-            <div>
-              <p class="author-name">Jorge R.</p>
-              <p class="author-role">University student</p>
-            </div>
-          </div>
-        </div>
-        <div class="testimonio-card reveal">
-          <div class="stars">★★★★★</div>
-          <p class="testimonio-text">
-            "I uploaded my history PDF and in seconds I had a complete quiz.
-            Studying has never been this easy or effective."
-          </p>
-          <div class="testimonio-author">
-            <div class="avatar">LP</div>
-            <div>
-              <p class="author-name">Lucía P.</p>
-              <p class="author-role">High school</p>
-            </div>
-          </div>
-        </div>
+    <!-- TESTIMONIALS — Infinite Marquee -->
+    <section
+      style="
+        padding: 5rem 0;
+        border-top: 1.5px solid var(--border);
+        overflow: hidden;
+      "
+    >
+      <div
+        style="
+          max-width: 820px;
+          margin: 0 auto;
+          padding: 0 1.5rem;
+          text-align: center;
+          margin-bottom: 2.5rem;
+        "
+      >
+        <div class="section-tag">Testimonials</div>
+        <h2 class="section-title">What students are saying</h2>
+        <p class="section-sub">
+          Hundreds of students already study smarter with QuizForge.
+        </p>
+      </div>
+
+      <style>
+        .marquee-outer {
+          position: relative;
+          overflow: hidden;
+          width: 100%;
+          margin-bottom: 1.1rem;
+        }
+        /* Fade edges */
+        .marquee-outer::before,
+        .marquee-outer::after {
+          content: "";
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          width: 120px;
+          z-index: 2;
+          pointer-events: none;
+        }
+        .marquee-outer::before {
+          left: 0;
+          background: linear-gradient(to right, var(--bg), transparent);
+        }
+        .marquee-outer::after {
+          right: 0;
+          background: linear-gradient(to left, var(--bg), transparent);
+        }
+
+        .marquee-track {
+          display: flex;
+          gap: 1rem;
+          width: max-content;
+          animation: marqueeLeft 35s linear infinite;
+        }
+        .marquee-track.reverse {
+          animation: marqueeRight 40s linear infinite;
+        }
+        .marquee-outer:hover .marquee-track {
+          animation-play-state: paused;
+        }
+
+        @keyframes marqueeLeft {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+        @keyframes marqueeRight {
+          0% {
+            transform: translateX(-50%);
+          }
+          100% {
+            transform: translateX(0);
+          }
+        }
+
+        .mq-card {
+          background: var(--surface);
+          border: 1.5px solid var(--border);
+          border-radius: 14px;
+          padding: 1.4rem 1.5rem;
+          width: 300px;
+          flex-shrink: 0;
+          box-shadow: var(--shadow);
+          transition:
+            transform 0.2s,
+            box-shadow 0.2s,
+            border-color 0.2s;
+          cursor: default;
+        }
+        .mq-card:hover {
+          transform: translateY(-4px);
+          box-shadow: var(--shadow-md);
+          border-color: var(--accent-mid);
+        }
+        .mq-stars {
+          color: #f59e0b;
+          font-size: 0.95rem;
+          letter-spacing: 2px;
+          margin-bottom: 0.75rem;
+        }
+        .mq-text {
+          font-size: 0.875rem;
+          color: var(--muted);
+          line-height: 1.75;
+          margin-bottom: 1.1rem;
+          font-style: italic;
+        }
+        .mq-author {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+        .mq-avatar {
+          width: 38px;
+          height: 38px;
+          border-radius: 50%;
+          background: var(--accent-light);
+          border: 1.5px solid var(--border2);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 0.8rem;
+          font-weight: 700;
+          color: var(--accent);
+          flex-shrink: 0;
+        }
+        .mq-name {
+          font-size: 0.875rem;
+          font-weight: 600;
+          color: var(--text);
+        }
+        .mq-role {
+          font-size: 0.75rem;
+          color: var(--muted2);
+          margin-top: 1px;
+        }
+        .mq-tag {
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+          background: var(--accent-light);
+          border: 1px solid var(--border2);
+          color: var(--accent);
+          font-size: 0.68rem;
+          font-weight: 600;
+          padding: 0.18rem 0.6rem;
+          border-radius: 999px;
+          margin-top: 0.5rem;
+        }
+      </style>
+
+      <!-- ROW 1 — Left to right -->
+      <div class="marquee-outer">
+        <div class="marquee-track" id="mq-row1"></div>
+      </div>
+
+      <!-- ROW 2 — Right to left (reverse) -->
+      <div class="marquee-outer">
+        <div class="marquee-track reverse" id="mq-row2"></div>
       </div>
     </section>
+
+    <script>
+      (function buildMarquee() {
+        const reviews = [
+          {
+            stars: 5,
+            text: "I generated 20 questions from my biology notes in 10 seconds. Incredible for exam prep!",
+            name: "Ana M.",
+            role: "Medical Student",
+            country: "🇵🇪",
+            tag: "Biology",
+            av: "AM",
+          },
+          {
+            stars: 5,
+            text: "The flashcards are amazing. I memorized all my vocabulary in half the time it usually takes me.",
+            name: "Jorge R.",
+            role: "University Student",
+            country: "🇲🇽",
+            tag: "Languages",
+            av: "JR",
+          },
+          {
+            stars: 5,
+            text: "I uploaded my history PDF and instantly had a full quiz. Studying has never been this efficient.",
+            name: "Lucía P.",
+            role: "High School",
+            country: "🇨🇱",
+            tag: "History",
+            av: "LP",
+          },
+          {
+            stars: 5,
+            text: "The streak system keeps me motivated every day. 21 days and counting! 🔥",
+            name: "Carlos V.",
+            role: "Engineering Student",
+            country: "🇨🇴",
+            tag: "Physics",
+            av: "CV",
+          },
+          {
+            stars: 5,
+            text: "Rex the AI tutor explained calculus better than my professor. Genuinely impressed!",
+            name: "María T.",
+            role: "STEM Student",
+            country: "🇦🇷",
+            tag: "Calculus",
+            av: "MT",
+          },
+          {
+            stars: 4,
+            text: "Daily challenges are fun and competitive. The diamond system keeps me coming back every day.",
+            name: "Diego S.",
+            role: "High School Senior",
+            country: "🇵🇪",
+            tag: "Math",
+            av: "DS",
+          },
+          {
+            stars: 5,
+            text: "Multiplayer battles with my classmates made studying actually fun. We compete every night now.",
+            name: "Valeria R.",
+            role: "College Student",
+            country: "🇧🇷",
+            tag: "Multiplayer",
+            av: "VR",
+          },
+          {
+            stars: 5,
+            text: "I went from failing quizzes to top of my class in 2 months. QuizForge is a game changer.",
+            name: "Sebastián L.",
+            role: "University Student",
+            country: "🇺🇾",
+            tag: "Chemistry",
+            av: "SL",
+          },
+          {
+            stars: 5,
+            text: "The PDF assistant summarized my 80-page textbook in seconds. Saved me hours of reading.",
+            name: "Isabella C.",
+            role: "Law Student",
+            country: "🇲🇽",
+            tag: "PDF Study",
+            av: "IC",
+          },
+          {
+            stars: 5,
+            text: "True/False mode is perfect for quick revision before exams. Clean UI, fast generation.",
+            name: "Fernando A.",
+            role: "Medical Student",
+            country: "🇨🇴",
+            tag: "Anatomy",
+            av: "FA",
+          },
+          {
+            stars: 4,
+            text: "Bo the dog mascot is adorable and keeps me motivated. Small detail but it makes a difference!",
+            name: "Camila N.",
+            role: "High School",
+            country: "🇨🇱",
+            tag: "Fun Feature",
+            av: "CN",
+          },
+          {
+            stars: 5,
+            text: "Generated 15 calculus questions from my class notes. All of them appeared on my exam!",
+            name: "Rafael B.",
+            role: "Engineering",
+            country: "🇦🇷",
+            tag: "Calculus II",
+            av: "RB",
+          },
+        ];
+
+        function buildCard(r) {
+          return `<div class="mq-card">
+        <div class="mq-stars">${"★".repeat(r.stars)}${"☆".repeat(5 - r.stars)}</div>
+        <p class="mq-text">"${r.text}"</p>
+        <div class="mq-author">
+          <div class="mq-avatar">${r.av}</div>
+          <div>
+            <div class="mq-name">${r.name} ${r.country}</div>
+            <div class="mq-role">${r.role}</div>
+            <div class="mq-tag">📚 ${r.tag}</div>
+          </div>
+        </div>
+      </div>`;
+        }
+
+        const row1 = reviews.slice(0, 7);
+        const row2 = reviews.slice(5).concat(reviews.slice(0, 5));
+
+        /* Duplicate for infinite loop */
+        const el1 = document.getElementById("mq-row1");
+        const el2 = document.getElementById("mq-row2");
+        if (el1) el1.innerHTML = [...row1, ...row1].map(buildCard).join("");
+        if (el2) el2.innerHTML = [...row2, ...row2].map(buildCard).join("");
+      })();
+    </script>
 
     <!-- FAQ -->
     <section class="section-wrap">
@@ -3143,6 +3398,9 @@
           <p class="footer-group-title">Product</p>
           <a href="#features" class="footer-link">Features</a>
           <a href="#demo" class="footer-link">Demo</a>
+          <a href="pages/pdf-study.html" class="footer-link"
+            >📄 PDF Assistant</a
+          >
           <a href="pages/register.html" class="footer-link">Sign up</a>
           <a href="pages/diamonds.html" class="footer-link">💎 Diamonds</a>
         </div>
@@ -3168,7 +3426,10 @@
     <div class="toast" id="toast"></div>
 
     <!-- API KEY -->
-    <script src="js/config.js"></script>
+    <script>
+      window.__GROQ_KEY__ =
+        "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";
+    </script>
 
     <!-- SCRIPTS -->
     <script src="js/supabase.js" type="module"></script>
@@ -3585,6 +3846,98 @@
 
       /* Init on load */
       setTimeout(sbRender, 400);
+
+      /* ── Rex PDF handler (index.html) ── */
+      (function loadPDFjs() {
+        const s = document.createElement("script");
+        s.src =
+          "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js";
+        s.onload = () => {
+          pdfjsLib.GlobalWorkerOptions.workerSrc =
+            "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js";
+        };
+        document.head.appendChild(s);
+      })();
+
+      async function handleRexPDFIdx(input) {
+        const file = input.files[0];
+        if (!file) return;
+        document.getElementById("rex-modal").classList.add("open");
+        addRexMsg('📄 Reading "' + file.name + '"...', "bot");
+
+        try {
+          let text = "";
+          if (file.type === "text/plain" || file.name.endsWith(".txt")) {
+            text = await file.text();
+          } else {
+            if (typeof pdfjsLib === "undefined") {
+              addRexMsg(
+                "⚠️ PDF reader loading, please try again in a second.",
+                "bot",
+              );
+              return;
+            }
+            const buf = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+            const max = Math.min(pdf.numPages, 15);
+            for (let i = 1; i <= max; i++) {
+              const page = await pdf.getPage(i);
+              const c = await page.getTextContent();
+              text += c.items.map((x) => x.str).join(" ") + "\n";
+            }
+          }
+
+          if (!text || text.trim().length < 50) {
+            addRexMsg(
+              "⚠️ Could not extract text. Try a text-based PDF.",
+              "bot",
+            );
+            return;
+          }
+
+          const truncated =
+            text.length > 4000
+              ? text.substring(0, 4000) + "...[truncated]"
+              : text;
+          const prompt = `I uploaded "${file.name}". Here is the content:\n\n${truncated}\n\nGive me a concise summary of the key points.`;
+
+          addRexMsg("📄 PDF uploaded: " + file.name, "user");
+          rexMessages.push({ role: "user", content: prompt });
+
+          const typingId = addRexTyping();
+          try {
+            const res = await fetch(
+              "https://api.groq.com/openai/v1/chat/completions",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${window.__GROQ_KEY__ || ""}`,
+                },
+                body: JSON.stringify({
+                  model: "llama-3.3-70b-versatile",
+                  max_tokens: 400,
+                  temperature: 0.5,
+                  messages: rexMessages,
+                }),
+              },
+            );
+            const data = await res.json();
+            const reply =
+              data.choices?.[0]?.message?.content ||
+              "Could not process the PDF.";
+            rexMessages.push({ role: "assistant", content: reply });
+            document.getElementById(typingId)?.remove();
+            addRexMsg(reply, "bot");
+          } catch {
+            document.getElementById(typingId)?.remove();
+            addRexMsg("⚠️ Error connecting to Rex.", "bot");
+          }
+        } catch (err) {
+          addRexMsg("⚠️ Error: " + err.message, "bot");
+        }
+        input.value = "";
+      }
 
       function exitGuestMode() {
         localStorage.removeItem("qf_guest_mode");
