@@ -1175,11 +1175,18 @@
             class="btn-pdf"
             onclick="
               event.stopPropagation();
-              showToast('Upload a PDF to chat with Leo about it!', 'info');
+              document.getElementById('rex-pdf-input').click();
             "
           >
             📄 + PDF
           </button>
+          <input
+            type="file"
+            id="rex-pdf-input"
+            accept=".pdf,.txt"
+            style="display: none"
+            onchange="handleRexPDF(this)"
+          />
         </div>
         <div class="tutor-chat-preview">
           <div class="chat-msg chat-user">What is the Pythagorean theorem?</div>
@@ -1497,6 +1504,99 @@
         setTimeout(() => {
           t.className = "toast";
         }, 3500);
+      }
+
+      /* ── PDF.js for Rex ── */
+      const pdfScript = document.createElement("script");
+      pdfScript.src =
+        "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js";
+      pdfScript.onload = () => {
+        pdfjsLib.GlobalWorkerOptions.workerSrc =
+          "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js";
+      };
+      document.head.appendChild(pdfScript);
+
+      async function handleRexPDF(input) {
+        const file = input.files[0];
+        if (!file) return;
+
+        /* Show loading message in Rex chat */
+        addRexMsg('📄 Reading "' + file.name + '"...', "bot");
+        document.getElementById("rex-modal").classList.add("open");
+
+        try {
+          let text = "";
+
+          if (file.type === "text/plain" || file.name.endsWith(".txt")) {
+            text = await file.text();
+          } else {
+            /* Extract text from PDF */
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer })
+              .promise;
+            const maxPages = Math.min(pdf.numPages, 15);
+            for (let i = 1; i <= maxPages; i++) {
+              const page = await pdf.getPage(i);
+              const content = await page.getTextContent();
+              text += content.items.map((item) => item.str).join(" ") + "\n";
+            }
+          }
+
+          if (!text || text.trim().length < 50) {
+            addRexMsg(
+              "⚠️ Could not extract text from this PDF. Try a text-based PDF.",
+              "bot",
+            );
+            return;
+          }
+
+          /* Truncate to avoid token limit */
+          const truncated =
+            text.length > 4000
+              ? text.substring(0, 4000) + "...[truncated]"
+              : text;
+
+          /* Send to Rex with context */
+          const userMsg = `I uploaded a PDF called "${file.name}". Here is the content:\n\n${truncated}\n\nPlease give me a brief summary of the key points.`;
+          addRexMsg("📄 PDF uploaded: " + file.name, "user");
+          rexMessages.push({ role: "user", content: userMsg });
+
+          /* Get Rex response */
+          const typingId = addRexTyping();
+          try {
+            const res = await fetch(
+              "https://api.groq.com/openai/v1/chat/completions",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${window.__GROQ_KEY__ || ""}`,
+                },
+                body: JSON.stringify({
+                  model: "llama-3.3-70b-versatile",
+                  max_tokens: 400,
+                  temperature: 0.5,
+                  messages: rexMessages,
+                }),
+              },
+            );
+            const data = await res.json();
+            const reply =
+              data.choices?.[0]?.message?.content ||
+              "Could not process the PDF.";
+            rexMessages.push({ role: "assistant", content: reply });
+            document.getElementById(typingId)?.remove();
+            addRexMsg(reply, "bot");
+          } catch {
+            document.getElementById(typingId)?.remove();
+            addRexMsg("⚠️ Error processing PDF. Try again.", "bot");
+          }
+        } catch (err) {
+          addRexMsg("⚠️ Error reading file: " + err.message, "bot");
+        }
+
+        /* Reset input */
+        input.value = "";
       }
     </script>
   </body>
