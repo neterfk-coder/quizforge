@@ -1,0 +1,1684 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PDF Study Assistant — QuizForge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <!-- PDF.js to extract text from PDF -->
+    <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --bg: #f0f6ff;
+        --surface: #fff;
+        --surface2: #f7faff;
+        --border: #d0e3fa;
+        --border2: #b8d4f7;
+        --accent: #2563eb;
+        --accent-light: #dbeafe;
+        --accent-mid: #60a5fa;
+        --accent-dark: #1d4ed8;
+        --text: #0f172a;
+        --muted: #64748b;
+        --muted2: #94a3b8;
+        --correct: #16a34a;
+        --correct-bg: #f0fdf4;
+        --correct-bdr: #86efac;
+        --danger: #dc2626;
+        --danger-bg: #fef2f2;
+        --danger-bdr: #fca5a5;
+        --purple: #7c3aed;
+        --purple-light: #ede9fe;
+        --gold: #f59e0b;
+        --gold-light: #fffbeb;
+        --radius: 16px;
+        --radius-sm: 10px;
+        --shadow:
+          0 1px 4px rgba(37, 99, 235, 0.07), 0 4px 18px rgba(37, 99, 235, 0.06);
+        --shadow-md: 0 6px 28px rgba(37, 99, 235, 0.12);
+        --font: "Inter", Arial, sans-serif;
+      }
+      html {
+        font-size: 16px;
+        scroll-behavior: smooth;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--font);
+        min-height: 100vh;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* NAV */
+      nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 3rem;
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(18px);
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .logo {
+        font-weight: 800;
+        font-size: 1.2rem;
+        letter-spacing: -0.03em;
+        color: var(--accent);
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        text-decoration: none;
+      }
+      .logo-icon {
+        width: 32px;
+        height: 32px;
+        background: var(--accent);
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .logo-icon svg {
+        width: 16px;
+        height: 16px;
+      }
+      .btn-ghost {
+        background: none;
+        border: 1.5px solid var(--border2);
+        color: var(--muted);
+        padding: 0.48rem 1.1rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.18s;
+        text-decoration: none;
+      }
+      .btn-ghost:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: var(--accent-light);
+      }
+
+      .page {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2.5rem 1.5rem 6rem;
+      }
+
+      /* HERO */
+      .hero {
+        background: linear-gradient(135deg, #1e40af, #2563eb 50%, #7c3aed);
+        border-radius: var(--radius);
+        padding: 3rem 2rem;
+        text-align: center;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+        box-shadow: var(--shadow-md);
+      }
+      .hero::before {
+        content: "";
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        width: 200px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 50%;
+      }
+      .hero::after {
+        content: "📄";
+        position: absolute;
+        right: 2rem;
+        bottom: -1rem;
+        font-size: 8rem;
+        opacity: 0.08;
+      }
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        color: #fff;
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 0.3rem 0.9rem;
+        border-radius: 999px;
+        margin-bottom: 1rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+      .hero h1 {
+        font-weight: 900;
+        font-size: clamp(1.6rem, 4vw, 2.3rem);
+        color: #fff;
+        letter-spacing: -0.04em;
+        margin-bottom: 0.5rem;
+      }
+      .hero p {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.75);
+        max-width: 500px;
+        margin: 0 auto 1.75rem;
+        line-height: 1.7;
+      }
+      .hero-features {
+        display: flex;
+        gap: 0.75rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .hero-feat {
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #fff;
+        font-size: 0.78rem;
+        font-weight: 600;
+        padding: 0.3rem 0.85rem;
+        border-radius: 999px;
+      }
+
+      /* UPLOAD ZONE */
+      .upload-zone {
+        background: var(--surface);
+        border: 2px dashed var(--border2);
+        border-radius: var(--radius);
+        padding: 3rem 2rem;
+        text-align: center;
+        margin-bottom: 1.5rem;
+        transition: all 0.2s;
+        cursor: pointer;
+        position: relative;
+      }
+      .upload-zone:hover,
+      .upload-zone.drag {
+        border-color: var(--accent);
+        background: var(--accent-light);
+      }
+      .upload-zone.has-file {
+        border-color: var(--correct-bdr);
+        background: var(--correct-bg);
+        border-style: solid;
+      }
+      .upload-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        display: block;
+      }
+      .upload-title {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: var(--text);
+        margin-bottom: 0.4rem;
+      }
+      .upload-sub {
+        font-size: 0.875rem;
+        color: var(--muted);
+        margin-bottom: 1.25rem;
+      }
+      .btn-upload {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: var(--accent);
+        border: none;
+        color: #fff;
+        padding: 0.65rem 1.5rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.18s;
+        box-shadow: 0 2px 10px rgba(37, 99, 235, 0.25);
+      }
+      .btn-upload:hover {
+        background: var(--accent-dark);
+        transform: translateY(-1px);
+      }
+      #pdf-input {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+      }
+      .file-info {
+        display: none;
+        align-items: center;
+        gap: 10px;
+        background: var(--correct-bg);
+        border: 1.5px solid var(--correct-bdr);
+        border-radius: var(--radius-sm);
+        padding: 0.75rem 1.1rem;
+        margin-top: 1rem;
+      }
+      .file-info.show {
+        display: flex;
+      }
+      .file-icon {
+        font-size: 1.4rem;
+      }
+      .file-name {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--correct);
+      }
+      .file-pages {
+        font-size: 0.78rem;
+        color: var(--muted);
+        margin-top: 1px;
+      }
+      .btn-remove {
+        background: none;
+        border: none;
+        color: var(--danger);
+        cursor: pointer;
+        font-size: 0.82rem;
+        margin-left: auto;
+        padding: 0.2rem 0.5rem;
+        border-radius: var(--radius-sm);
+        transition: all 0.18s;
+      }
+      .btn-remove:hover {
+        background: var(--danger-bg);
+      }
+
+      /* PROCESSING */
+      .processing-card {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        padding: 2.5rem;
+        text-align: center;
+        margin-bottom: 1.5rem;
+        box-shadow: var(--shadow);
+        display: none;
+      }
+      .processing-steps {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin: 1.5rem 0;
+        text-align: left;
+        max-width: 320px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .step {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.875rem;
+        color: var(--muted);
+      }
+      .step.active {
+        color: var(--accent);
+        font-weight: 500;
+      }
+      .step.done {
+        color: var(--correct);
+        font-weight: 500;
+      }
+      .step-icon {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        flex-shrink: 0;
+        border: 1.5px solid var(--border2);
+      }
+      .step.active .step-icon {
+        background: var(--accent-light);
+        border-color: var(--accent);
+        animation: stepPulse 1s infinite;
+      }
+      .step.done .step-icon {
+        background: var(--correct-bg);
+        border-color: var(--correct-bdr);
+      }
+      @keyframes stepPulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+      }
+      .progress-ring {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 1rem;
+      }
+      .progress-ring svg {
+        transform: rotate(-90deg);
+      }
+      .progress-ring-circle {
+        stroke-dasharray: 176;
+        stroke-dashoffset: 176;
+        transition: stroke-dashoffset 0.4s ease;
+        stroke: #2563eb;
+        stroke-width: 4;
+        fill: none;
+      }
+
+      /* GENERATE BUTTON */
+      .generate-section {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.5rem 1.75rem;
+        margin-bottom: 1.5rem;
+        box-shadow: var(--shadow);
+        display: none;
+      }
+      .generate-section.show {
+        display: block;
+      }
+      .gen-title {
+        font-weight: 700;
+        font-size: 1rem;
+        color: var(--text);
+        margin-bottom: 1rem;
+      }
+      .gen-options {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 0.75rem;
+        margin-bottom: 1.25rem;
+      }
+      .gen-option {
+        background: var(--surface2);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 1rem;
+        cursor: pointer;
+        transition: all 0.18s;
+        text-align: center;
+      }
+      .gen-option:hover {
+        border-color: var(--accent-mid);
+        background: var(--accent-light);
+      }
+      .gen-option.selected {
+        border-color: var(--accent);
+        background: var(--accent-light);
+      }
+      .gen-option-icon {
+        font-size: 1.6rem;
+        margin-bottom: 0.4rem;
+      }
+      .gen-option-name {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 0.2rem;
+      }
+      .gen-option-desc {
+        font-size: 0.72rem;
+        color: var(--muted);
+      }
+      .btn-generate-all {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background: var(--accent);
+        border: none;
+        color: #fff;
+        padding: 0.8rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-weight: 700;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.18s;
+        box-shadow: 0 2px 12px rgba(37, 99, 235, 0.28);
+        width: 100%;
+      }
+      .btn-generate-all:hover {
+        background: var(--accent-dark);
+        transform: translateY(-1px);
+      }
+      .btn-generate-all:disabled {
+        background: var(--border2);
+        color: var(--muted2);
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      /* RESULTS TABS */
+      .results-section {
+        display: none;
+      }
+      .results-section.show {
+        display: block;
+      }
+      .results-tabs {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1.25rem;
+        flex-wrap: wrap;
+      }
+      .rtab {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: 999px;
+        padding: 0.42rem 1rem;
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.18s;
+      }
+      .rtab:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .rtab.active {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+      .rtab-content {
+        display: none;
+      }
+      .rtab-content.active {
+        display: block;
+        animation: fadeIn 0.3s ease;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* SUMMARY */
+      .summary-card {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        padding: 2rem;
+        box-shadow: var(--shadow);
+      }
+      .summary-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1.25rem;
+        border-bottom: 1.5px solid var(--border);
+      }
+      .summary-icon {
+        width: 44px;
+        height: 44px;
+        background: var(--accent-light);
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        flex-shrink: 0;
+      }
+      .summary-title {
+        font-weight: 700;
+        font-size: 1.05rem;
+        color: var(--text);
+      }
+      .summary-sub {
+        font-size: 0.78rem;
+        color: var(--muted);
+      }
+      .summary-body {
+        font-size: 0.9rem;
+        color: var(--text);
+        line-height: 1.85;
+        white-space: pre-wrap;
+      }
+      .summary-body h3 {
+        font-weight: 700;
+        font-size: 1rem;
+        color: var(--accent);
+        margin: 1.25rem 0 0.5rem;
+      }
+      .summary-body ul {
+        padding-left: 1.25rem;
+        margin: 0.5rem 0;
+      }
+      .summary-body li {
+        margin-bottom: 0.35rem;
+      }
+      .key-concepts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 1.25rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid var(--border);
+      }
+      .concept-tag {
+        background: var(--accent-light);
+        border: 1px solid var(--border2);
+        color: var(--accent);
+        font-size: 0.78rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+        border-radius: 999px;
+      }
+
+      /* FLASHCARDS */
+      .flashcards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1rem;
+      }
+      .fc-card {
+        perspective: 1200px;
+        height: 180px;
+        cursor: pointer;
+      }
+      .fc-inner {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .fc-card.flipped .fc-inner {
+        transform: rotateY(180deg);
+      }
+      .fc-front,
+      .fc-back {
+        position: absolute;
+        inset: 0;
+        backface-visibility: hidden;
+        border-radius: var(--radius-sm);
+        display: flex;
+        flex-direction: column;
+        padding: 1.25rem;
+        box-shadow: var(--shadow);
+      }
+      .fc-front {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+      }
+      .fc-back {
+        background: linear-gradient(135deg, var(--accent-light), #c7d2fe);
+        border: 1.5px solid var(--accent-mid);
+        transform: rotateY(180deg);
+      }
+      .fc-num {
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: var(--accent);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 0.5rem;
+      }
+      .fc-term {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--text);
+        line-height: 1.5;
+        flex: 1;
+      }
+      .fc-hint {
+        font-size: 0.72rem;
+        color: var(--muted2);
+        margin-top: 0.5rem;
+      }
+      .fc-definition {
+        font-size: 0.875rem;
+        color: var(--accent-dark);
+        line-height: 1.6;
+        flex: 1;
+      }
+      .fc-back .fc-hint {
+        color: var(--accent);
+      }
+      .fc-controls {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 1.25rem;
+      }
+      .fc-progress {
+        font-size: 0.82rem;
+        color: var(--muted);
+        font-weight: 500;
+      }
+      .fc-nav {
+        display: flex;
+        gap: 0.5rem;
+      }
+      .fc-nav button {
+        background: var(--surface);
+        border: 1.5px solid var(--border2);
+        color: var(--muted);
+        width: 36px;
+        height: 36px;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all 0.18s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .fc-nav button:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: var(--accent-light);
+      }
+
+      /* EXAM QUESTIONS */
+      .exam-card {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: var(--shadow-md);
+        margin-bottom: 1rem;
+      }
+      .exam-header {
+        background: var(--surface2);
+        border-bottom: 1.5px solid var(--border);
+        padding: 1.1rem 1.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .exam-title {
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: var(--text);
+      }
+      .exam-badge {
+        background: var(--accent-light);
+        border: 1px solid var(--border2);
+        color: var(--accent);
+        font-size: 0.72rem;
+        font-weight: 700;
+        padding: 0.2rem 0.65rem;
+        border-radius: 999px;
+      }
+      .exam-q-list {
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+      }
+      .exam-q {
+        background: var(--surface2);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 1.25rem;
+      }
+      .exam-q-num {
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: var(--accent);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 0.5rem;
+      }
+      .exam-q-text {
+        font-size: 0.925rem;
+        font-weight: 500;
+        color: var(--text);
+        line-height: 1.65;
+        margin-bottom: 1rem;
+      }
+      .exam-options {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .exam-opt {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 0.7rem 1rem;
+        cursor: pointer;
+        transition: all 0.18s;
+        font-size: 0.875rem;
+        color: var(--muted);
+        font-family: var(--font);
+        text-align: left;
+        width: 100%;
+      }
+      .exam-opt:hover:not(:disabled) {
+        border-color: var(--accent-mid);
+        color: var(--accent);
+        background: var(--accent-light);
+      }
+      .exam-opt:disabled {
+        cursor: default;
+      }
+      .exam-opt.correct {
+        border-color: var(--correct-bdr);
+        background: var(--correct-bg);
+        color: var(--correct);
+        font-weight: 500;
+      }
+      .exam-opt.wrong {
+        border-color: var(--danger-bdr);
+        background: var(--danger-bg);
+        color: var(--danger);
+      }
+      .opt-k {
+        width: 26px;
+        height: 26px;
+        border: 1.5px solid var(--border2);
+        border-radius: 6px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: var(--muted2);
+      }
+      .exam-explain {
+        background: var(--accent-light);
+        border: 1.5px solid var(--border2);
+        border-radius: var(--radius-sm);
+        padding: 0.85rem 1.1rem;
+        margin-top: 0.75rem;
+        font-size: 0.85rem;
+        color: var(--accent-dark);
+        line-height: 1.7;
+        display: none;
+      }
+      .exam-explain.show {
+        display: block;
+      }
+      .exam-score-bar {
+        background: var(--surface2);
+        border-top: 1.5px solid var(--border);
+        padding: 1.1rem 1.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+      }
+      .exam-score-text {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .btn-check-all {
+        background: var(--accent);
+        border: none;
+        color: #fff;
+        padding: 0.55rem 1.3rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-weight: 600;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: all 0.18s;
+      }
+      .btn-check-all:hover {
+        background: var(--accent-dark);
+      }
+
+      /* LOADING SKELETON */
+      .skeleton {
+        background: linear-gradient(
+          90deg,
+          var(--surface2) 25%,
+          var(--border) 50%,
+          var(--surface2) 75%
+        );
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+        border-radius: var(--radius-sm);
+        height: 16px;
+        margin-bottom: 0.5rem;
+      }
+      @keyframes shimmer {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+
+      /* TOAST */
+      .toast {
+        position: fixed;
+        bottom: 1.75rem;
+        right: 1.75rem;
+        background: var(--surface);
+        border: 1.5px solid var(--border2);
+        color: var(--text);
+        padding: 0.85rem 1.4rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.9rem;
+        font-weight: 500;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.25s;
+        z-index: 999;
+        pointer-events: none;
+        box-shadow: var(--shadow-md);
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .toast.success {
+        border-color: rgba(22, 163, 74, 0.4);
+        color: var(--correct);
+      }
+      .toast.error {
+        border-color: rgba(220, 38, 38, 0.4);
+        color: var(--danger);
+      }
+
+      @media (max-width: 600px) {
+        nav {
+          padding: 1rem 1.25rem;
+        }
+        .page {
+          padding: 2rem 1rem 5rem;
+        }
+        .flashcards-grid {
+          grid-template-columns: 1fr;
+        }
+        .gen-options {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="../index.html" class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+          </svg>
+        </div>
+        QuizForge
+      </a>
+      <div style="display: flex; align-items: center; gap: 0.75rem">
+        <a href="../index.html" class="btn-ghost">Home</a>
+        <a href="diamonds.html" class="btn-ghost">💎 Diamonds</a>
+      </div>
+    </nav>
+
+    <div class="page">
+      <!-- HERO -->
+      <div class="hero">
+        <div class="hero-badge">📄 AI-Powered</div>
+        <h1>PDF Study Assistant</h1>
+        <p>
+          Upload any PDF and instantly get a smart summary, flashcards and exam
+          questions — all powered by AI.
+        </p>
+        <div class="hero-features">
+          <span class="hero-feat">📋 Smart Summary</span>
+          <span class="hero-feat">🃏 Flashcards</span>
+          <span class="hero-feat">📝 Exam Questions</span>
+          <span class="hero-feat">⚡ Groq Ultra Fast</span>
+        </div>
+      </div>
+
+      <!-- UPLOAD ZONE -->
+      <div
+        class="upload-zone"
+        id="upload-zone"
+        ondragover="handleDragOver(event)"
+        ondragleave="handleDragLeave(event)"
+        ondrop="handleDrop(event)"
+      >
+        <input
+          type="file"
+          id="pdf-input"
+          accept=".pdf,.txt"
+          onchange="handleFile(this)"
+        />
+        <span class="upload-icon">📂</span>
+        <h2 class="upload-title">Drop your PDF here</h2>
+        <p class="upload-sub">
+          Supports PDF and TXT files up to 50MB<br />The AI will extract and
+          analyze all the text
+        </p>
+        <button
+          class="btn-upload"
+          onclick="
+            document.getElementById('pdf-input').click();
+            event.stopPropagation();
+          "
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            width="16"
+            height="16"
+          >
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+            <polyline points="17 8 12 3 7 8" />
+            <line x1="12" y1="3" x2="12" y2="15" />
+          </svg>
+          Choose file
+        </button>
+        <div class="file-info" id="file-info">
+          <span class="file-icon">📄</span>
+          <div>
+            <div class="file-name" id="file-name-display">document.pdf</div>
+            <div class="file-pages" id="file-pages-display">
+              Extracting text...
+            </div>
+          </div>
+          <button class="btn-remove" onclick="removeFile(event)">
+            ✕ Remove
+          </button>
+        </div>
+      </div>
+
+      <!-- PROCESSING -->
+      <div class="processing-card" id="processing-card">
+        <div class="progress-ring">
+          <svg viewBox="0 0 60 60" width="64" height="64">
+            <circle
+              cx="30"
+              cy="30"
+              r="28"
+              stroke="var(--border)"
+              stroke-width="4"
+              fill="none"
+            />
+            <circle
+              class="progress-ring-circle"
+              id="progress-ring-circle"
+              cx="30"
+              cy="30"
+              r="28"
+            />
+          </svg>
+        </div>
+        <h2
+          style="
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text);
+            margin-bottom: 0.4rem;
+          "
+          id="processing-title"
+        >
+          Analyzing your PDF...
+        </h2>
+        <p
+          style="
+            font-size: 0.875rem;
+            color: var(--muted);
+            margin-bottom: 1.25rem;
+          "
+          id="processing-sub"
+        >
+          This may take a few seconds
+        </p>
+        <div class="processing-steps">
+          <div class="step" id="step1">
+            <div class="step-icon" id="step1-icon">1</div>
+            Extracting text from PDF
+          </div>
+          <div class="step" id="step2">
+            <div class="step-icon" id="step2-icon">2</div>
+            Generating smart summary
+          </div>
+          <div class="step" id="step3">
+            <div class="step-icon" id="step3-icon">3</div>
+            Creating flashcards
+          </div>
+          <div class="step" id="step4">
+            <div class="step-icon" id="step4-icon">4</div>
+            Writing exam questions
+          </div>
+        </div>
+      </div>
+
+      <!-- GENERATE OPTIONS -->
+      <div class="generate-section" id="generate-section">
+        <h3 class="gen-title">What do you want to generate?</h3>
+        <div class="gen-options">
+          <div
+            class="gen-option selected"
+            id="gen-summary"
+            onclick="toggleGen('summary', this)"
+          >
+            <div class="gen-option-icon">📋</div>
+            <div class="gen-option-name">Smart Summary</div>
+            <div class="gen-option-desc">Key concepts & overview</div>
+          </div>
+          <div
+            class="gen-option selected"
+            id="gen-flashcards"
+            onclick="toggleGen('flashcards', this)"
+          >
+            <div class="gen-option-icon">🃏</div>
+            <div class="gen-option-name">Flashcards</div>
+            <div class="gen-option-desc">Terms & definitions</div>
+          </div>
+          <div
+            class="gen-option selected"
+            id="gen-exam"
+            onclick="toggleGen('exam', this)"
+          >
+            <div class="gen-option-icon">📝</div>
+            <div class="gen-option-name">Exam Questions</div>
+            <div class="gen-option-desc">Multiple choice & answers</div>
+          </div>
+        </div>
+        <button
+          class="btn-generate-all"
+          id="btn-generate-all"
+          onclick="generateAll()"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            width="16"
+            height="16"
+          >
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+          </svg>
+          Generate with AI
+        </button>
+      </div>
+
+      <!-- RESULTS -->
+      <div class="results-section" id="results-section">
+        <div class="results-tabs">
+          <button class="rtab active" onclick="switchTab('summary', this)">
+            📋 Summary
+          </button>
+          <button class="rtab" onclick="switchTab('flashcards', this)">
+            🃏 Flashcards
+          </button>
+          <button class="rtab" onclick="switchTab('exam', this)">
+            📝 Exam
+          </button>
+        </div>
+
+        <!-- SUMMARY TAB -->
+        <div class="rtab-content active" id="tab-summary">
+          <div class="summary-card">
+            <div class="summary-header">
+              <div class="summary-icon">📋</div>
+              <div>
+                <div class="summary-title">Smart Summary</div>
+                <div class="summary-sub" id="summary-meta">
+                  Generated by Groq AI
+                </div>
+              </div>
+              <button
+                onclick="copyText('summary-body')"
+                style="
+                  margin-left: auto;
+                  background: none;
+                  border: 1.5px solid var(--border2);
+                  color: var(--muted);
+                  padding: 0.35rem 0.8rem;
+                  border-radius: var(--radius-sm);
+                  font-family: var(--font);
+                  font-size: 0.78rem;
+                  cursor: pointer;
+                  transition: all 0.18s;
+                "
+                onmouseover="
+                  this.style.borderColor = 'var(--accent)';
+                  this.style.color = 'var(--accent)';
+                "
+                onmouseout="
+                  this.style.borderColor = 'var(--border2)';
+                  this.style.color = 'var(--muted)';
+                "
+              >
+                Copy
+              </button>
+            </div>
+            <div class="summary-body" id="summary-body"></div>
+            <div class="key-concepts" id="key-concepts"></div>
+          </div>
+        </div>
+
+        <!-- FLASHCARDS TAB -->
+        <div class="rtab-content" id="tab-flashcards">
+          <div id="flashcards-container"></div>
+          <div class="fc-controls" id="fc-controls" style="display: none">
+            <span class="fc-progress" id="fc-progress">Card 1 of 10</span>
+            <div class="fc-nav">
+              <button onclick="fcNav(-1)">←</button>
+              <button onclick="flipCurrent()">Flip</button>
+              <button onclick="fcNav(1)">→</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- EXAM TAB -->
+        <div class="rtab-content" id="tab-exam">
+          <div class="exam-card">
+            <div class="exam-header">
+              <span class="exam-title">📝 Exam Questions</span>
+              <span class="exam-badge" id="exam-badge">10 questions</span>
+            </div>
+            <div class="exam-q-list" id="exam-q-list"></div>
+            <div class="exam-score-bar">
+              <span class="exam-score-text" id="exam-score-text"
+                >Answer the questions above</span
+              >
+              <button class="btn-check-all" onclick="checkAllAnswers()">
+                Check answers
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+      /* ── PDF.js worker ── */
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js";
+
+      const GROQ_API = "https://api.groq.com/openai/v1/chat/completions";
+      const GROQ_KEY = window.__GROQ_KEY__ || "";
+
+      let pdfText = "";
+      let pdfName = "";
+      let genOptions = { summary: true, flashcards: true, exam: true };
+      let fcCards = [];
+      let fcIndex = 0;
+      let examAnswers = {};
+
+      /* ════════════════════════
+   FILE HANDLING
+════════════════════════ */
+      function handleDragOver(e) {
+        e.preventDefault();
+        document.getElementById("upload-zone").classList.add("drag");
+      }
+      function handleDragLeave(e) {
+        document.getElementById("upload-zone").classList.remove("drag");
+      }
+      function handleDrop(e) {
+        e.preventDefault();
+        document.getElementById("upload-zone").classList.remove("drag");
+        const file = e.dataTransfer.files[0];
+        if (file) processFile(file);
+      }
+
+      function handleFile(input) {
+        const file = input.files[0];
+        if (file) processFile(file);
+      }
+
+      async function processFile(file) {
+        pdfName = file.name;
+        document.getElementById("file-name-display").textContent = file.name;
+        document.getElementById("file-pages-display").textContent =
+          "Extracting text...";
+        document.getElementById("file-info").classList.add("show");
+        document.getElementById("upload-zone").classList.add("has-file");
+        document
+          .getElementById("upload-zone")
+          .querySelector(".upload-icon").textContent = "✅";
+
+        try {
+          if (file.type === "text/plain" || file.name.endsWith(".txt")) {
+            pdfText = await file.text();
+            document.getElementById("file-pages-display").textContent =
+              `${pdfText.length.toLocaleString()} characters extracted`;
+          } else {
+            /* Extract text from PDF using PDF.js */
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer })
+              .promise;
+            let fullText = "";
+            const maxPages = Math.min(
+              pdf.numPages,
+              30,
+            ); /* Max 30 pages to avoid token limit */
+
+            for (let i = 1; i <= maxPages; i++) {
+              const page = await pdf.getPage(i);
+              const content = await page.getTextContent();
+              const text = content.items.map((item) => item.str).join(" ");
+              fullText += text + "\n";
+            }
+
+            pdfText = fullText.trim();
+            document.getElementById("file-pages-display").textContent =
+              `${pdf.numPages} pages · ${pdfText.length.toLocaleString()} characters extracted`;
+          }
+
+          if (!pdfText || pdfText.length < 100) {
+            showToast("Could not extract text. Try a text-based PDF.", "error");
+            removeFile(new Event("click"));
+            return;
+          }
+
+          document.getElementById("generate-section").classList.add("show");
+          showToast("✅ PDF loaded successfully!", "success");
+        } catch (err) {
+          showToast("Error reading file: " + err.message, "error");
+          console.error(err);
+        }
+      }
+
+      function removeFile(e) {
+        e.stopPropagation();
+        pdfText = "";
+        pdfName = "";
+        document.getElementById("file-info").classList.remove("show");
+        document.getElementById("upload-zone").classList.remove("has-file");
+        document
+          .getElementById("upload-zone")
+          .querySelector(".upload-icon").textContent = "📂";
+        document.getElementById("generate-section").classList.remove("show");
+        document.getElementById("results-section").classList.remove("show");
+        document.getElementById("pdf-input").value = "";
+      }
+
+      /* ════════════════════════
+   GENERATE OPTIONS
+════════════════════════ */
+      function toggleGen(key, el) {
+        genOptions[key] = !genOptions[key];
+        el.classList.toggle("selected", genOptions[key]);
+      }
+
+      /* ════════════════════════
+   MAIN GENERATE
+════════════════════════ */
+      async function generateAll() {
+        if (!pdfText) {
+          showToast("Please upload a PDF first", "error");
+          return;
+        }
+        if (!GROQ_KEY) {
+          showToast("Groq API key not configured", "error");
+          return;
+        }
+
+        const btn = document.getElementById("btn-generate-all");
+        btn.disabled = true;
+        btn.textContent = "Generating...";
+
+        /* Show processing card */
+        document.getElementById("processing-card").style.display = "block";
+        document.getElementById("results-section").classList.remove("show");
+
+        /* Truncate text to avoid token limits (max ~6000 chars) */
+        const truncated =
+          pdfText.length > 6000
+            ? pdfText.substring(0, 6000) + "...[truncated]"
+            : pdfText;
+
+        try {
+          /* Step 1 — Summary */
+          setStep(1, "active");
+          updateRing(25);
+          if (genOptions.summary) {
+            await generateSummary(truncated);
+          }
+          setStep(1, "done");
+
+          /* Step 2 — Flashcards */
+          setStep(2, "active");
+          updateRing(50);
+          if (genOptions.flashcards) {
+            await generateFlashcards(truncated);
+          }
+          setStep(2, "done");
+
+          /* Step 3 — Exam */
+          setStep(3, "active");
+          updateRing(75);
+          if (genOptions.exam) {
+            await generateExam(truncated);
+          }
+          setStep(3, "done");
+          setStep(4, "done");
+          updateRing(100);
+
+          /* Show results */
+          setTimeout(() => {
+            document.getElementById("processing-card").style.display = "none";
+            document.getElementById("results-section").classList.add("show");
+            document
+              .getElementById("results-section")
+              .scrollIntoView({ behavior: "smooth" });
+            showToast("✅ All content generated!", "success");
+          }, 600);
+        } catch (err) {
+          showToast("Error: " + err.message, "error");
+          document.getElementById("processing-card").style.display = "none";
+          console.error(err);
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML =
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Generate again';
+        }
+      }
+
+      /* ════════════════════════
+   GROQ API CALL
+════════════════════════ */
+      async function callGroq(prompt, maxTokens = 1500) {
+        const res = await fetch(GROQ_API, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${GROQ_KEY}`,
+          },
+          body: JSON.stringify({
+            model: "llama-3.3-70b-versatile",
+            max_tokens: maxTokens,
+            temperature: 0.5,
+            messages: [
+              {
+                role: "system",
+                content:
+                  "You are an expert academic assistant. Always respond ONLY with valid JSON, no markdown, no backticks, no extra text.",
+              },
+              { role: "user", content: prompt },
+            ],
+          }),
+        });
+        if (!res.ok) {
+          const e = await res.json();
+          throw new Error(e.error?.message || "Groq API error");
+        }
+        const data = await res.json();
+        const raw = data.choices?.[0]?.message?.content || "{}";
+        return JSON.parse(raw.replace(/```json|```/g, "").trim());
+      }
+
+      /* ════════════════════════
+   SUMMARY
+════════════════════════ */
+      async function generateSummary(text) {
+        const result = await callGroq(
+          `
+Analyze this document and return a JSON with this exact structure:
+{
+  "title": "document title or topic",
+  "overview": "2-3 sentence overview of what this document is about",
+  "sections": [
+    { "heading": "section title", "content": "detailed explanation in 2-3 sentences" }
+  ],
+  "key_concepts": ["concept1", "concept2", "concept3", "concept4", "concept5"],
+  "difficulty": "Basic | Intermediate | Advanced",
+  "word_count_estimate": 500
+}
+
+Document text:
+${text}
+`,
+          2000,
+        );
+
+        const body = document.getElementById("summary-body");
+        const meta = document.getElementById("summary-meta");
+        const concepts = document.getElementById("key-concepts");
+
+        meta.textContent = `${result.difficulty || "Intermediate"} level · ${result.word_count_estimate || "~500"} words`;
+
+        let html = `<strong style="font-size:1.05rem;color:var(--text)">${result.title || pdfName}</strong>\n\n${result.overview || ""}\n\n`;
+        (result.sections || []).forEach((s) => {
+          html += `<h3>${s.heading}</h3>${s.content}\n\n`;
+        });
+        body.innerHTML = html
+          .replace(/\n\n/g, "<br><br>")
+          .replace(/\n/g, "<br>");
+
+        concepts.innerHTML = (result.key_concepts || [])
+          .map((c) => `<span class="concept-tag">${c}</span>`)
+          .join("");
+      }
+
+      /* ════════════════════════
+   FLASHCARDS
+════════════════════════ */
+      async function generateFlashcards(text) {
+        const result = await callGroq(
+          `
+Create 10 flashcards from this document. Return ONLY this JSON:
+{
+  "flashcards": [
+    { "term": "key concept or term (max 8 words)", "definition": "clear explanation (max 2 sentences)" }
+  ]
+}
+
+Document:
+${text}
+`,
+          1500,
+        );
+
+        fcCards = result.flashcards || [];
+        fcIndex = 0;
+        renderFlashcards();
+      }
+
+      function renderFlashcards() {
+        const container = document.getElementById("flashcards-container");
+        const controls = document.getElementById("fc-controls");
+
+        if (!fcCards.length) {
+          container.innerHTML =
+            '<p style="color:var(--muted);text-align:center;padding:2rem">No flashcards generated</p>';
+          return;
+        }
+
+        /* Show current card */
+        const card = fcCards[fcIndex];
+        container.innerHTML = `
+    <div class="fc-card" id="current-fc" onclick="this.classList.toggle('flipped')">
+      <div class="fc-inner">
+        <div class="fc-front">
+          <div class="fc-num">Card ${fcIndex + 1} of ${fcCards.length}</div>
+          <div class="fc-term">${card.term}</div>
+          <div class="fc-hint">Tap to see definition</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-num">Definition</div>
+          <div class="fc-definition">${card.definition}</div>
+          <div class="fc-hint">Tap to flip back</div>
+        </div>
+      </div>
+    </div>`;
+
+        document.getElementById("fc-progress").textContent =
+          `Card ${fcIndex + 1} of ${fcCards.length}`;
+        controls.style.display = "flex";
+      }
+
+      function fcNav(dir) {
+        fcIndex = (fcIndex + dir + fcCards.length) % fcCards.length;
+        renderFlashcards();
+      }
+
+      function flipCurrent() {
+        document.getElementById("current-fc")?.classList.toggle("flipped");
+      }
+
+      /* ════════════════════════
+   EXAM QUESTIONS
+════════════════════════ */
+      async function generateExam(text) {
+        const result = await callGroq(
+          `
+Create 8 multiple choice exam questions from this document. Return ONLY this JSON:
+{
+  "questions": [
+    {
+      "question": "question text",
+      "options": ["option A", "option B", "option C", "option D"],
+      "correct": 0,
+      "explanation": "why this answer is correct (1-2 sentences)"
+    }
+  ]
+}
+
+Make the questions test understanding, not just memorization. Vary difficulty.
+Document:
+${text}
+`,
+          2000,
+        );
+
+        const questions = result.questions || [];
+        document.getElementById("exam-badge").textContent =
+          questions.length + " questions";
+        examAnswers = {};
+
+        const list = document.getElementById("exam-q-list");
+        const keys = ["A", "B", "C", "D"];
+
+        list.innerHTML = questions
+          .map(
+            (q, qi) => `
+    <div class="exam-q" id="eq-${qi}">
+      <div class="exam-q-num">Question ${qi + 1}</div>
+      <div class="exam-q-text">${q.question}</div>
+      <div class="exam-options">
+        ${q.options
+          .map(
+            (opt, oi) => `
+          <button class="exam-opt" onclick="selectExamAnswer(${qi}, ${oi}, ${q.correct}, this)" id="eo-${qi}-${oi}">
+            <span class="opt-k">${keys[oi]}</span>${opt}
+          </button>`,
+          )
+          .join("")}
+      </div>
+      <div class="exam-explain" id="ee-${qi}">💡 ${q.explanation}</div>
+    </div>`,
+          )
+          .join("");
+
+        updateExamScore();
+      }
+
+      function selectExamAnswer(qi, oi, correct, btn) {
+        const card = document.getElementById("eq-" + qi);
+        card.querySelectorAll(".exam-opt").forEach((b) => (b.disabled = true));
+        const isCorrect = oi === correct;
+        btn.classList.add(isCorrect ? "correct" : "wrong");
+        if (!isCorrect)
+          document
+            .getElementById(`eo-${qi}-${correct}`)
+            .classList.add("correct");
+        document.getElementById("ee-" + qi).classList.add("show");
+        examAnswers[qi] = isCorrect;
+        updateExamScore();
+      }
+
+      function checkAllAnswers() {
+        document.querySelectorAll(".exam-opt:not(:disabled)").forEach((btn) => {
+          const [, qi, oi] = btn.id.split("-").map(Number);
+          btn.click();
+        });
+      }
+
+      function updateExamScore() {
+        const answered = Object.keys(examAnswers).length;
+        const correct = Object.values(examAnswers).filter(Boolean).length;
+        const total = document.querySelectorAll(".exam-q").length;
+        if (answered > 0) {
+          document.getElementById("exam-score-text").textContent =
+            `Score: ${correct}/${answered} answered · ${Math.round((correct / answered) * 100)}% accuracy`;
+        }
+      }
+
+      /* ════════════════════════
+   UI HELPERS
+════════════════════════ */
+      function switchTab(id, btn) {
+        document
+          .querySelectorAll(".rtab")
+          .forEach((t) => t.classList.remove("active"));
+        document
+          .querySelectorAll(".rtab-content")
+          .forEach((c) => c.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById("tab-" + id).classList.add("active");
+      }
+
+      function setStep(n, status) {
+        const el = document.getElementById("step" + n);
+        const ic = document.getElementById("step" + n + "-icon");
+        el.className = "step " + status;
+        ic.textContent = status === "done" ? "✓" : n;
+      }
+
+      function updateRing(pct) {
+        const circle = document.getElementById("progress-ring-circle");
+        if (!circle) return;
+        const offset = 176 - (176 * pct) / 100;
+        circle.style.strokeDashoffset = offset;
+      }
+
+      function copyText(id) {
+        const el = document.getElementById(id);
+        navigator.clipboard
+          .writeText(el.textContent)
+          .then(() => showToast("Copied to clipboard!", "success"));
+      }
+
+      function showToast(msg, type = "") {
+        const t = document.getElementById("toast");
+        t.textContent = msg;
+        t.className = "toast show " + type;
+        setTimeout(() => (t.className = "toast"), 3500);
+      }
+    </script>
+  </body>
+</html>
