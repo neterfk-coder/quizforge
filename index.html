@@ -1,0 +1,3598 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QuizForge — AI-Powered Quiz Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #f0f6ff;
+        --surface: #ffffff;
+        --surface2: #f7faff;
+        --border: #d0e3fa;
+        --border2: #b8d4f7;
+        --accent: #2563eb;
+        --accent-light: #dbeafe;
+        --accent-mid: #60a5fa;
+        --accent-dark: #1d4ed8;
+        --text: #0f172a;
+        --muted: #64748b;
+        --muted2: #94a3b8;
+        --correct: #16a34a;
+        --correct-bg: #f0fdf4;
+        --correct-bdr: #86efac;
+        --danger: #dc2626;
+        --danger-bg: #fef2f2;
+        --danger-bdr: #fca5a5;
+        --radius: 14px;
+        --radius-sm: 9px;
+        --shadow:
+          0 1px 4px rgba(37, 99, 235, 0.07), 0 4px 18px rgba(37, 99, 235, 0.06);
+        --shadow-md: 0 6px 28px rgba(37, 99, 235, 0.11);
+        --font: "Inter", Arial, sans-serif;
+      }
+
+      html {
+        font-size: 16px;
+        scroll-behavior: smooth;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--font);
+        font-weight: 400;
+        min-height: 100vh;
+        line-height: 1.7;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* ════════ NAV ════════ */
+      nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.85rem 2rem;
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(18px);
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        transition: box-shadow 0.3s;
+      }
+      nav.scrolled {
+        box-shadow: 0 2px 24px rgba(37, 99, 235, 0.09);
+      }
+
+      .logo {
+        font-weight: 800;
+        font-size: 1.2rem;
+        letter-spacing: -0.03em;
+        color: var(--accent);
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        text-decoration: none;
+      }
+      .logo-icon {
+        width: 32px;
+        height: 32px;
+        background: var(--accent);
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .logo-icon svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+      }
+      .nav-links::-webkit-scrollbar {
+        display: none;
+      }
+
+      .btn-ghost {
+        background: none;
+        border: 1.5px solid var(--border2);
+        color: var(--muted);
+        padding: 0.38rem 0.85rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-size: 0.8rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.18s;
+        text-decoration: none;
+        display: inline-block;
+        white-space: nowrap;
+      }
+      .btn-ghost:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: var(--accent-light);
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        border: none;
+        color: #fff;
+        padding: 0.48rem 1.2rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-weight: 600;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: all 0.18s;
+        text-decoration: none;
+        display: inline-block;
+        box-shadow: 0 2px 10px rgba(37, 99, 235, 0.22);
+      }
+      .btn-primary:hover {
+        background: var(--accent-dark);
+        transform: translateY(-1px);
+      }
+
+      .nav-diamond {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: #ecfeff;
+        border: 1.5px solid #a5f3fc;
+        color: #0891b2;
+        padding: 0.38rem 0.85rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.82rem;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.18s;
+      }
+      .nav-diamond:hover {
+        background: #cffafe;
+        transform: translateY(-1px);
+      }
+
+      .btn-lang {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: var(--surface);
+        border: 1.5px solid var(--border2);
+        color: var(--muted);
+        padding: 0.38rem 0.8rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.18s;
+      }
+      .btn-lang:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: var(--accent-light);
+      }
+
+      /* ════════ HERO ════════ */
+      .hero {
+        text-align: center;
+        padding: 6rem 1.5rem 4rem;
+        max-width: 760px;
+        margin: 0 auto;
+      }
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--accent-light);
+        border: 1.5px solid var(--border2);
+        color: var(--accent);
+        font-size: 0.78rem;
+        font-weight: 600;
+        padding: 0.4rem 1.1rem;
+        border-radius: 999px;
+        margin-bottom: 2rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .badge-dot {
+        width: 7px;
+        height: 7px;
+        background: var(--accent);
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.5;
+          transform: scale(1.4);
+        }
+      }
+      .hero h1 {
+        font-weight: 800;
+        font-size: clamp(2.2rem, 5vw, 3.4rem);
+        line-height: 1.15;
+        letter-spacing: -0.04em;
+        color: var(--text);
+        margin-bottom: 1.4rem;
+      }
+      .hero h1 em {
+        font-style: normal;
+        color: var(--accent);
+      }
+      .hero p {
+        color: var(--muted);
+        font-size: 1.1rem;
+        font-weight: 400;
+        max-width: 540px;
+        margin: 0 auto 2.75rem;
+        line-height: 1.8;
+      }
+      .hero-ctas {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .btn-hero-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        padding: 0.85rem 1.75rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.2s;
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.28);
+      }
+      .btn-hero-primary:hover {
+        background: var(--accent-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 22px rgba(37, 99, 235, 0.38);
+      }
+      .btn-hero-ghost {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: transparent;
+        color: var(--muted);
+        border: 1.5px solid var(--border2);
+        padding: 0.85rem 1.75rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.2s;
+      }
+      .btn-hero-ghost:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: var(--accent-light);
+      }
+
+      /* ════════ STATS ════════ */
+      .stats-section {
+        max-width: 820px;
+        margin: 0 auto;
+        padding: 0 1.5rem 3.5rem;
+      }
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.25rem;
+      }
+      .stat-card-hero {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.75rem 1.5rem;
+        text-align: center;
+        box-shadow: var(--shadow);
+        transition: transform 0.2s;
+      }
+      .stat-card-hero:hover {
+        transform: translateY(-3px);
+      }
+      .stat-hero-num {
+        font-weight: 800;
+        font-size: 2.2rem;
+        color: var(--accent);
+        line-height: 1;
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.03em;
+      }
+      .stat-hero-label {
+        font-size: 0.875rem;
+        color: var(--muted);
+        font-weight: 400;
+      }
+
+      /* ════════ SECTION HEADERS ════════ */
+      .section-wrap {
+        max-width: 820px;
+        margin: 0 auto;
+        padding: 5rem 1.5rem;
+        border-top: 1.5px solid var(--border);
+      }
+      .section-tag {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--accent);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 0.75rem;
+        text-align: center;
+      }
+      .section-title {
+        font-weight: 800;
+        font-size: clamp(1.5rem, 3vw, 2.1rem);
+        color: var(--text);
+        letter-spacing: -0.03em;
+        text-align: center;
+        margin-bottom: 0.9rem;
+        line-height: 1.2;
+      }
+      .section-sub {
+        font-size: 1rem;
+        color: var(--muted);
+        text-align: center;
+        margin-bottom: 3rem;
+        max-width: 520px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.75;
+      }
+
+      /* ════════ QUIZ CARD ════════ */
+      .card {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: var(--shadow-md);
+      }
+      .mode-tabs {
+        display: flex;
+        background: var(--surface2);
+        border-bottom: 1.5px solid var(--border);
+      }
+      .mode-tab {
+        flex: 1;
+        padding: 1.1rem 0.5rem;
+        background: none;
+        border: none;
+        color: var(--muted);
+        font-family: var(--font);
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.18s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        border-bottom: 2.5px solid transparent;
+        margin-bottom: -1.5px;
+      }
+      .mode-tab svg {
+        width: 15px;
+        height: 15px;
+      }
+      .mode-tab:hover {
+        color: var(--accent);
+        background: rgba(37, 99, 235, 0.04);
+      }
+      .mode-tab.active {
+        color: var(--accent);
+        border-bottom-color: var(--accent);
+        background: var(--surface);
+      }
+
+      .input-area {
+        padding: 2rem;
+      }
+      .input-label {
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--muted);
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        margin-bottom: 0.75rem;
+        display: block;
+      }
+      textarea {
+        width: 100%;
+        min-height: 200px;
+        background: var(--surface2);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        color: var(--text);
+        font-family: var(--font);
+        font-size: 0.925rem;
+        line-height: 1.8;
+        padding: 1.1rem 1.25rem;
+        resize: vertical;
+        transition:
+          border-color 0.18s,
+          box-shadow 0.18s;
+        outline: none;
+      }
+      textarea:focus {
+        border-color: var(--accent-mid);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        background: var(--surface);
+      }
+      textarea::placeholder {
+        color: var(--muted2);
+      }
+
+      .upload-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 1rem;
+      }
+      .upload-btn {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        background: var(--surface);
+        border: 1.5px dashed var(--border2);
+        color: var(--muted);
+        padding: 0.5rem 1.1rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.85rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.18s;
+      }
+      .upload-btn svg {
+        width: 14px;
+        height: 14px;
+      }
+      .upload-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: var(--accent-light);
+      }
+      #file-input {
+        display: none;
+      }
+      .file-name {
+        font-size: 0.82rem;
+        color: var(--muted2);
+        font-style: italic;
+      }
+
+      .options-row {
+        display: flex;
+        align-items: center;
+        gap: 1.1rem;
+        padding: 1.25rem 2rem;
+        border-top: 1.5px solid var(--border);
+        background: var(--surface2);
+        flex-wrap: wrap;
+      }
+      .option-group {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+      }
+      .option-label {
+        font-size: 0.82rem;
+        font-weight: 500;
+        color: var(--muted);
+      }
+      select {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        color: var(--text);
+        font-family: var(--font);
+        font-size: 0.85rem;
+        font-weight: 500;
+        padding: 0.4rem 0.85rem;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        outline: none;
+        transition: border-color 0.18s;
+      }
+      select:focus {
+        border-color: var(--accent-mid);
+      }
+      .spacer {
+        flex: 1;
+      }
+      .btn-generate {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--accent);
+        border: none;
+        color: #fff;
+        padding: 0.7rem 1.6rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-weight: 600;
+        font-size: 0.925rem;
+        cursor: pointer;
+        transition: all 0.18s;
+        box-shadow: 0 2px 12px rgba(37, 99, 235, 0.28);
+      }
+      .btn-generate svg {
+        width: 15px;
+        height: 15px;
+      }
+      .btn-generate:hover {
+        background: var(--accent-dark);
+        transform: translateY(-1px);
+      }
+      .btn-generate:disabled {
+        background: var(--border2);
+        color: var(--muted2);
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      #loading {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.1rem;
+        padding: 4rem 2rem;
+        border-top: 1.5px solid var(--border);
+      }
+      .spinner {
+        width: 42px;
+        height: 42px;
+        border: 3px solid var(--border);
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin 0.75s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .loading-text {
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: var(--text);
+      }
+      .loading-sub {
+        font-size: 0.85rem;
+        color: var(--muted);
+      }
+
+      #quiz-zone {
+        display: none;
+        border-top: 1.5px solid var(--border);
+      }
+      .quiz-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.1rem 2rem;
+        border-bottom: 1.5px solid var(--border);
+        background: var(--surface2);
+      }
+      .quiz-progress-text {
+        font-size: 0.85rem;
+        color: var(--muted);
+        font-weight: 500;
+      }
+      .quiz-progress-text strong {
+        color: var(--accent);
+      }
+      .progress-bar-wrap {
+        flex: 1;
+        max-width: 200px;
+        height: 5px;
+        background: var(--border);
+        border-radius: 999px;
+        margin: 0 1.25rem;
+        overflow: hidden;
+      }
+      .progress-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent-mid), var(--accent));
+        border-radius: 999px;
+        transition: width 0.4s ease;
+        width: 0%;
+      }
+      .btn-reset {
+        background: none;
+        border: 1.5px solid var(--border2);
+        color: var(--muted);
+        padding: 0.35rem 0.9rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.8rem;
+        font-weight: 500;
+        cursor: pointer;
+        font-family: var(--font);
+        transition: all 0.18s;
+      }
+      .btn-reset:hover {
+        border-color: var(--danger);
+        color: var(--danger);
+      }
+
+      .questions-list {
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+      .question-card {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 1.5rem 1.75rem;
+        box-shadow: 0 1px 4px rgba(37, 99, 235, 0.05);
+        animation: fadeUp 0.3s ease forwards;
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .q-number {
+        font-size: 0.72rem;
+        color: var(--accent);
+        font-weight: 700;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        margin-bottom: 0.65rem;
+      }
+      .q-text {
+        font-size: 1rem;
+        color: var(--text);
+        font-weight: 500;
+        margin-bottom: 1.25rem;
+        line-height: 1.65;
+      }
+      .options-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+      }
+      .option-btn {
+        text-align: left;
+        background: var(--surface2);
+        border: 1.5px solid var(--border);
+        color: var(--muted);
+        padding: 0.8rem 1.1rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.16s;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+      }
+      .option-btn:hover:not(:disabled) {
+        border-color: var(--accent-mid);
+        color: var(--accent);
+        background: var(--accent-light);
+      }
+      .option-btn:disabled {
+        cursor: default;
+      }
+      .option-btn.correct {
+        border-color: var(--correct-bdr);
+        background: var(--correct-bg);
+        color: var(--correct);
+        font-weight: 500;
+      }
+      .option-btn.wrong {
+        border-color: var(--danger-bdr);
+        background: var(--danger-bg);
+        color: var(--danger);
+      }
+      .option-key {
+        width: 26px;
+        height: 26px;
+        border: 1.5px solid var(--border2);
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: var(--muted2);
+      }
+
+      .flashcard {
+        perspective: 1200px;
+        height: 180px;
+        cursor: pointer;
+      }
+      .flashcard-inner {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .flashcard.flipped .flashcard-inner {
+        transform: rotateY(180deg);
+      }
+      .flashcard-front,
+      .flashcard-back {
+        position: absolute;
+        inset: 0;
+        backface-visibility: hidden;
+        border-radius: var(--radius-sm);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 1.75rem;
+        text-align: center;
+      }
+      .flashcard-front {
+        background: var(--surface2);
+        border: 1.5px solid var(--border);
+      }
+      .flashcard-back {
+        background: var(--accent-light);
+        border: 1.5px solid var(--accent-mid);
+        transform: rotateY(180deg);
+      }
+      .flashcard-back .q-text {
+        color: var(--accent-dark);
+        margin: 0;
+      }
+      .flashcard-hint {
+        font-size: 0.75rem;
+        color: var(--muted2);
+        margin-top: 0.65rem;
+      }
+      .flashcard-back .flashcard-hint {
+        color: var(--accent);
+      }
+
+      #results-zone {
+        display: none;
+        border-top: 1.5px solid var(--border);
+        padding: 3.5rem 2rem;
+        text-align: center;
+        background: var(--surface);
+      }
+      .score-circle {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: var(--accent-light);
+        border: 3px solid var(--accent);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 2rem;
+        box-shadow: 0 0 0 10px rgba(37, 99, 235, 0.07);
+      }
+      .score-number {
+        font-weight: 800;
+        font-size: 2.2rem;
+        color: var(--accent);
+        line-height: 1;
+      }
+      .score-label {
+        font-size: 0.75rem;
+        color: var(--muted);
+        margin-top: 3px;
+      }
+      .result-title {
+        font-weight: 700;
+        font-size: 1.6rem;
+        color: var(--text);
+        margin-bottom: 0.6rem;
+      }
+      .result-sub {
+        color: var(--muted);
+        font-size: 0.95rem;
+        margin-bottom: 2rem;
+        line-height: 1.7;
+      }
+      .stats-row {
+        display: flex;
+        gap: 0.85rem;
+        justify-content: center;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+      }
+      .stat-pill {
+        background: var(--surface2);
+        border: 1.5px solid var(--border);
+        border-radius: 999px;
+        padding: 0.45rem 1.2rem;
+        font-size: 0.85rem;
+        color: var(--muted);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .stat-pill strong {
+        color: var(--text);
+        font-weight: 600;
+      }
+      .result-actions {
+        display: flex;
+        gap: 0.85rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .btn-outline {
+        background: var(--surface);
+        border: 1.5px solid var(--border2);
+        color: var(--muted);
+        padding: 0.65rem 1.35rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.18s;
+      }
+      .btn-outline:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: var(--accent-light);
+      }
+
+      /* ════════ FEATURES ════════ */
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.25rem;
+      }
+      .feature-card {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.75rem;
+        box-shadow: var(--shadow);
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+      }
+      .feature-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+      }
+      .feature-icon {
+        width: 42px;
+        height: 42px;
+        background: var(--accent-light);
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.1rem;
+        color: var(--accent);
+      }
+      .feature-icon svg {
+        width: 20px;
+        height: 20px;
+      }
+      .feature-title {
+        font-weight: 700;
+        font-size: 1rem;
+        color: var(--text);
+        margin-bottom: 0.55rem;
+      }
+      .feature-desc {
+        font-size: 0.9rem;
+        color: var(--muted);
+        line-height: 1.75;
+      }
+
+      .reveal {
+        opacity: 0;
+        transform: translateY(22px);
+        transition:
+          opacity 0.5s ease,
+          transform 0.5s ease;
+      }
+      .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* ════════ TESTIMONIALS ════════ */
+      .testimonios-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.25rem;
+      }
+      .testimonio-card {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.75rem;
+        box-shadow: var(--shadow);
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+      }
+      .testimonio-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+      }
+      .stars {
+        color: #f59e0b;
+        font-size: 1.05rem;
+        margin-bottom: 1rem;
+        letter-spacing: 3px;
+      }
+      .testimonio-text {
+        font-size: 0.9rem;
+        color: var(--muted);
+        line-height: 1.8;
+        margin-bottom: 1.5rem;
+        font-style: italic;
+      }
+      .testimonio-author {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+      }
+      .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--accent-light);
+        border: 1.5px solid var(--border2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--accent);
+        flex-shrink: 0;
+      }
+      .author-name {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .author-role {
+        font-size: 0.8rem;
+        color: var(--muted2);
+        margin-top: 1px;
+      }
+
+      /* ════════ FAQ ════════ */
+      .faq-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      .faq-item {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        overflow: hidden;
+        transition: border-color 0.2s;
+      }
+      .faq-q {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.2rem 1.5rem;
+        background: none;
+        border: none;
+        font-family: var(--font);
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: var(--text);
+        cursor: pointer;
+        text-align: left;
+        gap: 1rem;
+        transition: background 0.15s;
+      }
+      .faq-q:hover {
+        background: var(--surface2);
+      }
+      .faq-arrow {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        color: var(--muted2);
+        transition: transform 0.25s;
+      }
+      .faq-q.open .faq-arrow {
+        transform: rotate(180deg);
+      }
+      .faq-q.open {
+        color: var(--accent);
+      }
+      .faq-a {
+        max-height: 0;
+        overflow: hidden;
+        font-size: 0.9rem;
+        color: var(--muted);
+        line-height: 1.8;
+        padding: 0 1.5rem;
+        transition:
+          max-height 0.3s ease,
+          padding 0.3s ease;
+      }
+      .faq-a.open {
+        max-height: 200px;
+        padding: 0 1.5rem 1.25rem;
+      }
+
+      /* ════════ CTA ════════ */
+      .cta-final {
+        max-width: 620px;
+        margin: 0 auto;
+        padding: 6rem 1.5rem;
+        text-align: center;
+        border-top: 1.5px solid var(--border);
+      }
+      .cta-final h2 {
+        font-weight: 800;
+        font-size: clamp(1.6rem, 3.5vw, 2.3rem);
+        color: var(--text);
+        letter-spacing: -0.03em;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+      }
+      .cta-final p {
+        color: var(--muted);
+        font-size: 1rem;
+        margin-bottom: 2.25rem;
+        line-height: 1.75;
+      }
+
+      /* ════════ FOOTER ════════ */
+      footer {
+        background: var(--surface);
+        border-top: 1.5px solid var(--border);
+        padding: 3.5rem 3rem 2rem;
+      }
+      .footer-top {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr;
+        gap: 2.5rem;
+        max-width: 820px;
+        margin: 0 auto 2.5rem;
+      }
+      .footer-desc {
+        font-size: 0.875rem;
+        color: var(--muted2);
+        line-height: 1.75;
+        max-width: 270px;
+        margin-top: 0.6rem;
+      }
+      .footer-group-title {
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--text);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 1rem;
+      }
+      .footer-link {
+        display: block;
+        font-size: 0.875rem;
+        color: var(--muted2);
+        text-decoration: none;
+        margin-bottom: 0.55rem;
+        transition: color 0.15s;
+      }
+      .footer-link:hover {
+        color: var(--accent);
+      }
+      .footer-bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        border-top: 1px solid var(--border);
+        padding-top: 1.5rem;
+        max-width: 820px;
+        margin: 0 auto;
+      }
+      .footer-copy,
+      .footer-powered {
+        font-size: 0.82rem;
+        color: var(--muted2);
+      }
+
+      /* ════════ TOAST ════════ */
+      .toast {
+        position: fixed;
+        bottom: 1.75rem;
+        right: 1.75rem;
+        background: var(--surface);
+        border: 1.5px solid var(--border2);
+        color: var(--text);
+        padding: 0.85rem 1.4rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.9rem;
+        font-weight: 500;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.25s;
+        z-index: 400;
+        pointer-events: none;
+        box-shadow: var(--shadow-md);
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .toast.success {
+        border-color: rgba(37, 99, 235, 0.4);
+        color: var(--accent);
+      }
+      .toast.error {
+        border-color: rgba(220, 38, 38, 0.4);
+        color: var(--danger);
+      }
+
+      /* ════════ RESPONSIVE ════════ */
+
+      /* ════════ WEEKLY STREAK BANNER ════════ */
+      .streak-banner-section {
+        max-width: 820px;
+        margin: 0 auto;
+        padding: 0 1.5rem 1.5rem;
+      }
+      .sb-wrap {
+        position: relative;
+      }
+      .streak-banner-card {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.5rem 1.75rem;
+        box-shadow: var(--shadow-md);
+      }
+      .sb-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.1rem;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+      }
+      .sb-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .sb-fire-icon {
+        font-size: 2rem;
+        line-height: 1;
+        animation: sbFire 2s ease-in-out infinite;
+      }
+      @keyframes sbFire {
+        0%,
+        100% {
+          transform: translateY(0) scale(1);
+        }
+        50% {
+          transform: translateY(-5px) scale(1.1);
+        }
+      }
+      .sb-streak-num {
+        font-weight: 800;
+        font-size: 2rem;
+        color: var(--text);
+        line-height: 1;
+        letter-spacing: -0.04em;
+      }
+      .sb-streak-label {
+        font-size: 0.78rem;
+        color: var(--muted);
+        margin-top: 1px;
+      }
+      .sb-divider {
+        width: 1px;
+        height: 36px;
+        background: var(--border);
+      }
+      .sb-level {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+      }
+      .sb-level-badge {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: var(--accent-light);
+        border: 1.5px solid var(--border2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+      }
+      .sb-level-name {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .sb-level-sub {
+        font-size: 0.75rem;
+        color: var(--muted);
+      }
+      .sb-right {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+      .sb-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: var(--surface2);
+        border: 1.5px solid var(--border);
+        border-radius: 999px;
+        padding: 0.32rem 0.85rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--accent);
+      }
+      .sb-pill.muted {
+        color: var(--muted);
+      }
+      .sb-checkin-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--accent);
+        border: none;
+        color: #fff;
+        padding: 0.45rem 1.1rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-weight: 600;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: all 0.18s;
+        box-shadow: 0 2px 10px rgba(37, 99, 235, 0.25);
+        white-space: nowrap;
+      }
+      .sb-checkin-btn:hover {
+        background: var(--accent-dark);
+        transform: translateY(-1px);
+      }
+      .sb-checkin-btn.claimed {
+        background: var(--correct-bg);
+        color: var(--correct);
+        border: 1.5px solid var(--correct-bdr);
+        box-shadow: none;
+        cursor: default;
+        transform: none;
+      }
+
+      .sb-xp-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 1.1rem;
+      }
+      .sb-xp-label {
+        font-size: 0.75rem;
+        color: var(--muted);
+        white-space: nowrap;
+        min-width: 44px;
+      }
+      .sb-xp-label.right {
+        text-align: right;
+      }
+      .sb-xp-track {
+        flex: 1;
+        height: 6px;
+        background: var(--border);
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .sb-xp-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent-mid), var(--accent));
+        border-radius: 999px;
+        transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .sb-xp-pct {
+        font-size: 0.75rem;
+        color: var(--muted);
+        min-width: 28px;
+        text-align: right;
+      }
+
+      .sb-days-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 0.6rem;
+        margin-bottom: 1.1rem;
+      }
+      .sb-day {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+      }
+      .sb-day-label {
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: var(--muted2);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .sb-day-circle {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: 1.5px solid var(--border);
+        background: var(--surface2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.25s;
+        position: relative;
+      }
+      .sb-day.done .sb-day-circle {
+        background: var(--accent);
+        border-color: var(--accent);
+        box-shadow: 0 3px 12px rgba(37, 99, 235, 0.3);
+      }
+      .sb-day.done .sb-day-circle svg {
+        stroke: #fff;
+      }
+      .sb-day.done .sb-day-label {
+        color: var(--accent);
+      }
+      .sb-day.today .sb-day-circle {
+        border: 2px dashed var(--accent);
+        background: var(--accent-light);
+      }
+      .sb-day.today .sb-day-label {
+        color: var(--accent);
+        font-weight: 700;
+      }
+      .sb-day.missed .sb-day-circle {
+        opacity: 0.4;
+      }
+      .sb-dot {
+        position: absolute;
+        bottom: -2px;
+        right: -2px;
+        width: 10px;
+        height: 10px;
+        background: var(--correct);
+        border-radius: 50%;
+        border: 2px solid var(--surface);
+      }
+
+      .sb-bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 1rem;
+        border-top: 1.5px solid var(--border);
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .sb-best-text {
+        font-size: 0.8rem;
+        color: var(--muted);
+      }
+      .sb-best-text strong {
+        color: var(--text);
+      }
+      .sb-link {
+        font-size: 0.8rem;
+        color: var(--accent);
+        font-weight: 600;
+        text-decoration: none;
+      }
+      .sb-link:hover {
+        text-decoration: underline;
+      }
+
+      .sb-toast {
+        position: absolute;
+        top: -38px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--surface);
+        border: 1.5px solid var(--border2);
+        border-radius: var(--radius-sm);
+        padding: 0.3rem 0.9rem;
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: var(--text);
+        white-space: nowrap;
+        opacity: 0;
+        transition: opacity 0.25s;
+        pointer-events: none;
+        box-shadow: var(--shadow);
+      }
+      .sb-toast.show {
+        opacity: 1;
+      }
+
+      @media (max-width: 600px) {
+        .sb-days-grid {
+          gap: 0.35rem;
+        }
+        .sb-day-circle {
+          width: 36px;
+          height: 36px;
+        }
+        .sb-divider {
+          display: none;
+        }
+        .sb-level {
+          display: none;
+        }
+      }
+
+      /* ════════ DISCOVER SECTION ════════ */
+      .discover-event {
+        background: linear-gradient(
+          135deg,
+          #1e40af 0%,
+          #2563eb 55%,
+          #3b82f6 100%
+        );
+        border-radius: var(--radius);
+        padding: 1.75rem 2rem;
+        margin-bottom: 1.1rem;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(37, 99, 235, 0.3);
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+      }
+      .discover-event::before {
+        content: "";
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        width: 180px;
+        height: 180px;
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 50%;
+      }
+      .discover-event:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 14px 40px rgba(37, 99, 235, 0.42);
+      }
+
+      .dev-event-top {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        margin-bottom: 1.1rem;
+        flex-wrap: wrap;
+      }
+      .dev-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 0.28rem 0.75rem;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+      }
+      .dev-badge-fire {
+        background: rgba(249, 115, 22, 0.25);
+        border: 1px solid rgba(249, 115, 22, 0.4);
+        color: #fed7aa;
+      }
+      .dev-badge-time {
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        color: rgba(255, 255, 255, 0.9);
+      }
+      .dev-badge-users {
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: rgba(255, 255, 255, 0.85);
+        margin-left: auto;
+      }
+
+      .dev-event-body {
+        display: flex;
+        align-items: flex-start;
+        gap: 1.1rem;
+      }
+      .dev-event-icon {
+        width: 52px;
+        height: 52px;
+        flex-shrink: 0;
+        background: rgba(255, 255, 255, 0.15);
+        border: 1.5px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+      }
+      .dev-event-content {
+        flex: 1;
+      }
+      .dev-event-title {
+        font-weight: 800;
+        font-size: 1.2rem;
+        color: #fff;
+        letter-spacing: -0.02em;
+        margin-bottom: 0.3rem;
+      }
+      .dev-event-desc {
+        font-size: 0.875rem;
+        color: rgba(255, 255, 255, 0.75);
+        line-height: 1.65;
+        margin-bottom: 0.85rem;
+      }
+      .dev-event-rewards {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+      .dev-reward-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: rgba(255, 255, 255, 0.9);
+        padding: 0.25rem 0.7rem;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+      .dev-event-action {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 700;
+        font-size: 0.9rem;
+        white-space: nowrap;
+        padding-top: 0.2rem;
+      }
+      .dev-event-countdown {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1.1rem;
+        padding-top: 1.1rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        flex-wrap: wrap;
+      }
+      .cd-u {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        padding: 0.38rem 0.65rem;
+        text-align: center;
+        min-width: 46px;
+      }
+      .cd-n {
+        font-weight: 800;
+        font-size: 1.1rem;
+        color: #fff;
+        line-height: 1;
+      }
+      .cd-l {
+        font-size: 0.58rem;
+        color: rgba(255, 255, 255, 0.55);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .discover-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.1rem;
+        margin-top: 1.1rem;
+      }
+
+      /* Tutor card */
+      .dev-tutor-card {
+        background: linear-gradient(145deg, #0f172a, #1e293b);
+        border: 1.5px solid rgba(255, 255, 255, 0.08);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        cursor: pointer;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      }
+      .dev-tutor-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+      }
+      .dev-tutor-top {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 0.9rem;
+      }
+      .dev-tutor-avatar {
+        width: 46px;
+        height: 46px;
+        background: linear-gradient(135deg, #1e40af, #3b82f6);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        flex-shrink: 0;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+      }
+      .dev-tutor-name {
+        font-weight: 800;
+        font-size: 1rem;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-bottom: 2px;
+      }
+      .dev-speed-badge {
+        background: linear-gradient(90deg, #f97316, #ef4444);
+        color: #fff;
+        font-size: 0.65rem;
+        font-weight: 700;
+        padding: 0.18rem 0.55rem;
+        border-radius: 999px;
+        letter-spacing: 0.05em;
+      }
+      .dev-tutor-sub {
+        font-size: 0.72rem;
+        color: rgba(255, 255, 255, 0.35);
+      }
+      .dev-tutor-desc {
+        font-size: 0.82rem;
+        color: rgba(255, 255, 255, 0.6);
+        line-height: 1.65;
+        margin-bottom: 0.85rem;
+      }
+      .dev-tutor-tags {
+        display: flex;
+        gap: 0.4rem;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+      }
+      .dev-tag {
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.65);
+        padding: 0.22rem 0.65rem;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: 500;
+      }
+      .dev-btn-ask {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: #2563eb;
+        border: none;
+        color: #fff;
+        padding: 0.6rem 1.2rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-weight: 600;
+        font-size: 0.82rem;
+        cursor: pointer;
+        transition: all 0.18s;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+        width: 100%;
+        justify-content: center;
+      }
+      .dev-btn-ask:hover {
+        background: #1d4ed8;
+        transform: translateY(-1px);
+      }
+
+      /* Multiplayer card */
+      .dev-multi-card {
+        background: linear-gradient(145deg, #6d28d9, #7c3aed 50%, #a855f7);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        cursor: pointer;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+        box-shadow: 0 4px 20px rgba(109, 40, 217, 0.3);
+        position: relative;
+        overflow: hidden;
+      }
+      .dev-multi-card::before {
+        content: "";
+        position: absolute;
+        bottom: -30px;
+        right: -30px;
+        width: 120px;
+        height: 120px;
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 50%;
+      }
+      .dev-multi-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 36px rgba(109, 40, 217, 0.45);
+      }
+      .dev-multi-icon {
+        font-size: 2rem;
+        margin-bottom: 0.6rem;
+      }
+      .dev-multi-badge {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: #fff;
+        font-size: 0.68rem;
+        font-weight: 700;
+        padding: 0.2rem 0.65rem;
+        border-radius: 999px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        margin-bottom: 0.6rem;
+      }
+      .dev-multi-title {
+        font-weight: 800;
+        font-size: 1.15rem;
+        color: #fff;
+        letter-spacing: -0.02em;
+        margin-bottom: 0.4rem;
+      }
+      .dev-multi-desc {
+        font-size: 0.82rem;
+        color: rgba(255, 255, 255, 0.75);
+        line-height: 1.65;
+        margin-bottom: 0.9rem;
+      }
+      .dev-multi-stats {
+        display: flex;
+        gap: 1.25rem;
+      }
+      .dev-multi-num {
+        font-weight: 800;
+        font-size: 1.1rem;
+        color: #fff;
+      }
+      .dev-multi-label {
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.65);
+      }
+      .dev-multi-coming {
+        font-size: 0.82rem;
+        color: rgba(255, 255, 255, 0.7);
+        font-weight: 600;
+        margin-top: 0.85rem;
+      }
+
+      /* Daily challenge card */
+      .dev-challenge-card {
+        background: linear-gradient(145deg, #064e3b, #065f46 50%, #047857);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        cursor: pointer;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+        box-shadow: 0 4px 20px rgba(6, 78, 59, 0.35);
+      }
+      .dev-challenge-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 36px rgba(6, 78, 59, 0.5);
+      }
+      .dev-challenge-icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+      }
+      .dev-challenge-label {
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.55);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 0.3rem;
+      }
+      .dev-challenge-title {
+        font-weight: 800;
+        font-size: 1.05rem;
+        color: #fff;
+        margin-bottom: 0.35rem;
+      }
+      .dev-challenge-desc {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.65);
+        line-height: 1.6;
+        margin-bottom: 0.85rem;
+      }
+      .dev-challenge-reward {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #fff;
+        font-size: 0.78rem;
+        font-weight: 700;
+        padding: 0.28rem 0.75rem;
+        border-radius: 999px;
+        margin-bottom: 0.85rem;
+      }
+      .dev-challenge-btn {
+        display: block;
+        width: 100%;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.15);
+        border: 1.5px solid rgba(255, 255, 255, 0.25);
+        color: #fff;
+        padding: 0.6rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-weight: 600;
+        font-size: 0.82rem;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .dev-challenge-btn:hover {
+        background: rgba(255, 255, 255, 0.25);
+      }
+
+      @media (max-width: 640px) {
+        nav {
+          padding: 1rem 1.25rem;
+        }
+        .nav-links .btn-ghost:not(:last-child):not(.nav-diamond) {
+          display: none;
+        }
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+        .footer-top {
+          grid-template-columns: 1fr;
+        }
+        .features-grid,
+        .testimonios-grid {
+          grid-template-columns: 1fr;
+        }
+        .section-wrap {
+          padding: 3.5rem 1.25rem;
+        }
+        .input-area {
+          padding: 1.5rem;
+        }
+        .options-row {
+          padding: 1rem 1.5rem;
+        }
+        .questions-list {
+          padding: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- NAV -->
+    <nav id="navbar">
+      <a href="#" class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+          </svg>
+        </div>
+        QuizForge
+      </a>
+      <div class="nav-links">
+        <a href="#features" class="btn-ghost">Features</a>
+        <a href="pages/features.html" class="btn-ghost">🎮 Discover</a>
+        <a href="pages/dashboard.html" class="btn-ghost">My history</a>
+        <a href="pages/streak.html" class="btn-ghost">🔥 Streak</a>
+        <a href="pages/diamonds.html" class="nav-diamond" id="nav-diamonds"
+          >💎 0</a
+        >
+        <a href="pages/store.html" class="btn-ghost">🏪 Store</a>
+        <a href="pages/profile.html" class="btn-ghost">My profile</a>
+        <a href="pages/settings.html" class="btn-ghost">⚙️</a>
+        <button id="lang-toggle" class="btn-lang" onclick="toggleLang()">
+          🇺🇸 EN
+        </button>
+        <a href="pages/login.html" class="btn-primary">Sign in</a>
+      </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        Powered by AI
+      </div>
+      <h1>Turn any text into<br />an <em>intelligent quiz</em></h1>
+      <p>
+        Paste your notes, upload a PDF or write a topic and generate multiple
+        choice questions, flashcards and more in seconds.
+      </p>
+      <div class="hero-ctas">
+        <button class="btn-hero-primary" onclick="scrollToQuiz()">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            width="17"
+            height="17"
+          >
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+          </svg>
+          Generate free quiz
+        </button>
+        <button class="btn-hero-ghost" onclick="scrollToDemo()">
+          See demo ↓
+        </button>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="stats-section">
+      <div class="stats-grid">
+        <div class="stat-card-hero">
+          <p class="stat-hero-num" data-target="1240">0+</p>
+          <p class="stat-hero-label">Quizzes generated</p>
+        </div>
+        <div class="stat-card-hero">
+          <p class="stat-hero-num" data-target="307">0+</p>
+          <p class="stat-hero-label">Active students</p>
+        </div>
+        <div class="stat-card-hero">
+          <p class="stat-hero-num" data-target="18500">0+</p>
+          <p class="stat-hero-label">Questions created</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════
+       WEEKLY STREAK BANNER
+  ══════════════════════ -->
+    <section class="streak-banner-section" id="streak-banner-section">
+      <div class="sb-wrap">
+        <div class="streak-banner-card">
+          <!-- Top row -->
+          <div class="sb-top">
+            <div class="sb-left">
+              <div class="sb-fire-icon" id="sb-fire-icon" aria-hidden="true">
+                🔥
+              </div>
+              <div>
+                <div class="sb-streak-num" id="sb-streak-num">0</div>
+                <div class="sb-streak-label">day streak</div>
+              </div>
+              <div class="sb-divider"></div>
+              <div class="sb-level">
+                <div class="sb-level-badge" id="sb-level-icon">🌱</div>
+                <div>
+                  <div class="sb-level-name" id="sb-level-name">Beginner</div>
+                  <div class="sb-level-sub">
+                    Level <span id="sb-level-num">1</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="sb-right">
+              <div class="sb-pill">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  width="13"
+                  height="13"
+                >
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                </svg>
+                <span id="sb-xp-num">0</span> XP
+              </div>
+              <div class="sb-pill muted">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  width="13"
+                  height="13"
+                >
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+                <span id="sb-freeze-num">1</span> shield
+              </div>
+              <button
+                class="sb-checkin-btn"
+                id="sb-checkin-btn"
+                onclick="claimStreakBanner()"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  width="14"
+                  height="14"
+                >
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                </svg>
+                Check in today
+              </button>
+            </div>
+          </div>
+
+          <!-- XP Progress bar -->
+          <div class="sb-xp-row">
+            <span class="sb-xp-label" id="sb-xp-from">0 XP</span>
+            <div class="sb-xp-track">
+              <div class="sb-xp-fill" id="sb-xp-fill" style="width: 0%"></div>
+            </div>
+            <span class="sb-xp-pct" id="sb-xp-pct">0%</span>
+            <span class="sb-xp-label right" id="sb-xp-to">50 XP</span>
+          </div>
+
+          <!-- Week days -->
+          <div class="sb-days-grid" id="sb-days-grid"></div>
+
+          <!-- Bottom -->
+          <div class="sb-bottom">
+            <span class="sb-best-text"
+              >Best: <strong id="sb-best-num">0</strong> days &nbsp;·&nbsp;
+              Total: <strong id="sb-total-num">0</strong> days</span
+            >
+            <a href="pages/streak.html" class="sb-link">Full streak page →</a>
+          </div>
+        </div>
+        <div class="sb-toast" id="sb-toast"></div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════
+       DISCOVER SECTION
+  ══════════════════════ -->
+    <section class="section-wrap" id="discover">
+      <div class="section-tag">Discover</div>
+      <h2 class="section-title">More ways to study smarter</h2>
+      <p class="section-sub">
+        Events, AI tutoring, multiplayer battles and daily challenges — all in
+        one place.
+      </p>
+
+      <!-- EVENT CARD -->
+      <div
+        class="discover-event reveal"
+        onclick="window.location.href = 'pages/features.html'"
+      >
+        <div class="dev-event-top">
+          <span class="dev-badge dev-badge-fire">🔥 Limited time</span>
+          <span class="dev-badge dev-badge-time" id="idx-days"
+            >⏳ 5 days left</span
+          >
+          <span class="dev-badge dev-badge-users">👥 1,247 joined</span>
+        </div>
+        <div class="dev-event-body">
+          <div class="dev-event-icon">🧠</div>
+          <div class="dev-event-content">
+            <h3 class="dev-event-title">Quiz Sprint Challenge</h3>
+            <p class="dev-event-desc">
+              Complete 5 quizzes this week on any topic and earn exclusive
+              rewards. Every correct answer counts!
+            </p>
+            <div class="dev-event-rewards">
+              <span class="dev-reward-chip">⬆️ Level Up</span>
+              <span class="dev-reward-chip">💎 +2,500 Diamonds</span>
+              <span class="dev-reward-chip">🏆 Sprint Badge</span>
+            </div>
+          </div>
+          <div class="dev-event-action">
+            Join Now
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              width="16"
+              height="16"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </div>
+        </div>
+        <div class="dev-event-countdown" id="idx-countdown"></div>
+      </div>
+
+      <!-- BOTTOM GRID -->
+      <div class="discover-grid">
+        <!-- REX AI TUTOR -->
+        <div
+          class="dev-tutor-card reveal"
+          onclick="
+            document.getElementById('rex-modal').classList.add('open');
+            document.getElementById('rex-input').focus();
+          "
+        >
+          <div class="dev-tutor-top">
+            <div class="dev-tutor-avatar">🤖</div>
+            <div>
+              <div class="dev-tutor-name">
+                Rex <span class="dev-speed-badge">⚡ Ultra Fast</span>
+              </div>
+              <div class="dev-tutor-sub">AI Tutor · LLaMA 3.3 70B</div>
+            </div>
+          </div>
+          <p class="dev-tutor-desc">
+            Your lightning-fast AI study companion. Ask anything — math,
+            science, history, coding and more.
+          </p>
+          <div class="dev-tutor-tags">
+            <span class="dev-tag">📐 Math</span>
+            <span class="dev-tag">🔬 Science</span>
+            <span class="dev-tag">💻 Coding</span>
+            <span class="dev-tag">🌍 History</span>
+          </div>
+          <button
+            class="dev-btn-ask"
+            onclick="
+              event.stopPropagation();
+              document.getElementById('rex-modal').classList.add('open');
+              document.getElementById('rex-input').focus();
+            "
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              width="15"
+              height="15"
+            >
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+            </svg>
+            Ask Rex Now
+          </button>
+        </div>
+
+        <!-- MULTIPLAYER -->
+        <div
+          class="dev-multi-card reveal"
+          onclick="showToast('Multiplayer coming soon! 🎮', 'success')"
+        >
+          <div class="dev-multi-icon">🎮</div>
+          <div class="dev-multi-badge">Multiplayer</div>
+          <h3 class="dev-multi-title">1v1 Battles</h3>
+          <p class="dev-multi-desc">
+            Challenge friends in real-time knowledge battles. Prove who's the
+            ultimate study champion.
+          </p>
+          <div class="dev-multi-stats">
+            <div>
+              <span class="dev-multi-num">847</span
+              ><span class="dev-multi-label"> online</span>
+            </div>
+            <div>
+              <span class="dev-multi-num">2.4k</span
+              ><span class="dev-multi-label"> battles</span>
+            </div>
+          </div>
+          <div class="dev-multi-coming">Coming soon →</div>
+        </div>
+
+        <!-- DAILY CHALLENGE -->
+        <div
+          class="dev-challenge-card reveal"
+          onclick="showToast('Daily challenge started! +150 💎', 'success')"
+        >
+          <div class="dev-challenge-icon">⚡</div>
+          <div class="dev-challenge-label">Daily challenge</div>
+          <h3 class="dev-challenge-title" id="idx-challenge-topic">
+            Today: General Knowledge
+          </h3>
+          <p class="dev-challenge-desc">
+            10 questions. 3 minutes. New challenge every day.
+          </p>
+          <div class="dev-challenge-reward">💎 +150 diamonds</div>
+          <button class="dev-challenge-btn">Start now →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- REX TUTOR MODAL -->
+    <div
+      style="
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.65);
+        z-index: 500;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        backdrop-filter: blur(6px);
+      "
+      id="rex-modal"
+      onclick="
+        if (event.target.id === 'rex-modal') this.classList.remove('open');
+      "
+      class=""
+    >
+      <div
+        style="
+          background: #0f172a;
+          border: 1.5px solid rgba(255, 255, 255, 0.12);
+          border-radius: 20px;
+          width: 100%;
+          max-width: 540px;
+          overflow: hidden;
+          box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+          animation: rexModalIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        "
+      >
+        <style>
+          #rex-modal.open {
+            display: flex !important;
+          }
+          @keyframes rexModalIn {
+            from {
+              opacity: 0;
+              transform: translateY(16px) scale(0.96);
+            }
+            to {
+              opacity: 1;
+              transform: none;
+            }
+          }
+        </style>
+        <!-- Header -->
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 1.1rem 1.4rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.03);
+          "
+        >
+          <div
+            style="
+              width: 40px;
+              height: 40px;
+              background: linear-gradient(135deg, #1e40af, #3b82f6);
+              border-radius: 10px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 1.25rem;
+              flex-shrink: 0;
+            "
+          >
+            🤖
+          </div>
+          <div style="flex: 1">
+            <p style="font-weight: 700; font-size: 0.95rem; color: #fff">
+              Rex — AI Tutor
+            </p>
+            <p style="font-size: 0.72rem; color: rgba(255, 255, 255, 0.38)">
+              ⚡ Groq Ultra Fast · LLaMA 3.3 70B
+            </p>
+          </div>
+          <button
+            onclick="
+              document.getElementById('rex-modal').classList.remove('open')
+            "
+            style="
+              background: none;
+              border: none;
+              color: rgba(255, 255, 255, 0.38);
+              cursor: pointer;
+              font-size: 1.1rem;
+              padding: 0.2rem;
+              transition: color 0.15s;
+            "
+            onmouseover="this.style.color = '#f87171'"
+            onmouseout="this.style.color = 'rgba(255,255,255,.38)'"
+          >
+            ✕
+          </button>
+        </div>
+        <!-- Messages -->
+        <div
+          id="rex-messages"
+          style="
+            padding: 1.1rem 1.4rem;
+            height: 300px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+          "
+        >
+          <div
+            style="
+              background: rgba(255, 255, 255, 0.07);
+              border: 1px solid rgba(255, 255, 255, 0.1);
+              color: rgba(255, 255, 255, 0.85);
+              padding: 0.7rem 1rem;
+              border-radius: 12px;
+              font-size: 0.875rem;
+              line-height: 1.6;
+              max-width: 84%;
+              align-self: flex-start;
+            "
+          >
+            👋 Hi! I'm Rex, your AI tutor. Ask me anything — math, science,
+            history, coding or any subject you're studying!
+          </div>
+        </div>
+        <!-- Input -->
+        <div
+          style="
+            display: flex;
+            gap: 0.75rem;
+            padding: 1rem 1.4rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+          "
+        >
+          <input
+            id="rex-input"
+            type="text"
+            placeholder="Ask Rex anything..."
+            style="
+              flex: 1;
+              background: rgba(255, 255, 255, 0.07);
+              border: 1.5px solid rgba(255, 255, 255, 0.12);
+              border-radius: 9px;
+              color: #fff;
+              font-family: Inter, Arial, sans-serif;
+              font-size: 0.875rem;
+              padding: 0.65rem 1rem;
+              outline: none;
+              transition: border-color 0.18s;
+            "
+            onkeydown="if (event.key === 'Enter') askRex();"
+            onfocus="this.style.borderColor = '#60a5fa'"
+            onblur="this.style.borderColor = 'rgba(255,255,255,.12)'"
+          />
+          <button
+            onclick="askRex()"
+            style="
+              background: #2563eb;
+              border: none;
+              color: #fff;
+              width: 42px;
+              height: 42px;
+              border-radius: 9px;
+              cursor: pointer;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              transition: background 0.18s;
+              flex-shrink: 0;
+            "
+            onmouseover="this.style.background = '#1d4ed8'"
+            onmouseout="this.style.background = '#2563eb'"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#fff"
+              stroke-width="2.5"
+              width="16"
+              height="16"
+            >
+              <line x1="22" y1="2" x2="11" y2="13" />
+              <polygon points="22 2 15 22 11 13 2 9 22 2" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- REX TUTOR MODAL -->
+    <div
+      style="
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.65);
+        z-index: 500;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        backdrop-filter: blur(6px);
+      "
+      id="rex-modal"
+      onclick="
+        if (event.target.id === 'rex-modal') this.classList.remove('open');
+      "
+      class=""
+    >
+      <div
+        style="
+          background: #0f172a;
+          border: 1.5px solid rgba(255, 255, 255, 0.12);
+          border-radius: 20px;
+          width: 100%;
+          max-width: 540px;
+          overflow: hidden;
+          box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+          animation: rexModalIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        "
+      >
+        <style>
+          #rex-modal.open {
+            display: flex !important;
+          }
+          @keyframes rexModalIn {
+            from {
+              opacity: 0;
+              transform: translateY(16px) scale(0.96);
+            }
+            to {
+              opacity: 1;
+              transform: none;
+            }
+          }
+        </style>
+        <!-- Header -->
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 1.1rem 1.4rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.03);
+          "
+        >
+          <div
+            style="
+              width: 40px;
+              height: 40px;
+              background: linear-gradient(135deg, #1e40af, #3b82f6);
+              border-radius: 10px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 1.25rem;
+              flex-shrink: 0;
+            "
+          >
+            🤖
+          </div>
+          <div style="flex: 1">
+            <p style="font-weight: 700; font-size: 0.95rem; color: #fff">
+              Rex — AI Tutor
+            </p>
+            <p style="font-size: 0.72rem; color: rgba(255, 255, 255, 0.38)">
+              ⚡ Groq Ultra Fast · LLaMA 3.3 70B
+            </p>
+          </div>
+          <button
+            onclick="
+              document.getElementById('rex-modal').classList.remove('open')
+            "
+            style="
+              background: none;
+              border: none;
+              color: rgba(255, 255, 255, 0.38);
+              cursor: pointer;
+              font-size: 1.1rem;
+              padding: 0.2rem;
+              transition: color 0.15s;
+            "
+            onmouseover="this.style.color = '#f87171'"
+            onmouseout="this.style.color = 'rgba(255,255,255,.38)'"
+          >
+            ✕
+          </button>
+        </div>
+        <!-- Messages -->
+        <div
+          id="rex-messages"
+          style="
+            padding: 1.1rem 1.4rem;
+            height: 300px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+          "
+        >
+          <div
+            style="
+              background: rgba(255, 255, 255, 0.07);
+              border: 1px solid rgba(255, 255, 255, 0.1);
+              color: rgba(255, 255, 255, 0.85);
+              padding: 0.7rem 1rem;
+              border-radius: 12px;
+              font-size: 0.875rem;
+              line-height: 1.6;
+              max-width: 84%;
+              align-self: flex-start;
+            "
+          >
+            👋 Hi! I'm Rex, your AI tutor. Ask me anything — math, science,
+            history, coding or any subject you're studying!
+          </div>
+        </div>
+        <!-- Input -->
+        <div
+          style="
+            display: flex;
+            gap: 0.75rem;
+            padding: 1rem 1.4rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+          "
+        >
+          <input
+            id="rex-input"
+            type="text"
+            placeholder="Ask Rex anything..."
+            style="
+              flex: 1;
+              background: rgba(255, 255, 255, 0.07);
+              border: 1.5px solid rgba(255, 255, 255, 0.12);
+              border-radius: 9px;
+              color: #fff;
+              font-family: Inter, Arial, sans-serif;
+              font-size: 0.875rem;
+              padding: 0.65rem 1rem;
+              outline: none;
+              transition: border-color 0.18s;
+            "
+            onkeydown="if (event.key === 'Enter') askRex();"
+            onfocus="this.style.borderColor = '#60a5fa'"
+            onblur="this.style.borderColor = 'rgba(255,255,255,.12)'"
+          />
+          <button
+            onclick="askRex()"
+            style="
+              background: #2563eb;
+              border: none;
+              color: #fff;
+              width: 42px;
+              height: 42px;
+              border-radius: 9px;
+              cursor: pointer;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              transition: background 0.18s;
+              flex-shrink: 0;
+            "
+            onmouseover="this.style.background = '#1d4ed8'"
+            onmouseout="this.style.background = '#2563eb'"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#fff"
+              stroke-width="2.5"
+              width="16"
+              height="16"
+            >
+              <line x1="22" y1="2" x2="11" y2="13" />
+              <polygon points="22 2 15 22 11 13 2 9 22 2" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DEMO -->
+    <section class="section-wrap" id="demo">
+      <div class="section-tag">Interactive demo</div>
+      <h2 class="section-title">Try it right now</h2>
+      <p class="section-sub">
+        No sign up needed. Paste any text and generate your first quiz
+        instantly.
+      </p>
+
+      <div class="card" id="quiz-app">
+        <div class="mode-tabs">
+          <button
+            class="mode-tab active"
+            id="tab-multi"
+            onclick="setMode('multiple')"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 8v4l3 3" />
+            </svg>
+            Multiple choice
+          </button>
+          <button
+            class="mode-tab"
+            id="tab-flash"
+            onclick="setMode('flashcard')"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="2" y="5" width="20" height="14" rx="2" />
+              <line x1="2" y1="10" x2="22" y2="10" />
+            </svg>
+            Flashcards
+          </button>
+          <button
+            class="mode-tab"
+            id="tab-truefalse"
+            onclick="setMode('truefalse')"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+            True / False
+          </button>
+        </div>
+
+        <div class="input-area">
+          <label class="input-label" for="text-input"
+            >Paste your text or notes</label
+          >
+          <textarea
+            id="text-input"
+            placeholder="Write or paste your study content here...&#10;&#10;Example: 'Photosynthesis is the process by which plants use sunlight to convert CO₂ and water into glucose...'"
+          ></textarea>
+          <div class="upload-row">
+            <label class="upload-btn" for="file-input">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                width="14"
+                height="14"
+              >
+                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                <polyline points="17 8 12 3 7 8" />
+                <line x1="12" y1="3" x2="12" y2="15" />
+              </svg>
+              Upload PDF or .txt
+            </label>
+            <input
+              type="file"
+              id="file-input"
+              accept=".txt,.pdf"
+              onchange="handleFile(this)"
+            />
+            <span class="file-name" id="file-name">No file selected</span>
+          </div>
+        </div>
+
+        <div class="options-row">
+          <div class="option-group">
+            <span class="option-label">Questions:</span>
+            <select id="num-questions">
+              <option value="5">5</option>
+              <option value="10" selected>10</option>
+              <option value="15">15</option>
+              <option value="20">20</option>
+            </select>
+          </div>
+          <div class="option-group">
+            <span class="option-label">Difficulty:</span>
+            <select id="difficulty">
+              <option value="basic">Basic</option>
+              <option value="medium" selected>Medium</option>
+              <option value="advanced">Advanced</option>
+            </select>
+          </div>
+          <div class="option-group">
+            <span class="option-label">Language:</span>
+            <select id="language">
+              <option value="English" selected>English</option>
+              <option value="Spanish">Spanish</option>
+            </select>
+          </div>
+          <div class="spacer"></div>
+          <button
+            class="btn-generate"
+            id="generate-btn"
+            onclick="generateQuiz()"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              width="15"
+              height="15"
+            >
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+            </svg>
+            Generate quiz
+          </button>
+        </div>
+
+        <div id="loading">
+          <div class="spinner"></div>
+          <span class="loading-text">Generating your quiz with AI...</span>
+          <span class="loading-sub">This may take a few seconds</span>
+        </div>
+
+        <div id="quiz-zone">
+          <div class="quiz-header">
+            <span class="quiz-progress-text"
+              >Question <strong id="current-q">0</strong> of
+              <strong id="total-q">0</strong></span
+            >
+            <div class="progress-bar-wrap">
+              <div class="progress-bar-fill" id="progress-fill"></div>
+            </div>
+            <button class="btn-reset" onclick="resetQuiz()">Restart</button>
+          </div>
+          <div class="questions-list" id="questions-list"></div>
+        </div>
+
+        <div id="results-zone">
+          <div class="score-circle">
+            <span class="score-number" id="score-num">0</span>
+            <span class="score-label">points</span>
+          </div>
+          <h2 class="result-title" id="result-title">Great job!</h2>
+          <p class="result-sub" id="result-sub">You completed the quiz.</p>
+          <div class="stats-row">
+            <div class="stat-pill">
+              Correct: <strong id="stat-correct">0</strong>
+            </div>
+            <div class="stat-pill">
+              Wrong: <strong id="stat-wrong">0</strong>
+            </div>
+            <div class="stat-pill">
+              Accuracy: <strong id="stat-pct">0%</strong>
+            </div>
+          </div>
+          <div class="result-actions">
+            <button class="btn-outline" onclick="resetQuiz()">Try again</button>
+            <button class="btn-outline" onclick="newText()">New text</button>
+            <button class="btn-primary" onclick="saveResult()">
+              Save result
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="section-wrap" id="features">
+      <div class="section-tag">Features</div>
+      <h2 class="section-title">Everything you need to study</h2>
+      <p class="section-sub">
+        Built for students who want to get the most out of AI-powered learning.
+      </p>
+      <div class="features-grid">
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+            </svg>
+          </div>
+          <p class="feature-title">Generative AI</p>
+          <p class="feature-desc">
+            Claude analyzes your text and automatically generates relevant and
+            varied questions.
+          </p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+            </svg>
+          </div>
+          <p class="feature-title">Upload PDFs</p>
+          <p class="feature-desc">
+            Load your notes or documents and generate the quiz instantly without
+            copying anything.
+          </p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+            </svg>
+          </div>
+          <p class="feature-title">History & progress</p>
+          <p class="feature-desc">
+            Your results are saved in Supabase so you can track your improvement
+            over time.
+          </p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="2" y="5" width="20" height="14" rx="2" />
+              <line x1="2" y1="10" x2="22" y2="10" />
+            </svg>
+          </div>
+          <p class="feature-title">Flashcards</p>
+          <p class="feature-desc">
+            Animated flip cards to study key terms and definitions dynamically.
+          </p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+          </div>
+          <p class="feature-title">Multiple modes</p>
+          <p class="feature-desc">
+            Multiple choice, True/False and Flashcards — study the way you
+            prefer.
+          </p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+          </div>
+          <p class="feature-title">100% secure</p>
+          <p class="feature-desc">
+            Secure authentication with Supabase. Your data is never shared with
+            third parties.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section class="section-wrap">
+      <div class="section-tag">Testimonials</div>
+      <h2 class="section-title">What students are saying</h2>
+      <p class="section-sub">
+        Hundreds of students already study smarter with QuizForge.
+      </p>
+      <div class="testimonios-grid">
+        <div class="testimonio-card reveal">
+          <div class="stars">★★★★★</div>
+          <p class="testimonio-text">
+            "I generated 20 questions from my biology notes in 10 seconds.
+            Incredible for reviewing before an exam."
+          </p>
+          <div class="testimonio-author">
+            <div class="avatar">AM</div>
+            <div>
+              <p class="author-name">Ana M.</p>
+              <p class="author-role">Medical student</p>
+            </div>
+          </div>
+        </div>
+        <div class="testimonio-card reveal">
+          <div class="stars">★★★★★</div>
+          <p class="testimonio-text">
+            "The flashcards helped me memorize English vocabulary much faster
+            than any traditional method I'd tried."
+          </p>
+          <div class="testimonio-author">
+            <div class="avatar">JR</div>
+            <div>
+              <p class="author-name">Jorge R.</p>
+              <p class="author-role">University student</p>
+            </div>
+          </div>
+        </div>
+        <div class="testimonio-card reveal">
+          <div class="stars">★★★★★</div>
+          <p class="testimonio-text">
+            "I uploaded my history PDF and in seconds I had a complete quiz.
+            Studying has never been this easy or effective."
+          </p>
+          <div class="testimonio-author">
+            <div class="avatar">LP</div>
+            <div>
+              <p class="author-name">Lucía P.</p>
+              <p class="author-role">High school</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section-wrap">
+      <div class="section-tag">FAQ</div>
+      <h2 class="section-title">Frequently asked questions</h2>
+      <p class="section-sub">
+        Everything you need to know before getting started.
+      </p>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            Is it free?
+            <svg
+              class="faq-arrow"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+          <div class="faq-a">
+            Yes, QuizForge is completely free for students. You just need to
+            create an account with your email address.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            What file types can I upload?
+            <svg
+              class="faq-arrow"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+          <div class="faq-a">
+            We currently support PDF and TXT files. Word (.docx) and more
+            formats coming soon.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            Is my data safe?
+            <svg
+              class="faq-arrow"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+          <div class="faq-a">
+            Yes. We use Supabase with secure authentication and Row Level
+            Security. Your information is never shared with third parties.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            How many questions can I generate?
+            <svg
+              class="faq-arrow"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+          <div class="faq-a">
+            You can generate between 5 and 20 questions per quiz. There's no
+            limit on how many quizzes you can create per day.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            What languages does it support?
+            <svg
+              class="faq-arrow"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+          <div class="faq-a">
+            QuizForge generates questions in English and Spanish. You can choose
+            the language before generating each quiz.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA FINAL -->
+    <div class="cta-final">
+      <h2>Ready to study smarter?</h2>
+      <p>
+        Join hundreds of students already using QuizForge to study better with
+        less effort.
+      </p>
+      <div class="hero-ctas">
+        <a href="pages/register.html" class="btn-hero-primary">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            width="17"
+            height="17"
+          >
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+          </svg>
+          Get started free
+        </a>
+        <a href="pages/login.html" class="btn-hero-ghost"
+          >I already have an account</a
+        >
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-top">
+        <div>
+          <a href="#" class="logo">
+            <div class="logo-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#fff"
+                stroke-width="2.5"
+              >
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+              </svg>
+            </div>
+            QuizForge
+          </a>
+          <p class="footer-desc">
+            Generate intelligent quizzes from any text with the power of AI.
+          </p>
+        </div>
+        <div>
+          <p class="footer-group-title">Product</p>
+          <a href="#features" class="footer-link">Features</a>
+          <a href="#demo" class="footer-link">Demo</a>
+          <a href="pages/register.html" class="footer-link">Sign up</a>
+          <a href="pages/diamonds.html" class="footer-link">💎 Diamonds</a>
+        </div>
+        <div>
+          <p class="footer-group-title">Account</p>
+          <a href="pages/login.html" class="footer-link">Sign in</a>
+          <a href="pages/dashboard.html" class="footer-link">My history</a>
+          <a href="pages/profile.html" class="footer-link">My profile</a>
+          <a href="pages/recuperacion.html" class="footer-link"
+            >Recover password</a
+          >
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy"
+          >© 2026 QuizForge — Beyond Tomorrow Summit</span
+        >
+        <span class="footer-powered">Powered by Groq + Supabase</span>
+      </div>
+    </footer>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <!-- API KEY -->
+    <script>
+      window.__GROQ_KEY__ = "YOUR_GROQ_API_KEY_HERE";
+    </script>
+
+    <!-- SCRIPTS -->
+    <script src="js/supabase.js" type="module"></script>
+    <script src="js/api.js"></script>
+    <script src="js/quiz.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/diamonds.js"></script>
+    <script src="js/mascot.js"></script>
+
+    <script>
+      /* ── Navbar scroll ── */
+      window.addEventListener("scroll", () => {
+        document
+          .getElementById("navbar")
+          .classList.toggle("scrolled", window.scrollY > 20);
+      });
+
+      /* ── Reveal on scroll ── */
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e, i) => {
+            if (e.isIntersecting) {
+              setTimeout(() => e.target.classList.add("visible"), i * 80);
+              observer.unobserve(e.target);
+            }
+          });
+        },
+        { threshold: 0.1 },
+      );
+      document
+        .querySelectorAll(".reveal")
+        .forEach((el) => observer.observe(el));
+
+      /* ── Animated counters ── */
+      const counterObs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const el = entry.target;
+              const target = parseInt(el.dataset.target, 10);
+              let n = 0;
+              const step = Math.ceil(target / 60);
+              const iv = setInterval(() => {
+                n = Math.min(n + step, target);
+                el.textContent = n.toLocaleString() + "+";
+                if (n >= target) clearInterval(iv);
+              }, 20);
+              counterObs.unobserve(el);
+            }
+          });
+        },
+        { threshold: 0.5 },
+      );
+      document
+        .querySelectorAll(".stat-hero-num[data-target]")
+        .forEach((el) => counterObs.observe(el));
+
+      /* ── FAQ ── */
+      function toggleFaq(btn) {
+        const ans = btn.nextElementSibling;
+        const isOpen = btn.classList.contains("open");
+        document.querySelectorAll(".faq-q.open").forEach((q) => {
+          q.classList.remove("open");
+          q.nextElementSibling.classList.remove("open");
+        });
+        if (!isOpen) {
+          btn.classList.add("open");
+          ans.classList.add("open");
+        }
+      }
+
+      /* ── Scroll helpers ── */
+      function scrollToQuiz() {
+        document
+          .getElementById("quiz-app")
+          .scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+      function scrollToDemo() {
+        document.getElementById("demo").scrollIntoView({ behavior: "smooth" });
+      }
+
+      /* ── Lang toggle ── */
+      function toggleLang() {
+        const btn = document.getElementById("lang-toggle");
+        const curr = localStorage.getItem("qf_lang") || "en";
+        const next = curr === "en" ? "es" : "en";
+        localStorage.setItem("qf_lang", next);
+        btn.textContent = next === "en" ? "🇺🇸 EN" : "🇵🇪 ES";
+      }
+
+      /* ── Update diamond balance in nav ── */
+      function updateNavDiamonds() {
+        if (typeof Diamonds === "undefined") return;
+        const data = Diamonds.getData();
+        const el = document.getElementById("nav-diamonds");
+        if (el && data) el.textContent = "💎 " + data.balance.toLocaleString();
+      }
+      setTimeout(updateNavDiamonds, 600);
+
+      /* ── Discover section countdown ── */
+      (function () {
+        const end = new Date();
+        end.setDate(end.getDate() + 5);
+        end.setHours(0, 0, 0, 0);
+        function tick() {
+          const diff = end - Date.now();
+          if (diff <= 0) return;
+          const d = Math.floor(diff / 86400000);
+          const h = Math.floor((diff % 86400000) / 3600000);
+          const m = Math.floor((diff % 3600000) / 60000);
+          const s = Math.floor((diff % 60000) / 1000);
+          const el = document.getElementById("idx-countdown");
+          if (el)
+            el.innerHTML = `
+          <div class="cd-u"><div class="cd-n">${String(d).padStart(2, "0")}</div><div class="cd-l">Days</div></div>
+          <div class="cd-u"><div class="cd-n">${String(h).padStart(2, "0")}</div><div class="cd-l">Hrs</div></div>
+          <div class="cd-u"><div class="cd-n">${String(m).padStart(2, "0")}</div><div class="cd-l">Min</div></div>
+          <div class="cd-u"><div class="cd-n">${String(s).padStart(2, "0")}</div><div class="cd-l">Sec</div></div>`;
+        }
+        tick();
+        setInterval(tick, 1000);
+
+        /* Daily challenge topic */
+        const topics = [
+          "General Knowledge",
+          "Science & Nature",
+          "World History",
+          "Mathematics",
+          "Technology",
+          "Geography",
+          "Literature",
+          "Pop Culture",
+        ];
+        const el = document.getElementById("idx-challenge-topic");
+        if (el) el.textContent = "Today: " + topics[new Date().getDay()];
+      })();
+
+      /* ── Rex AI Tutor ── */
+      const rexMessages = [
+        {
+          role: "system",
+          content:
+            "You are Rex, a friendly and sharp AI tutor for students. Give clear, concise answers. Use emojis occasionally. Keep responses under 3 sentences unless more detail is truly needed.",
+        },
+      ];
+
+      async function askRex() {
+        const input = document.getElementById("rex-input");
+        const text = input.value.trim();
+        if (!text) return;
+        input.value = "";
+        addRexMsg(text, "user");
+        rexMessages.push({ role: "user", content: text });
+
+        const typingId = addRexTyping();
+        try {
+          const res = await fetch(
+            "https://api.groq.com/openai/v1/chat/completions",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${window.__GROQ_KEY__ || ""}`,
+              },
+              body: JSON.stringify({
+                model: "llama-3.3-70b-versatile",
+                max_tokens: 250,
+                temperature: 0.7,
+                messages: rexMessages,
+              }),
+            },
+          );
+          const data = await res.json();
+          const reply =
+            data.choices?.[0]?.message?.content ||
+            "Sorry, I couldn't connect. Check your API key!";
+          rexMessages.push({ role: "assistant", content: reply });
+          document.getElementById(typingId)?.remove();
+          addRexMsg(reply, "bot");
+        } catch {
+          document.getElementById(typingId)?.remove();
+          addRexMsg(
+            "⚠️ Connection error. Make sure your Groq API key is configured!",
+            "bot",
+          );
+        }
+      }
+
+      function addRexMsg(text, type) {
+        const box = document.getElementById("rex-messages");
+        const el = document.createElement("div");
+        el.style.cssText =
+          `padding:.7rem 1rem;border-radius:12px;font-size:.875rem;line-height:1.6;max-width:84%;` +
+          (type === "user"
+            ? "background:#1d4ed8;color:#fff;align-self:flex-end;border:1px solid #2563eb;margin-left:auto;"
+            : "background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.85);align-self:flex-start;");
+        el.textContent = text;
+        box.appendChild(el);
+        box.scrollTop = box.scrollHeight;
+      }
+
+      function addRexTyping() {
+        const id = "rt-" + Date.now();
+        const box = document.getElementById("rex-messages");
+        const el = document.createElement("div");
+        el.id = id;
+        el.style.cssText =
+          "display:flex;gap:5px;align-items:center;padding:.6rem .9rem;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:12px;align-self:flex-start;";
+        el.innerHTML = [1, 2, 3]
+          .map(
+            (i) =>
+              `<div style="width:6px;height:6px;background:rgba(255,255,255,.4);border-radius:50%;animation:typing .8s ${(i - 1) * 0.2}s infinite ease-in-out;"></div>`,
+          )
+          .join("");
+        box.appendChild(el);
+        box.scrollTop = box.scrollHeight;
+        return id;
+      }
+
+      /* ── Guest mode banner ── */
+      (function initGuestMode() {
+        if (localStorage.getItem("qf_guest_mode") !== "true") return;
+
+        /* Prevent double execution */
+        if (window.__guestModeInit) return;
+        window.__guestModeInit = true;
+
+        /* Single nav chip */
+        const navLinks = document.querySelector(".nav-links");
+        if (navLinks && !document.getElementById("guest-chip")) {
+          const chip = document.createElement("a");
+          chip.id = "guest-chip";
+          chip.href = "pages/login.html";
+          chip.style.cssText =
+            "display:inline-flex;align-items:center;gap:5px;font-size:.78rem;font-weight:600;color:var(--accent);background:var(--accent-light);border:1.5px solid var(--border2);padding:.3rem .8rem;border-radius:999px;text-decoration:none;white-space:nowrap;flex-shrink:0;";
+          chip.textContent = "👤 Guest";
+          navLinks.prepend(chip);
+        }
+
+        /* Single banner */
+        if (!document.getElementById("guest-banner")) {
+          const banner = document.createElement("div");
+          banner.id = "guest-banner";
+          banner.style.cssText =
+            'background:linear-gradient(90deg,#1d4ed8,#2563eb);color:#fff;padding:.6rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;font-family:"Inter",Arial,sans-serif;font-size:.84rem;';
+          banner.innerHTML = `
+          <span style="display:flex;align-items:center;gap:8px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            You're in <strong style="margin:0 4px;">guest mode</strong> — results won't be saved
+          </span>
+          <span style="display:flex;align-items:center;gap:.6rem;">
+            <a href="pages/register.html" style="background:#fff;color:#1d4ed8;padding:.32rem .9rem;border-radius:7px;font-weight:700;font-size:.79rem;text-decoration:none;">Create free account</a>
+            <button onclick="exitGuestMode()" style="background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.3);color:#fff;padding:.32rem .85rem;border-radius:7px;font-size:.79rem;cursor:pointer;font-family:inherit;">Exit</button>
+          </span>`;
+          const nav = document.getElementById("navbar");
+          if (nav?.parentNode)
+            nav.parentNode.insertBefore(banner, nav.nextSibling);
+        }
+      })();
+
+      /* ── Weekly Streak Banner ── */
+      const SB_LEVELS = [
+        { min: 0, max: 50, level: 1, name: "Beginner", icon: "🌱" },
+        { min: 50, max: 150, level: 2, name: "Student", icon: "📚" },
+        { min: 150, max: 350, level: 3, name: "Dedicated", icon: "⭐" },
+        { min: 350, max: 700, level: 4, name: "Expert", icon: "🔥" },
+        { min: 700, max: 1200, level: 5, name: "Master", icon: "💎" },
+        { min: 1200, max: 99999, level: 6, name: "Legend", icon: "👑" },
+      ];
+      function sbGetLevel(xp) {
+        return (
+          SB_LEVELS.find((l) => xp >= l.min && xp < l.max) ||
+          SB_LEVELS[SB_LEVELS.length - 1]
+        );
+      }
+      function sbToday() {
+        return new Date().toISOString().split("T")[0];
+      }
+      function sbGetState() {
+        try {
+          const r = localStorage.getItem("qf_streak");
+          return r
+            ? JSON.parse(r)
+            : {
+                current: 0,
+                best: 0,
+                totalDays: 0,
+                lastDate: null,
+                freezes: 1,
+                xp: 0,
+              };
+        } catch {
+          return {
+            current: 0,
+            best: 0,
+            totalDays: 0,
+            lastDate: null,
+            freezes: 1,
+            xp: 0,
+          };
+        }
+      }
+      function sbSave(s) {
+        try {
+          localStorage.setItem("qf_streak", JSON.stringify(s));
+        } catch {}
+      }
+
+      function sbRender() {
+        const s = sbGetState();
+        const lvl = sbGetLevel(s.xp || 0);
+        const prev = lvl.min,
+          next = lvl.max === 99999 ? s.xp || 0 : lvl.max;
+        const pct = Math.min(
+          Math.round((((s.xp || 0) - prev) / (next - prev)) * 100),
+          100,
+        );
+        const today = sbToday();
+
+        document.getElementById("sb-streak-num").textContent = s.current || 0;
+        document.getElementById("sb-level-icon").textContent = lvl.icon;
+        document.getElementById("sb-level-name").textContent = lvl.name;
+        document.getElementById("sb-level-num").textContent = lvl.level;
+        document.getElementById("sb-xp-num").textContent = s.xp || 0;
+        document.getElementById("sb-freeze-num").textContent = s.freezes ?? 1;
+        document.getElementById("sb-best-num").textContent = s.best || 0;
+        document.getElementById("sb-total-num").textContent = s.totalDays || 0;
+        document.getElementById("sb-xp-from").textContent = prev + " XP";
+        document.getElementById("sb-xp-to").textContent =
+          lvl.max === 99999 ? "Max!" : lvl.max + " XP";
+        document.getElementById("sb-xp-pct").textContent = pct + "%";
+        setTimeout(() => {
+          const f = document.getElementById("sb-xp-fill");
+          if (f) f.style.width = pct + "%";
+        }, 300);
+
+        const btn = document.getElementById("sb-checkin-btn");
+        if (btn) {
+          if (s.lastDate === today) {
+            btn.className = "sb-checkin-btn claimed";
+            btn.innerHTML =
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg> Checked in!';
+          } else {
+            btn.className = "sb-checkin-btn";
+            btn.innerHTML =
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Check in today';
+          }
+        }
+
+        const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        const grid = document.getElementById("sb-days-grid");
+        if (!grid) return;
+        const days = [];
+        for (let i = 6; i >= 0; i--) {
+          const d = new Date();
+          d.setDate(d.getDate() - i);
+          const str = d.toISOString().split("T")[0];
+          let status =
+            str < today ? "missed" : str === today ? "today" : "future";
+          if (s.lastDate) {
+            const diff = Math.floor(
+              (new Date(s.lastDate) - new Date(str)) / 86400000,
+            );
+            if (diff >= 0 && diff <= 6) status = "done";
+          }
+          if (str === today && s.lastDate === today) status = "done";
+          days.push({ str, name: DAYS[d.getDay()], status });
+        }
+        grid.innerHTML = days
+          .map(
+            (day) => `
+        <div class="sb-day ${day.status}">
+          <span class="sb-day-label">${day.name}</span>
+          <div class="sb-day-circle">
+            ${day.status === "done" ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18"><polyline points="20 6 9 17 4 12"/></svg><div class="sb-dot"></div>' : ""}
+            ${day.status === "today" && s.lastDate !== today ? '<svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" width="16" height="16"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>' : ""}
+            ${day.status === "missed" ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><line x1="5" y1="12" x2="19" y2="12"/></svg>' : ""}
+          </div>
+        </div>`,
+          )
+          .join("");
+      }
+
+      function claimStreakBanner() {
+        const s = sbGetState();
+        const today = sbToday();
+        if (s.lastDate === today) return;
+
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yStr = yesterday.toISOString().split("T")[0];
+
+        if (s.lastDate === yStr) s.current = (s.current || 0) + 1;
+        else if ((s.freezes || 0) > 0 && s.lastDate && s.lastDate < yStr) {
+          s.freezes--;
+          s.current = (s.current || 0) + 1;
+        } else s.current = 1;
+
+        s.best = Math.max(s.best || 0, s.current);
+        s.lastDate = today;
+        s.totalDays = (s.totalDays || 0) + 1;
+        s.xp = (s.xp || 0) + 10 + s.current * 2;
+
+        sbSave(s);
+        sbRender();
+        const xpGained = 10 + s.current * 2;
+        showToast(
+          "🔥 Day " + s.current + " streak! +" + xpGained + " XP",
+          "success",
+        );
+        updateNavDiamonds();
+      }
+
+      /* Init on load */
+      setTimeout(sbRender, 400);
+
+      function exitGuestMode() {
+        localStorage.removeItem("qf_guest_mode");
+        localStorage.removeItem("qf_guest_name");
+        window.location.href = "pages/login.html";
+      }
+    </script>
+  </body>
+</html>
