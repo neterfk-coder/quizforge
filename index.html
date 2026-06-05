@@ -2830,8 +2830,120 @@
       <p class="section-sub">
         Built for students who want to get the most out of AI-powered learning.
       </p>
+
+      <style>
+        .feature-card {
+          background: var(--surface);
+          border: 1.5px solid var(--border);
+          border-radius: var(--radius);
+          padding: 1.75rem;
+          box-shadow: var(--shadow);
+          cursor: pointer;
+          position: relative;
+          overflow: hidden;
+          transition:
+            transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+            box-shadow 0.22s ease,
+            border-color 0.22s ease;
+          text-decoration: none;
+          display: block;
+          color: inherit;
+        }
+        .feature-card::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(135deg, var(--accent-light), transparent);
+          opacity: 0;
+          transition: opacity 0.25s ease;
+          border-radius: var(--radius);
+        }
+        .feature-card:hover {
+          transform: translateY(-6px) scale(1.02);
+          box-shadow: 0 12px 36px rgba(37, 99, 235, 0.18);
+          border-color: var(--accent-mid);
+        }
+        .feature-card:hover::before {
+          opacity: 1;
+        }
+        .feature-card:hover .feature-icon {
+          background: var(--accent);
+          transform: scale(1.1) rotate(-5deg);
+        }
+        .feature-card:hover .feature-icon svg {
+          stroke: #fff;
+        }
+        .feature-icon {
+          width: 46px;
+          height: 46px;
+          background: var(--accent-light);
+          border-radius: var(--radius-sm);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 1.1rem;
+          color: var(--accent);
+          transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+          position: relative;
+          z-index: 1;
+        }
+        .feature-icon svg {
+          width: 20px;
+          height: 20px;
+          transition: all 0.25s;
+        }
+        .feature-title {
+          font-weight: 700;
+          font-size: 1rem;
+          color: var(--text);
+          margin-bottom: 0.55rem;
+          position: relative;
+          z-index: 1;
+          transition: color 0.2s;
+        }
+        .feature-card:hover .feature-title {
+          color: var(--accent-dark);
+        }
+        .feature-desc {
+          font-size: 0.9rem;
+          color: var(--muted);
+          line-height: 1.75;
+          position: relative;
+          z-index: 1;
+        }
+        .feature-arrow {
+          position: absolute;
+          bottom: 1.25rem;
+          right: 1.25rem;
+          width: 28px;
+          height: 28px;
+          background: var(--accent-light);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          opacity: 0;
+          transform: translate(4px, 4px);
+          transition: all 0.25s ease;
+          color: var(--accent);
+        }
+        .feature-card:hover .feature-arrow {
+          opacity: 1;
+          transform: translate(0, 0);
+        }
+        .feature-arrow svg {
+          width: 13px;
+          height: 13px;
+        }
+      </style>
+
       <div class="features-grid">
-        <div class="feature-card reveal">
+        <!-- 1. Generative AI -->
+        <a
+          class="feature-card reveal"
+          onclick="scrollToQuiz()"
+          href="javascript:void(0)"
+        >
           <div class="feature-icon">
             <svg
               viewBox="0 0 24 24"
@@ -2844,11 +2956,23 @@
           </div>
           <p class="feature-title">Generative AI</p>
           <p class="feature-desc">
-            Claude analyzes your text and automatically generates relevant and
-            varied questions.
+            Groq + LLaMA 3.3 70B analyzes your text and generates relevant,
+            varied questions instantly.
           </p>
-        </div>
-        <div class="feature-card reveal">
+          <div class="feature-arrow">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </div>
+        </a>
+
+        <!-- 2. Upload PDFs -->
+        <a class="feature-card reveal" href="pages/pdf-study.html">
           <div class="feature-icon">
             <svg
               viewBox="0 0 24 24"
@@ -2862,11 +2986,23 @@
           </div>
           <p class="feature-title">Upload PDFs</p>
           <p class="feature-desc">
-            Load your notes or documents and generate the quiz instantly without
-            copying anything.
+            Upload any PDF and get an AI-powered summary, flashcards and exam
+            questions in seconds.
           </p>
-        </div>
-        <div class="feature-card reveal">
+          <div class="feature-arrow">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </div>
+        </a>
+
+        <!-- 3. History & progress -->
+        <a class="feature-card reveal" href="pages/dashboard.html">
           <div class="feature-icon">
             <svg
               viewBox="0 0 24 24"
@@ -2879,11 +3015,30 @@
           </div>
           <p class="feature-title">History & progress</p>
           <p class="feature-desc">
-            Your results are saved in Supabase so you can track your improvement
-            over time.
+            All your results are saved. Track your improvement, accuracy and
+            best scores over time.
           </p>
-        </div>
-        <div class="feature-card reveal">
+          <div class="feature-arrow">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </div>
+        </a>
+
+        <!-- 4. Flashcards -->
+        <a
+          class="feature-card reveal"
+          href="javascript:void(0)"
+          onclick="
+            setMode('flashcard');
+            scrollToQuiz();
+          "
+        >
           <div class="feature-icon">
             <svg
               viewBox="0 0 24 24"
@@ -2897,10 +3052,151 @@
           </div>
           <p class="feature-title">Flashcards</p>
           <p class="feature-desc">
-            Animated flip cards to study key terms and definitions dynamically.
+            Interactive flip cards with Got it / Still learning tracking. Study
+            smarter, not harder.
           </p>
-        </div>
-        <div class="feature-card reveal">
+          <div class="feature-arrow">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </div>
+        </a>
+
+        <!-- 5. Daily Challenge -->
+        <a class="feature-card reveal" href="pages/challenge.html">
+          <div class="feature-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+            </svg>
+          </div>
+          <p class="feature-title">Daily Challenge</p>
+          <p class="feature-desc">
+            Calculus I & II questions every day. Beat the clock and earn 💎
+            diamonds and XP.
+          </p>
+          <div class="feature-arrow">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </div>
+        </a>
+
+        <!-- 6. Multiplayer -->
+        <a class="feature-card reveal" href="pages/multiplayer.html">
+          <div class="feature-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 00-3-3.87" />
+              <path d="M16 3.13a4 4 0 010 7.75" />
+            </svg>
+          </div>
+          <p class="feature-title">Multiplayer 1v1</p>
+          <p class="feature-desc">
+            Challenge an AI bot in real-time knowledge battles. Win diamonds and
+            climb the ranks.
+          </p>
+          <div class="feature-arrow">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </div>
+        </a>
+
+        <!-- 7. Streak System -->
+        <a class="feature-card reveal" href="pages/streak.html">
+          <div class="feature-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+            </svg>
+          </div>
+          <p class="feature-title">Streak & XP System</p>
+          <p class="feature-desc">
+            Study every day to build your streak. Earn XP, level up and unlock
+            achievements.
+          </p>
+          <div class="feature-arrow">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </div>
+        </a>
+
+        <!-- 8. Diamond Store -->
+        <a class="feature-card reveal" href="pages/store.html">
+          <div class="feature-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polygon
+                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+              />
+            </svg>
+          </div>
+          <p class="feature-title">Diamond Store</p>
+          <p class="feature-desc">
+            Spend your earned diamonds on themes, boosts, mascot skins and
+            exclusive badges.
+          </p>
+          <div class="feature-arrow">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </div>
+        </a>
+
+        <!-- 9. Rex AI Tutor -->
+        <a
+          class="feature-card reveal"
+          href="javascript:void(0)"
+          onclick="
+            document.getElementById('rex-modal').classList.add('open');
+            document.getElementById('rex-input').focus();
+          "
+        >
           <div class="feature-icon">
             <svg
               viewBox="0 0 24 24"
@@ -2909,16 +3205,29 @@
               stroke-width="2"
             >
               <circle cx="12" cy="12" r="10" />
-              <polyline points="12 6 12 12 16 14" />
+              <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
             </svg>
           </div>
-          <p class="feature-title">Multiple modes</p>
+          <p class="feature-title">Rex AI Tutor</p>
           <p class="feature-desc">
-            Multiple choice, True/False and Flashcards — study the way you
-            prefer.
+            Ask anything to Rex — your ultra-fast AI tutor powered by Groq.
+            Math, science, history and more.
           </p>
-        </div>
-        <div class="feature-card reveal">
+          <div class="feature-arrow">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </div>
+        </a>
+
+        <!-- 10. 100% Secure -->
+        <a class="feature-card reveal" href="pages/register.html">
           <div class="feature-icon">
             <svg
               viewBox="0 0 24 24"
@@ -2929,12 +3238,22 @@
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
             </svg>
           </div>
-          <p class="feature-title">100% secure</p>
+          <p class="feature-title">100% Secure</p>
           <p class="feature-desc">
-            Secure authentication with Supabase. Your data is never shared with
-            third parties.
+            Powered by Supabase with secure auth and Row Level Security. Your
+            data is always private.
           </p>
-        </div>
+          <div class="feature-arrow">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </div>
+        </a>
       </div>
     </section>
 
