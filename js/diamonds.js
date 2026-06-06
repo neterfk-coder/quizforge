@@ -4,9 +4,9 @@
 ═══════════════════════════════════════ */
 
 const Diamonds = {
-  WELCOME_BONUS: 3000,
+  WELCOME_BONUS: 1999,
   DAILY_BONUS: 1000,
-  QUIZ_BONUS: 50,
+  QUIZ_BONUS: 300,
   PERFECT_BONUS: 200,
   STREAK_BONUS: 150,
 

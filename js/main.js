@@ -350,7 +350,7 @@ async function saveResult() {
 function awardQuizDiamonds(pct) {
   if (typeof Diamonds === "undefined") return;
   let total = Diamonds.QUIZ_BONUS;
-  let msg = `+${total} 💎 Quiz completed!`;
+  let msg = `+${total} 💎 Lesson completed!`;
 
   if (pct === 100) {
     total += Diamonds.PERFECT_BONUS;

@@ -271,6 +271,7 @@
     </div>
 
     <script src="../js/supabase.js" type="module"></script>
+    <script src="../js/diamonds.js"></script>
     <script>
       /* ════════════════════════
        INICIO DE SESIÓN NORMAL
@@ -316,6 +317,11 @@
         /* Save state JUST before navigation */
         localStorage.setItem("qf_guest_mode", "true");
         localStorage.setItem("qf_guest_name", "Guest");
+
+        /* Init guest diamonds with welcome bonus */
+        if (typeof Diamonds !== "undefined") {
+          Diamonds.initNewUser();
+        }
 
         /* Small delay so the spinner is visible, then navigate */
         setTimeout(() => {
