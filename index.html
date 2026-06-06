@@ -192,6 +192,165 @@
         background: var(--accent-light);
       }
 
+      /* ════════ NAVBAR IMPROVEMENTS ════════ */
+      .nav-sep {
+        width: 1px;
+        height: 20px;
+        background: var(--border);
+        margin: 0 0.25rem;
+        flex-shrink: 0;
+      }
+      .nav-hide-sm {
+        display: none;
+      }
+      .nav-hide-md {
+        display: none;
+      }
+
+      @media (min-width: 860px) {
+        .nav-hide-sm {
+          display: inline-block;
+        }
+      }
+      @media (min-width: 1060px) {
+        .nav-hide-md {
+          display: inline-block;
+        }
+      }
+
+      /* Icon buttons */
+      .nav-icon-btn {
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1px;
+        background: none;
+        border: 1.5px solid var(--border2);
+        border-radius: var(--radius-sm);
+        padding: 0.3rem 0.6rem;
+        text-decoration: none;
+        transition: all 0.18s;
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+      .nav-icon-btn:hover {
+        border-color: var(--accent);
+        background: var(--accent-light);
+        transform: translateY(-1px);
+      }
+      .nav-icon-label {
+        font-size: 0.58rem;
+        font-weight: 600;
+        color: var(--muted);
+        letter-spacing: 0.03em;
+      }
+      .nav-icon-btn:hover .nav-icon-label {
+        color: var(--accent);
+      }
+
+      /* Diamond badge */
+      .nav-diamond {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: #ecfeff;
+        border: 1.5px solid #a5f3fc;
+        color: #0891b2;
+        padding: 0.35rem 0.75rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.82rem;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.18s;
+        flex-shrink: 0;
+      }
+      .nav-diamond:hover {
+        background: #cffafe;
+        transform: translateY(-1px);
+      }
+
+      /* More dropdown */
+      .nav-more-wrap {
+        position: relative;
+        flex-shrink: 0;
+      }
+      .nav-more-btn {
+        font-size: 0.82rem !important;
+        padding: 0.38rem 0.75rem !important;
+        white-space: nowrap;
+      }
+      .nav-more-menu {
+        display: none;
+        position: absolute;
+        top: calc(100% + 8px);
+        right: 0;
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        box-shadow: var(--shadow-md);
+        min-width: 200px;
+        z-index: 200;
+        overflow: hidden;
+        animation: menuIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      @keyframes menuIn {
+        from {
+          opacity: 0;
+          transform: translateY(-6px) scale(0.97);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .nav-more-menu.open {
+        display: block;
+      }
+      .nav-more-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0.65rem 1rem;
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: var(--text);
+        text-decoration: none;
+        transition: background 0.15s;
+        white-space: nowrap;
+      }
+      .nav-more-item:hover {
+        background: var(--surface2);
+        color: var(--accent);
+      }
+      .nav-more-divider {
+        height: 1px;
+        background: var(--border);
+        margin: 0.25rem 0;
+      }
+
+      /* Lang button */
+      .btn-lang {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: var(--surface);
+        border: 1.5px solid var(--border2);
+        color: var(--muted);
+        padding: 0.35rem 0.7rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.78rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.18s;
+        flex-shrink: 0;
+      }
+      .btn-lang:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: var(--accent-light);
+      }
+
       /* ════════ HERO ════════ */
       .hero {
         text-align: center;
@@ -1935,20 +2094,67 @@
         QuizForge
       </a>
       <div class="nav-links">
-        <a href="#features" class="btn-ghost">Features</a>
-        <a href="pages/features.html" class="btn-ghost">🎮 Discover</a>
-        <a href="pages/dashboard.html" class="btn-ghost">My history</a>
-        <a href="pages/streak.html" class="btn-ghost">🔥 Streak</a>
-        <a href="pages/diamonds.html" class="nav-diamond" id="nav-diamonds"
-          >💎 0</a
+        <!-- Main nav links -->
+        <a href="#features" class="btn-ghost nav-hide-sm">Features</a>
+        <a href="pages/features.html" class="btn-ghost nav-hide-sm">Discover</a>
+        <a href="pages/dashboard.html" class="btn-ghost nav-hide-md">History</a>
+
+        <!-- Divider -->
+        <div class="nav-sep"></div>
+
+        <!-- Quick access -->
+        <a href="pages/streak.html" class="nav-icon-btn" title="My Streak">
+          🔥
+          <span class="nav-icon-label">Streak</span>
+        </a>
+        <a
+          href="pages/diamonds.html"
+          class="nav-diamond"
+          id="nav-diamonds"
+          title="Diamonds"
+          >💎 <span id="nav-diamond-num">0</span></a
         >
-        <a href="pages/store.html" class="btn-ghost">🏪 Store</a>
-        <a href="pages/pdf-study.html" class="btn-ghost">📄 PDF</a>
-        <a href="pages/profile.html" class="btn-ghost">My profile</a>
-        <a href="pages/settings.html" class="btn-ghost">⚙️</a>
+        <a href="pages/store.html" class="nav-icon-btn" title="Store">
+          🏪
+          <span class="nav-icon-label">Store</span>
+        </a>
+
+        <!-- More dropdown -->
+        <div class="nav-more-wrap" id="nav-more-wrap">
+          <button
+            class="btn-ghost nav-more-btn"
+            onclick="toggleMoreMenu()"
+            title="More"
+          >
+            More ▾
+          </button>
+          <div class="nav-more-menu" id="nav-more-menu">
+            <a href="pages/classroom.html" class="nav-more-item"
+              >🏫 Classroom</a
+            >
+            <a href="pages/pdf-study.html" class="nav-more-item"
+              >📄 PDF Study</a
+            >
+            <a href="pages/challenge.html" class="nav-more-item"
+              >⚡ Daily Challenge</a
+            >
+            <a href="pages/multiplayer.html" class="nav-more-item"
+              >🎮 Multiplayer</a
+            >
+            <div class="nav-more-divider"></div>
+            <a href="pages/profile.html" class="nav-more-item">👤 My profile</a>
+            <a href="pages/settings.html" class="nav-more-item">⚙️ Settings</a>
+          </div>
+        </div>
+
+        <!-- Notifications (injected by notifications.js) -->
+
+        <!-- Lang toggle -->
         <button id="lang-toggle" class="btn-lang" onclick="toggleLang()">
           🇺🇸 EN
         </button>
+
+        <!-- Sign in -->
         <a href="pages/login.html" class="btn-primary">Sign in</a>
       </div>
     </nav>
@@ -2230,6 +2436,36 @@
             </div>
           </div>
           <div class="dev-multi-coming">Coming soon →</div>
+        </div>
+
+        <!-- CLASSROOM MODE -->
+        <div
+          class="dev-classroom-card reveal"
+          onclick="window.location.href = 'pages/classroom.html'"
+        >
+          <div class="dev-multi-icon">🏫</div>
+          <div class="dev-multi-badge">New</div>
+          <h3 class="dev-multi-title">Classroom Mode</h3>
+          <p class="dev-multi-desc">
+            Teachers create classes & assign quizzes. Students join with a code
+            and track their progress.
+          </p>
+          <div class="dev-multi-stats">
+            <div>
+              <span class="dev-multi-num">👩‍🏫</span
+              ><span class="dev-multi-label"> For teachers</span>
+            </div>
+            <div>
+              <span class="dev-multi-num">🎒</span
+              ><span class="dev-multi-label"> For students</span>
+            </div>
+          </div>
+          <div
+            class="dev-multi-coming"
+            style="color: rgba(255, 255, 255, 0.9); font-weight: 700"
+          >
+            Join a class →
+          </div>
         </div>
 
         <!-- DAILY CHALLENGE -->
@@ -3720,6 +3956,7 @@
           <a href="pages/pdf-study.html" class="footer-link"
             >📄 PDF Assistant</a
           >
+          <a href="pages/classroom.html" class="footer-link">🏫 Classroom</a>
           <a href="pages/register.html" class="footer-link">Sign up</a>
           <a href="pages/diamonds.html" class="footer-link">💎 Diamonds</a>
         </div>
@@ -3746,7 +3983,8 @@
 
     <!-- API KEY -->
     <script>
-      window.__GROQ_KEY__ = "YOUR_GROQ_API_KEY_HERE";
+      window.__GROQ_KEY__ =
+        "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";
     </script>
 
     <!-- SCRIPTS -->
@@ -3756,6 +3994,7 @@
     <script src="js/ui.js"></script>
     <script src="js/main.js"></script>
     <script src="js/diamonds.js"></script>
+    <script src="js/notifications.js"></script>
     <script src="js/mascot.js"></script>
 
     <script>
@@ -3845,6 +4084,8 @@
         const data = Diamonds.getData();
         const el = document.getElementById("nav-diamonds");
         if (el && data) el.textContent = "💎 " + data.balance.toLocaleString();
+        const numEl = document.getElementById("nav-diamond-num");
+        if (numEl) numEl.textContent = data.balance.toLocaleString();
       }
       setTimeout(updateNavDiamonds, 600);
 
@@ -4256,6 +4497,20 @@
         }
         input.value = "";
       }
+
+      /* ── More menu toggle ── */
+      function toggleMoreMenu() {
+        const menu = document.getElementById("nav-more-menu");
+        if (!menu) return;
+        menu.classList.toggle("open");
+      }
+      /* Close more menu on outside click */
+      document.addEventListener("click", (e) => {
+        const wrap = document.getElementById("nav-more-wrap");
+        if (wrap && !wrap.contains(e.target)) {
+          document.getElementById("nav-more-menu")?.classList.remove("open");
+        }
+      });
 
       function exitGuestMode() {
         localStorage.removeItem("qf_guest_mode");
