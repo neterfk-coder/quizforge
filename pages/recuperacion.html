@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Recuperar contraseña — QuizForge</title>
+    <title>Reset password — QuizForge</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap"
@@ -24,37 +24,37 @@
       </a>
 
       <div class="auth-card">
-        <!-- Vista: pedir correo -->
+        <!-- View: request email -->
         <div id="step-email">
-          <h1 class="auth-title">Recuperar contraseña</h1>
+          <h1 class="auth-title">Reset password</h1>
           <p class="auth-sub">
-            Te enviaremos un enlace para restablecer tu contraseña.
+            We will send you a link to reset your password.
           </p>
 
           <div id="auth-error" class="auth-alert" style="display: none"></div>
 
           <div class="form-group">
-            <label class="form-label" for="email">Correo electrónico</label>
+            <label class="form-label" for="email">Email address</label>
             <input
               type="email"
               id="email"
               class="form-input"
-              placeholder="tucorreo@ejemplo.com"
+              placeholder="youremail@example.com"
             />
           </div>
 
           <button class="btn-auth" id="send-btn" onclick="handleReset()">
-            Enviar enlace
+            Send link
           </button>
 
           <p class="auth-footer-text">
             <a href="login.html" class="form-link"
-              >← Volver al inicio de sesión</a
+              >← Back to login</a
             >
           </p>
         </div>
 
-        <!-- Vista: confirmación enviada -->
+        <!-- View: confirmation sent -->
         <div
           id="step-sent"
           style="display: none; text-align: center; padding: 1rem 0"
@@ -71,10 +71,10 @@
               <polyline points="20 6 9 17 4 12" />
             </svg>
           </div>
-          <h2 class="auth-title" style="margin-top: 1rem">Revisa tu correo</h2>
+          <h2 class="auth-title" style="margin-top: 1rem">Check your email</h2>
           <p class="auth-sub">
-            Si el correo existe en nuestro sistema, recibirás un enlace en los
-            próximos minutos.
+            If the email exists in our system, you will receive a link within
+            minutes.
           </p>
           <a
             href="login.html"
@@ -86,7 +86,7 @@
               text-align: center;
             "
           >
-            Volver al inicio de sesión
+            Back to login
           </a>
         </div>
       </div>
@@ -99,21 +99,21 @@
         const btn = document.getElementById("send-btn");
 
         if (!email) {
-          showError("Ingresa tu correo electrónico.");
+          showError("Enter your email address.");
           return;
         }
 
         btn.disabled = true;
-        btn.textContent = "Enviando...";
+        btn.textContent = "Sending...";
 
         try {
           await window.resetPassword(email);
           document.getElementById("step-email").style.display = "none";
           document.getElementById("step-sent").style.display = "block";
         } catch {
-          showError("No se pudo enviar el correo. Intenta de nuevo.");
+          showError("Could not send the email. Try again.");
           btn.disabled = false;
-          btn.textContent = "Enviar enlace";
+          btn.textContent = "Send link";
         }
       }
 

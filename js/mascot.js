@@ -20,6 +20,14 @@ const Mascot = {
       "Take a deep breath and focus. You've got this! 🧘",
       "The best time to study was yesterday. The second best is NOW! ⚡",
       "Small progress every day leads to big results! 📈",
+      "Keep the momentum going — you're doing great! 💨",
+      "A strong mind is built one question at a time. 💡",
+      "Study smart, not just hard. You got this! 🧠",
+      "Every small win counts. Keep the streak alive! 🏅",
+      "Need a break? A quick walk refreshes your focus. 🚶‍♂️",
+      "Think of each quiz as a brain workout session. 🏋️‍♀️",
+      "You're closer to your goal than you were yesterday. 🌟",
+      "Focus for a minute, then reward yourself with a smile. 😊",
     ],
     correct: [
       "CORRECT!! 🎉 I knew you could do it!",
@@ -28,6 +36,10 @@ const Mascot = {
       "INCREDIBLE! That's exactly right! ⭐⭐⭐",
       "Nailed it! You're on fire! 💎🔥",
       "YES! That's my study buddy! 🎯",
+      "That's a win! High five! ✋",
+      "Great answer! Keep those correct streaks coming! 🔥",
+      "Fantastic work — that one was spot on! 💯",
+      "You're mastering this topic fast! 🚀",
     ],
     wrong: [
       "No worries! Mistakes help us grow 🐾",
@@ -36,6 +48,10 @@ const Mascot = {
       "So close! The next one is yours! 🎯",
       "Bo sends you a virtual hug! 🤗❤️",
       "Don't give up! Every error makes you stronger! 🦾",
+      "Oops, not quite — but you're learning!",
+      "That's okay, the next one is your chance!",
+      "Keep trying — your brain is getting stronger!",
+      "Almost there! Take another shot!",
     ],
     welcome: [
       "Welcome back! Bo missed you! 🐶❤️",
@@ -43,24 +59,48 @@ const Mascot = {
       "Bo is ready to study with you! Let's go! 🎯",
       "Let's crush some quizzes today! 🔥",
       "Great to see you back! Time to level up! ⭐",
+      "Hello, champion! Let's study smarter today!",
+      "Back at it! Bo is your study sidekick!",
+      "Let's turn knowledge into confidence! 💡",
+      "Ready for a study boost? Bo is here!",
     ],
     quiz: [
       "You're on a roll! Keep it up! 🔥",
       "Almost there! Finish strong! 💪",
       "Bo is cheering for you! 🐶📣",
       "Excellent focus! You're crushing it! 🎯",
+      "Keep the pace — you're making great progress!",
+      "You're doing so well, just a bit more!",
+      "Quiz mode activated — power through it!",
+      "Your focus is shining bright today!",
     ],
     streak: [
       "STREAK ON FIRE!! 🔥🔥🔥",
       "Bo can't believe it — you're UNSTOPPABLE! 👑",
       "You're a studying machine! ⚡",
       "Consistency is your superpower! 🦸",
+      "Your consistency is building a powerful habit!",
+      "Keep the streak going — you're unstoppable!",
+      "Every day you study, you're leveling up!",
+      "This streak is proof of your dedication!",
     ],
   },
 
   getPhrase(type = "idle") {
     const list = this.phrases[type] || this.phrases.idle;
-    return list[Math.floor(Math.random() * list.length)];
+    if (!this._phraseQueue) this._phraseQueue = {};
+    if (!this._phraseQueue[type] || !this._phraseQueue[type].length) {
+      this._phraseQueue[type] = this.shuffle([...list]);
+    }
+    return this._phraseQueue[type].shift();
+  },
+
+  shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
   },
 
   speak(text, mood = "happy", duration = 4000) {

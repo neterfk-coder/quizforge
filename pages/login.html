@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Iniciar sesión — QuizForge</title>
+    <title>Log in — QuizForge</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="../css/style.css" />
     <link rel="stylesheet" href="../css/auth.css" />
 
-    <!-- ✅ Evitar parpadeo: limpiar guest mode ANTES de renderizar -->
+    <!-- ✅ Avoid flicker: clear guest mode BEFORE rendering -->
     <script>
       localStorage.removeItem("qf_guest_mode");
       localStorage.removeItem("qf_guest_name");
@@ -37,7 +37,7 @@
         white-space: nowrap;
       }
 
-      /* ── BOTÓN INVITADO ── */
+      /* ── GUEST BUTTON ── */
       .btn-guest {
         width: 100%;
         display: flex;
@@ -73,7 +73,7 @@
         flex-shrink: 0;
       }
 
-      /* ── INFO INVITADO ── */
+      /* ── GUEST INFO ── */
       .guest-info {
         background: var(--accent-light);
         border: 1.5px solid var(--border2);
@@ -161,27 +161,27 @@
       </a>
 
       <div class="auth-card">
-        <h1 class="auth-title">Bienvenido de vuelta</h1>
-        <p class="auth-sub">Ingresa a tu cuenta para continuar</p>
+        <h1 class="auth-title">Welcome back</h1>
+        <p class="auth-sub">Sign in to your account to continue</p>
 
         <div id="auth-error" class="auth-alert" style="display: none"></div>
 
         <div class="form-group">
-          <label class="form-label" for="email">Correo electrónico</label>
+          <label class="form-label" for="email">Email address</label>
           <input
             type="email"
             id="email"
             class="form-input"
-            placeholder="tucorreo@ejemplo.com"
+            placeholder="youremail@example.com"
             autocomplete="email"
           />
         </div>
 
         <div class="form-group">
           <div class="form-label-row">
-            <label class="form-label" for="password">Contraseña</label>
+            <label class="form-label" for="password">Password</label>
             <a href="recuperacion.html" class="form-link"
-              >¿Olvidaste tu contraseña?</a
+              >Forgot your password?</a
             >
           </div>
           <input
@@ -194,60 +194,58 @@
         </div>
 
         <button class="btn-auth" id="login-btn" onclick="handleLogin()">
-          Iniciar sesión
+          Sign in
         </button>
 
         <div class="divider">
           <div class="divider-line"></div>
-          <span class="divider-text">o continúa sin cuenta</span>
+          <span class="divider-text">or continue without an account</span>
           <div class="divider-line"></div>
         </div>
 
-        <!-- Info invitado (animación suave) -->
-        <div class="guest-info" id="guest-info">
-          <p class="guest-info-title">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              width="13"
-              height="13"
-            >
-              <circle cx="12" cy="12" r="10" />
-              <line x1="12" y1="8" x2="12" y2="12" />
-              <line x1="12" y1="16" x2="12.01" y2="16" />
-            </svg>
-            Como invitado puedes:
-          </p>
-          <ul>
-            <li>
-              <span class="guest-check">✓</span> Generar quizzes con IA
-              ilimitados
-            </li>
-            <li>
-              <span class="guest-check">✓</span> Usar todos los modos de estudio
-            </li>
-            <li>
-              <span class="guest-check">✓</span> Subir PDFs y archivos de texto
-            </li>
-            <li>
-              <span class="guest-cross">✕</span> Guardar historial de resultados
-            </li>
-            <li>
-              <span class="guest-cross">✕</span> Acceder a tu perfil personal
-            </li>
-          </ul>
-        </div>
+        <div class="guest-block" onmouseenter="showGuestInfo()" onmouseleave="hideGuestInfo()">
+          <!-- Guest info (smooth animation) -->
+          <div class="guest-info" id="guest-info">
+            <p class="guest-info-title">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                width="13"
+                height="13"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              As a guest, you can:
+            </p>
+            <ul>
+              <li>
+                <span class="guest-check">✓</span> Generate unlimited AI quizzes
+              </li>
+              <li>
+                <span class="guest-check">✓</span> Use all study modes
+              </li>
+              <li>
+                <span class="guest-check">✓</span> Upload PDFs and text files
+              </li>
+              <li>
+                <span class="guest-cross">✕</span> Save result history
+              </li>
+              <li>
+                <span class="guest-cross">✕</span> Access your personal profile
+              </li>
+            </ul>
+          </div>
 
-        <!-- Botón invitado -->
-        <button
-          class="btn-guest"
-          id="guest-btn"
-          onclick="enterAsGuest()"
-          onmouseenter="showGuestInfo()"
-          onmouseleave="hideGuestInfo()"
-        >
+          <!-- Guest button -->
+          <button
+            class="btn-guest"
+            id="guest-btn"
+            onclick="enterAsGuest()"
+          >
           <div class="btn-spinner" id="guest-spinner"></div>
           <svg
             id="guest-icon"
@@ -261,12 +259,13 @@
             <line x1="19" y1="8" x2="19" y2="14" />
             <line x1="22" y1="11" x2="16" y2="11" />
           </svg>
-          <span id="guest-label">Continuar como invitado</span>
+          <span id="guest-label">Continue as guest</span>
         </button>
+        </div>
 
         <p class="auth-footer-text">
-          ¿No tienes cuenta?
-          <a href="register.html" class="form-link">Regístrate gratis</a>
+          Don’t have an account?
+          <a href="register.html" class="form-link">Sign up for free</a>
         </p>
       </div>
     </div>
@@ -274,7 +273,7 @@
     <script src="../js/supabase.js" type="module"></script>
     <script>
       /* ════════════════════════
-       LOGIN NORMAL
+       INICIO DE SESIÓN NORMAL
     ════════════════════════ */
       async function handleLogin() {
         const email = document.getElementById("email").value.trim();
@@ -282,25 +281,25 @@
         const btn = document.getElementById("login-btn");
 
         if (!email || !password) {
-          showError("Completa todos los campos.");
+          showError("Fill in all fields.");
           return;
         }
 
         btn.disabled = true;
-        btn.textContent = "Ingresando...";
+        btn.textContent = "Signing in...";
 
         try {
           await window.signIn(email, password);
           window.location.href = "dashboard.html";
         } catch {
-          showError("Correo o contraseña incorrectos.");
+          showError("Incorrect email or password.");
           btn.disabled = false;
-          btn.textContent = "Iniciar sesión";
+          btn.textContent = "Sign in";
         }
       }
 
       /* ════════════════════════
-       MODO INVITADO — sin parpadeo
+       GUEST MODE — no flicker
     ════════════════════════ */
       function enterAsGuest() {
         const btn = document.getElementById("guest-btn");
@@ -312,20 +311,20 @@
         btn.disabled = true;
         spinner.style.display = "block";
         icon.style.display = "none";
-        label.textContent = "Entrando...";
+        label.textContent = "Entering...";
 
-        /* Guardar estado JUSTO antes de navegar */
+        /* Save state JUST before navigation */
         localStorage.setItem("qf_guest_mode", "true");
-        localStorage.setItem("qf_guest_name", "Invitado");
+        localStorage.setItem("qf_guest_name", "Guest");
 
-        /* Pequeño delay para que el spinner se vea, luego navegar */
+        /* Small delay so the spinner is visible, then navigate */
         setTimeout(() => {
           window.location.replace("../index.html");
         }, 600);
       }
 
       /* ════════════════════════
-       HOVER INFO
+       INFO AL PASAR EL CURSOR
     ════════════════════════ */
       function showGuestInfo() {
         document.getElementById("guest-info").classList.add("visible");
@@ -343,7 +342,7 @@
         box.style.display = "block";
       }
 
-      /* Enter para login */
+      /* Enter to sign in */
       document.addEventListener("keydown", (e) => {
         if (e.key === "Enter") handleLogin();
       });

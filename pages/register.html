@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Crear cuenta — QuizForge</title>
+    <title>Create account — QuizForge</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap"
@@ -24,8 +24,8 @@
       </a>
 
       <div class="auth-card">
-        <h1 class="auth-title">Crea tu cuenta</h1>
-        <p class="auth-sub">Gratis para siempre. Sin tarjeta.</p>
+        <h1 class="auth-title">Create your account</h1>
+        <p class="auth-sub">Free forever. No card required.</p>
 
         <div id="auth-error" class="auth-alert" style="display: none"></div>
         <div
@@ -35,64 +35,64 @@
         ></div>
 
         <div class="form-group">
-          <label class="form-label" for="name">Nombre completo</label>
+          <label class="form-label" for="name">Full name</label>
           <input
             type="text"
             id="name"
             class="form-input"
-            placeholder="Tu nombre"
+            placeholder="Your name"
             autocomplete="name"
           />
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="email">Correo electrónico</label>
+          <label class="form-label" for="email">Email address</label>
           <input
             type="email"
             id="email"
             class="form-input"
-            placeholder="tucorreo@ejemplo.com"
+            placeholder="youremail@example.com"
             autocomplete="email"
           />
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="password">Contraseña</label>
+          <label class="form-label" for="password">Password</label>
           <input
             type="password"
             id="password"
             class="form-input"
-            placeholder="Mínimo 8 caracteres"
+            placeholder="Minimum 8 characters"
             autocomplete="new-password"
           />
           <div class="password-strength" id="pwd-strength"></div>
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="confirm">Confirmar contraseña</label>
+          <label class="form-label" for="confirm">Confirm password</label>
           <input
             type="password"
             id="confirm"
             class="form-input"
-            placeholder="Repite tu contraseña"
+            placeholder="Repeat your password"
             autocomplete="new-password"
           />
         </div>
 
         <button class="btn-auth" id="register-btn" onclick="handleRegister()">
-          Crear cuenta
+          Create account
         </button>
 
         <p class="auth-footer-text">
-          ¿Ya tienes cuenta?
-          <a href="login.html" class="form-link">Inicia sesión</a>
+          Already have an account?
+          <a href="login.html" class="form-link">Sign in</a>
         </p>
       </div>
     </div>
 
     <script src="../js/supabase.js"></script>
     <script>
-      // Indicador de fortaleza de contraseña
+      // Password strength indicator
       document
         .getElementById("password")
         .addEventListener("input", function () {
@@ -118,32 +118,32 @@
         const btn = document.getElementById("register-btn");
 
         if (!name || !email || !password) {
-          showError("Completa todos los campos.");
+          showError("Fill in all fields.");
           return;
         }
         if (password.length < 8) {
-          showError("La contraseña debe tener al menos 8 caracteres.");
+          showError("Password must be at least 8 characters long.");
           return;
         }
         if (password !== confirm) {
-          showError("Las contraseñas no coinciden.");
+          showError("Passwords do not match.");
           return;
         }
 
         btn.disabled = true;
-        btn.textContent = "Creando cuenta...";
+        btn.textContent = "Creating account...";
 
         try {
           await window.signUp(email, password, name);
           document.getElementById("auth-error").style.display = "none";
           const ok = document.getElementById("auth-success");
-          ok.textContent = "¡Cuenta creada! Revisa tu correo para confirmar.";
+          ok.textContent = "Account created! Check your email to confirm.";
           ok.style.display = "block";
-          btn.textContent = "¡Listo!";
+          btn.textContent = "Done!";
         } catch (err) {
-          showError("No se pudo crear la cuenta. Intenta con otro correo.");
+          showError("Could not create the account. Try a different email.");
           btn.disabled = false;
-          btn.textContent = "Crear cuenta";
+          btn.textContent = "Create account";
         }
       }
 
