@@ -332,6 +332,16 @@ async function saveResult() {
       correct: s.correct,
       pct: s.pct,
     });
+
+    /* Record streak activity after lesson completion */
+    if (typeof Streak !== "undefined") {
+      const streakData = await Streak.recordActivity();
+      if (streakData && typeof Notifs !== "undefined") {
+        const streakMsg = `🔥 ${streakData.current}-day streak!`;
+        Notifs.onStreakUpdate(streakData.current);
+      }
+    }
+
     UI.toast("Resultado guardado en tu historial ✓", "success");
   } catch {
     UI.toast("Inicia sesión para guardar tu resultado", "error");

@@ -1111,6 +1111,13 @@
 
       /* ── INIT ── */
       render();
+
+      /* ── LIVE UPDATES when page becomes visible ── */
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) {
+          setTimeout(() => render(), 300);
+        }
+      });
     </script>
   </body>
 </html>
