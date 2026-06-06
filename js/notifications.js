@@ -52,6 +52,9 @@ const Notifs = {
     this.save(notifs);
     this.updateBadge();
     this.showBanner(notif);
+    if (document.getElementById("notif-panel")?.classList.contains("open")) {
+      this.renderPanel();
+    }
 
     /* Browser notification if permitted */
     this.sendBrowserNotif(title, message, type);
@@ -66,6 +69,9 @@ const Notifs = {
     );
     this.save(notifs);
     this.updateBadge();
+    if (document.getElementById("notif-panel")?.classList.contains("open")) {
+      this.renderPanel();
+    }
   },
 
   /* ── Mark all as read ── */
@@ -211,6 +217,13 @@ const Notifs = {
       }, 1500);
     }
 
+    const unreadCount = notifs.filter((n) => !n.read).length;
+    const unreadLabel = document.getElementById("notif-unread-label");
+    if (unreadLabel) {
+      unreadLabel.style.display = unreadCount ? "inline-flex" : "none";
+      unreadLabel.textContent = `${unreadCount} new`;
+    }
+
     if (!notifs.length) {
       list.innerHTML = `
         <div style="text-align:center;padding:3rem 1.5rem;color:var(--muted,#64748b)">
@@ -246,6 +259,12 @@ const Notifs = {
      INJECT UI
   ══════════════════════ */
   inject() {
+    const navLinks = document.querySelector(".nav-links");
+    if (!navLinks) {
+      setTimeout(() => this.inject(), 250);
+      return;
+    }
+
     /* Styles */
     const style = document.createElement("style");
     style.textContent = `
@@ -459,11 +478,13 @@ const Notifs = {
     document.body.appendChild(banner);
 
     /* Inject bell button into navbar */
-    const navLinks = document.querySelector(".nav-links");
-    if (!navLinks) return;
+    let wrap = document.getElementById("notif-wrap");
+    const existingWrap = !!wrap;
+    if (!wrap) {
+      wrap = document.createElement("div");
+      wrap.id = "notif-wrap";
+    }
 
-    const wrap = document.createElement("div");
-    wrap.id = "notif-wrap";
     wrap.innerHTML = `
       <button id="notif-btn" onclick="Notifs.togglePanel()" title="Notifications" aria-label="Notifications">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -492,12 +513,14 @@ const Notifs = {
       </div>
     `;
 
-    /* Insert before Sign in button */
-    const signInBtn = navLinks.querySelector(".btn-primary");
-    if (signInBtn) {
-      navLinks.insertBefore(wrap, signInBtn);
-    } else {
-      navLinks.appendChild(wrap);
+    /* Insert before Sign in button if missing from DOM */
+    if (!existingWrap || !wrap.parentNode) {
+      const signInBtn = navLinks.querySelector(".btn-primary");
+      if (signInBtn) {
+        navLinks.insertBefore(wrap, signInBtn);
+      } else {
+        navLinks.appendChild(wrap);
+      }
     }
 
     /* Initial badge update */
@@ -518,6 +541,7 @@ const Notifs = {
   startRealTimeSimulation() {
     /* Welcome notification on first visit */
     const welcomed = localStorage.getItem("qf_welcomed");
+    const allNotifs = this.getAll();
     if (!welcomed) {
       setTimeout(() => {
         this.add(
@@ -528,9 +552,16 @@ const Notifs = {
         localStorage.setItem("qf_welcomed", "1");
         this.ringBell();
       }, 2000);
+    } else if (!allNotifs.length) {
+      setTimeout(() => {
+        this.add(
+          "system",
+          "Notifications ready! 🔔",
+          "Open the bell to see your live message history.",
+        );
+        this.ringBell();
+      }, 1800);
     }
-
-    /* Daily bonus reminder */
     const lastDailyCheck = localStorage.getItem("qf_last_daily_notif");
     const today = new Date().toDateString();
     if (lastDailyCheck !== today) {
@@ -634,5 +665,10 @@ const Notifs = {
 
 window.Notifs = Notifs;
 
-/* Auto-inject when DOM is ready */
-document.addEventListener("DOMContentLoaded", () => Notifs.inject());
+/* Auto-inject when DOM is ready or immediately if already loaded */
+const initNotifs = () => Notifs.inject();
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initNotifs);
+} else {
+  initNotifs();
+}
